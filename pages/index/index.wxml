@@ -1,0 +1,117 @@
+<!-- index.wxml -->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <custom-nav
+    searchKeyword="{{searchKeyword}}"
+    bind:search="onSearch"
+    bind:cancel="onCancel"
+    bind:input="onSearchInput"
+  />
+
+  <!-- 页面内容 -->
+  <view class="content">
+    <!-- 筛选栏 -->
+    <view class="filter-bar">
+      <text
+        class="filter-tag {{filterSelected.onePerson ? 'active' : ''}}"
+        data-type="onePerson"
+        bindtap="onFilterClick"
+      >
+        只差一人
+      </text>
+      <text
+        class="filter-tag {{filterSelected.mySubscription ? 'active' : ''}}"
+        data-type="mySubscription"
+        bindtap="onFilterClick"
+      >
+        我的订阅
+      </text>
+    </view>
+
+    <!-- 商品列表 -->
+    <scroll-view
+      class="scroll-view"
+      scroll-y
+      bindscrolltolower="onScrollToLower"
+      bindrefresherrefresh="onPullDownRefresh"
+      refresher-enabled="true"
+      refresher-triggered="{{isRefreshing}}"
+    >
+      <view class="product-list">
+        <block wx:for="{{filteredProductList}}" wx:key="id">
+          <van-card
+            thumb="{{item.imageUrl}}"
+            title="{{item.title}}"
+            bind:click="onProductClick"
+            data-item="{{item}}"
+          >
+            <!-- 价格部分 -->
+            <view class="desc-price-row" slot="bottom">
+              <view class="desc-text">
+                <text class="label-text">已优惠:</text>
+                <text class="discount-price">¥{{item.discountPrice}}</text>
+              </view>
+              <view class="price-text">
+                <text class="label-text">现价:</text>
+                <text class="current-price">¥{{item.price}}</text>
+              </view>
+            </view>
+
+            <!-- 拼团人数和倒计时部分 -->
+            <view class="group-info-row" slot="bottom">
+              <view class="group-remaining-timer">
+                <text>只差<text class="group-remain-count">{{item.groupRemainCount}}</text>人拼团成功</text>
+              </view>
+              <text class="countdown">{{item.countdown}}</text>
+            </view>
+
+            <!-- 底部操作按钮 -->
+            <view slot="footer" class="product-footer">
+              <!-- 分享按钮 -->
+              <view class="action-item">
+                <van-icon name="share-o" bindtap="onShareClick" data-id="{{item.id}}" size="24rpx" class="action-icon" />
+                <text class="action-text">分享</text>
+              </view>
+
+              <!-- 订阅按钮 -->
+              <view class="action-item">
+                <van-icon
+                  name="{{item.mySubscription ? 'star' : 'star-o'}}"
+                  bindtap="onSubscribeClick"
+                  data-id="{{item.id}}"
+                  size="24rpx"
+                  class="action-icon"
+                  color="{{item.mySubscription ? 'yellow' : 'gray'}}"
+                />
+                <text class="action-text">{{item.mySubscription ? '已订阅' : '订阅'}}</text>
+              </view>
+
+              <!-- 参与拼团按钮 -->
+              <view class="action-item join-group-item">
+                <van-icon name="friends-o" bindtap="onJoinGroup" data-keycode="{{item.keyCode}}" size="24rpx" class="action-icon" />
+                <text class="action-text">参与拼团</text>
+              </view>
+            </view>
+          </van-card>
+        </block>
+
+        <!-- 加载更多 -->
+        <view class="loading-area" wx:if="{{loadingMore}}">
+          <van-loading size="24px" type="spinner" />
+          <text>正在加载...</text>
+        </view>
+
+        <!-- 没有更多商品了 -->
+        <view class="no-more" wx:if="{{!hasMore && !loadingMore && filteredProductList.length > 0}}">
+          <text>没有更多商品了</text>
+        </view>
+
+        <!-- 没有数据 -->
+        <view class="no-data" wx:if="{{filteredProductList.length === 0 && !loadingMore}}">
+          <text>没有符合条件的商品</text>
+        </view>
+
+      </view>
+    </scroll-view>
+  </view>
+</view>

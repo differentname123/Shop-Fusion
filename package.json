@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@vant/weapp": "^1.11.6",
+    "jpeg-js": "^0.4.4",
+    "jsqr": "^1.4.0",
+    "png-js": "^1.0.0"
+  },
+  "name": "shopfusion",
+  "version": "1.0.0",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,0 +1,26 @@
+.nav-container {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.status-bar {
+  width: 100%;
+  background-color: #fff;
+}
+
+.nav-bar {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 10rpx;
+  box-sizing: border-box;
+}
+
+/* 调整 van-search 的宽度 */
+.nav-bar van-search {
+  flex: 0.75;
+}

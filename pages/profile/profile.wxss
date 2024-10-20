@@ -1,0 +1,132 @@
+/* profile.wxss */
+
+/* 页面容器 */
+.page-container {
+  position: relative;
+  background-color: #f2f4f7; /* 柔和的浅灰色背景 */
+}
+
+/* 个人资料头部 */
+.profile-header {
+  background: linear-gradient(135deg, #a1c4fd, #c2e9fb); /* 与 mine 页面统一的渐变色 */
+  padding-top: 60rpx;
+  padding-bottom: 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 头像容器 */
+.avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 头像样式 */
+.avatar {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  border: 6rpx solid #fff;
+  background-color: #eaeaea;
+  box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.1);
+  animation: scaleIn 1s ease-in-out;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 更换头像文字 */
+.change-avatar-text {
+  margin-top: 20rpx;
+  font-size: 30rpx;
+  color: #fff;
+}
+
+/* 表单部分 */
+.profile-form {
+  margin-top: -30rpx;
+  padding: 32rpx;
+  background-color: #fff;
+  border-top-left-radius: 30rpx;
+  border-top-right-radius: 30rpx;
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 表单项 */
+.form-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.label {
+  width: 140rpx;
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.input {
+  flex: 1;
+  height: 68rpx;
+  font-size: 30rpx;
+  border: 1rpx solid #ccc;
+  border-radius: 10rpx;
+  padding: 0 16rpx;
+  background-color: #f9f9f9;
+}
+
+/* 警告信息 */
+.warning-message {
+  color: #ff4d4f;
+  font-size: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+/* 保存按钮 */
+.save-button {
+  width: 100%;
+  height: 80rpx;
+  background: linear-gradient(45deg, #36d1dc, #5b86e5);
+  color: #fff;
+  font-size: 32rpx;
+  text-align: center;
+  line-height: 80rpx;
+  border: none;
+  border-radius: 10rpx;
+  transition: background 0.3s ease, transform 0.1s;
+}
+
+.save-button:active {
+  background: linear-gradient(45deg, #5b86e5, #36d1dc);
+  transform: scale(0.98);
+}
+
+/* 加载遮罩层 */
+.loading-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-icon {
+  width: 60rpx;
+  height: 60rpx;
+}

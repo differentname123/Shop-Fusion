@@ -1,0 +1,18 @@
+{
+  "name": "parseQRCode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jimp": "^0.16.1",
+    "jpeg-js": "^0.4.4",
+    "jsqr": "^1.4.0",
+    "png-js": "^1.0.0",
+    "wx-server-sdk": "~3.0.1"
+  }
+}

@@ -1,0 +1,71 @@
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <title-nav title="我的"></title-nav>
+
+  <!-- 用户信息区域 -->
+  <view class="header" style="margin-top: {{navBarHeight + statusBarHeight}}px;">
+    <!-- 背景 -->
+    <view class="header-bg"></view>
+    <view class="avatar-container">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" bindtap="goToProfile"></image>
+      <text class="username">{{userInfo.nickName}}</text>
+      <view class="points-section">
+        <text class="points-title">我的积分:</text>
+        <text class="points-value">{{userInfo.points}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 菜单列表 -->
+  <view class="menu">
+    <!-- 功能区块1 -->
+    <view class="menu-group">
+      <view class="menu-item" bindtap="onMenuItemTap" data-item="{{menuItems[0].item}}">
+        <view class="menu-item-left">
+          <image src="{{menuItems[0].iconPath}}" class="menu-icon"></image>
+          <text class="menu-title">{{menuItems[0].title}}</text>
+        </view>
+        <view class="menu-item-right">
+          <text wx:if="{{menuItems[0].subtitle}}" class="menu-subtitle">{{menuItems[0].subtitle}}</text>
+          <image src="/images/icon_arrow_right.png" class="arrow-icon"></image>
+        </view>
+      </view>
+      <view class="menu-item" bindtap="onMenuItemTap" data-item="{{menuItems[1].item}}">
+        <view class="menu-item-left">
+          <image src="{{menuItems[1].iconPath}}" class="menu-icon"></image>
+          <text class="menu-title">{{menuItems[1].title}}</text>
+        </view>
+        <view class="menu-item-right">
+          <text wx:if="{{menuItems[1].subtitle}}" class="menu-subtitle">{{menuItems[1].subtitle}}</text>
+          <image src="/images/icon_arrow_right.png" class="arrow-icon"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="menu-separator"></view>
+
+    <!-- 功能区块2 -->
+    <view class="menu-group">
+      <block wx:for="{{menuItems}}" wx:for-item="item" wx:for-index="index" wx:key="title">
+        <block wx:if="{{index >= 2}}">
+          <view class="menu-item" bindtap="onMenuItemTap" data-item="{{item.item}}">
+            <view class="menu-item-left">
+              <image src="{{item.iconPath}}" class="menu-icon"></image>
+              <text class="menu-title">{{item.title}}</text>
+            </view>
+            <view class="menu-item-right">
+              <text wx:if="{{item.subtitle}}" class="menu-subtitle">{{item.subtitle}}</text>
+              <image src="/images/icon_arrow_right.png" class="arrow-icon"></image>
+            </view>
+          </view>
+        </block>
+      </block>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{isLoading}}" class="loading-mask">
+    <image src="/images/loading.gif" class="loading-icon"></image>
+  </view>
+</view>

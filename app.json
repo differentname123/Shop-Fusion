@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/share/share",
+    "pages/mine/mine",
+    "pages/tutorial/tutorial",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationStyle": "custom"
+  },
+  "usingComponents": {
+    "custom-nav": "/components/custom-nav/custom-nav",
+    "title-nav": "/components/title-nav/title-nav"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/images/home.png",
+        "selectedIconPath": "/images/home_select.png"
+      },
+      {
+        "pagePath": "pages/share/share",
+        "text": "分享我的团",
+        "iconPath": "/images/share.png",
+        "selectedIconPath": "/images/share_select.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "/images/mine.png",
+        "selectedIconPath": "/images/mine_select.png"
+      }
+    ],
+    "position": "bottom"
+  }
+}

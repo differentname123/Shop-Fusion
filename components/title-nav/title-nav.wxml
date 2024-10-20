@@ -1,0 +1,6 @@
+<view class="nav-container" style="height: {{navBarHeight}}px;">
+  <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
+  <view class="nav-bar" style="height: {{navHeight}}px;">
+    <text class="nav-title">{{title}}</text>
+  </view>
+</view>

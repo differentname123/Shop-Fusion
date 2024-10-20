@@ -1,0 +1,181 @@
+/* 页面容器 */
+.page-container {
+  position: relative;
+  height: 100vh;
+  background-color: #f0f0f5;
+}
+
+/* 内容区域，位于导航栏下面 */
+.content {
+  position: absolute;
+  top: 64px;  /* 状态栏高度 + 导航栏高度，需与组件中的 navBarHeight 保持一致 */
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 筛选栏样式 */
+.filter-bar {
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  padding: 10rpx 0;
+  z-index: 999;
+}
+
+/* 筛选标签样式 */
+.filter-tag {
+  font-size: 16px;
+  color: black;
+  padding: 5rpx 10rpx;
+  position: relative;
+}
+
+.filter-tag.active {
+  color: red;
+}
+
+.filter-tag.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2rpx;
+  background-color: red;
+}
+
+/* 商品列表样式 */
+.scroll-view {
+  flex: 1;
+  overflow: auto;
+}
+
+.product-list {
+  padding: 20rpx;
+}
+
+/* 加载更多样式 */
+.loading-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+/* 没有更多商品样式 */
+.no-more, .no-data {
+  text-align: center;
+  padding: 10px 0;
+  color: #888;
+}
+
+.no-data {
+  padding: 20px 0;
+}
+
+/* 按钮和图标样式 */
+.join-group-btn {
+  height: 64rpx;  /* 设置按钮的高度与其他图标和文字一致 */
+  line-height: 64rpx;
+  font-size: 16px;  /* 增加字体大小，使其更醒目 */
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-around;  /* 使按钮均匀分布 */
+  align-items: center;
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;  /* 增加底部填充，避免文字重叠 */
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;  /* 确保每个按钮平等分布空间 */
+  max-width: 80rpx;  /* 限制最大宽度，适应小屏幕 */
+}
+
+.action-icon {
+  width: 24rpx;  /* 缩小图标大小 */
+  height: 24rpx;
+  margin-bottom: 5rpx;  /* 增加图标与文字之间的距离，避免重叠 */
+}
+
+.action-text {
+  font-size: 10rpx;  /* 缩小文字大小 */
+  color: #666;
+  margin-top: 5rpx;
+  text-align: center;  /* 确保文字居中 */
+}
+
+/* 价格和描述部分的布局 */
+.desc-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10rpx;
+  padding-left: 10rpx; /* 添加左边距 */
+  padding-right: 10rpx; /* 添加右边距，确保与 group-info-row 对齐 */
+}
+
+/* 标签文字样式（“已优惠:”、“现价:”） */
+.label-text {
+  font-size: 16rpx; /* 与“现价:”标签一致 */
+  color: #333; /* 深色，确保可读性 */
+}
+
+/* 已优惠价格样式 */
+.discount-price {
+  color: #f44;  /* 红色 */
+  font-weight: bold;  /* 加粗 */
+  font-size: 20rpx;  /* 增大字体，突出显示价格 */
+  margin-left: 5rpx; /* 标签与价格之间的间距 */
+}
+
+/* 现价价格样式 */
+.current-price {
+  color: #f44;  /* 红色 */
+  font-weight: bold;  /* 加粗 */
+  font-size: 20rpx;  /* 与已优惠价格一致 */
+  margin-left: 5rpx; /* 标签与价格之间的间距 */
+}
+
+/* 确保 price-text 和 desc-text 的布局一致 */
+.desc-text, .price-text {
+  display: flex;
+  align-items: center;
+}
+
+/* 拼团人数和倒计时的布局 */
+.group-info-row {
+  display: flex;
+  justify-content: space-between; /* 左右两端对齐 */
+  align-items: center;
+  margin-top: 8rpx;
+  padding-left: 10rpx; /* 添加左边距，与 desc-price-row 保持一致 */
+  padding-right: 10rpx; /* 添加右边距 */
+}
+
+/* 拼团人数样式 */
+.group-remain-count {
+  color: #f44;  /* 红色 */
+  font-weight: bold;  /* 加粗 */
+  margin-right: 10rpx;  /* 保持与倒计时的间距 */
+}
+
+/* 倒计时样式 */
+.countdown {
+  color: #f44;  /* 红色 */
+  font-weight: bold;  /* 加粗 */
+  font-size: 18rpx;  /* 增大字体，使其更明显 */
+}
+
+/* 拼团人数文本样式 */
+.group-remaining-timer text {
+  font-size: 16rpx;
+  color: #333;
+}

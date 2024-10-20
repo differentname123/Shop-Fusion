@@ -1,0 +1,29 @@
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <title-nav title="个人资料"></title-nav>
+
+  <view class="profile-header" style="margin-top: {{navBarHeight + statusBarHeight}}px;">
+    <view class="avatar-container">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" bindtap="chooseAvatar" animation="{{avatarAnimation}}"></image>
+      <text class="change-avatar-text">点击更换头像</text>
+    </view>
+  </view>
+
+  <view class="profile-form">
+    <view class="form-item">
+      <text class="label">昵称</text>
+      <input class="input" placeholder="请输入您的购物昵称" value="{{userInfo.nickName}}" bindinput="onNicknameChange"/>
+    </view>
+    <!-- 警告信息 -->
+    <view class="warning-message">
+      <text>如果昵称和购物昵称不一致会影响积分获取</text>
+    </view>
+    <!-- 保存按钮 -->
+    <button class="save-button" bindtap="saveProfile">保存修改</button>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{isLoading}}" class="loading-mask">
+    <image src="/images/loading.gif" class="loading-icon"></image>
+  </view>
+</view>
