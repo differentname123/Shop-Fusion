@@ -1,0 +1,465 @@
+我正在使用微信开发者工具开发一款小程序，现在我有下面几点需要修改:
+1.现在自定义的title-nav和tutorial-button产生了重叠，你需要检查一下代码，使用兼容性高的代码以便在不同设备上都能正常显示。
+2.现在我的个人资料页面中的头像和昵称无法修改，你需要检查一下代码，确保用户可以修改头像和昵称。
+所涉及到修改的文件，你直接给我完整的修改后的代码，下面是我原来的相关代码:
+mine.js:
+// mine.js
+Page({
+  data: {
+    userInfo: {
+      nickName: '',
+      avatarUrl: '',
+      openid: '',
+      points: 0
+    },
+    navBarHeight: 0, // 导航栏高度
+    menuItems: [
+      {
+        iconPath: '/images/icon_share.png',
+        title: '分享小程序',
+        subtitle: '可获得2积分',
+        item: '分享小程序'
+      },
+      {
+        iconPath: '/images/icon_video.png',
+        title: '观看视频',
+        subtitle: '可获得1积分',
+        item: '观看视频'
+      },
+      {
+        iconPath: '/images/icon_group.png',
+        title: '多人拼团群',
+        subtitle: '',
+        item: '多人拼团群'
+      },
+      {
+        iconPath: '/images/icon_customer_service.png',
+        title: '联系客服',
+        subtitle: '',
+        item: '联系客服'
+      },
+      {
+        iconPath: '/images/icon_about_us.png',
+        title: '关于我们',
+        subtitle: '',
+        item: '关于我们'
+      }
+    ]
+  },
+
+  onLoad: function () {
+    const systemInfo = wx.getSystemInfoSync();
+    const statusBarHeight = systemInfo.statusBarHeight;
+    const navHeight = 44; // 导航栏的高度
+    const navBarHeight = statusBarHeight + navHeight;
+    this.setData({
+      navBarHeight: navBarHeight
+    });
+    this.getOpenIdAndUserInfo();
+  },
+
+  onShow: function() {
+    // 页面显示时，重新获取用户信息，确保修改后立即生效
+    this.getUserInfo();
+  },
+
+  getOpenIdAndUserInfo: function () {
+    const that = this;
+    // 尝试从本地缓存获取 openid
+    let openid = wx.getStorageSync('openid');
+    if (openid) {
+      // 如果有缓存的 openid，直接使用
+      that.setData({
+        'userInfo.openid': openid
+      });
+      that.getUserInfo(); // 获取用户信息
+    } else {
+      // 调用云函数获取 openid
+      wx.cloud.callFunction({
+        name: 'getOpenId', // 云函数的名称
+        success: function (res) {
+          const openid = res.result.openid;
+          wx.setStorageSync('openid', openid);
+          that.setData({
+            'userInfo.openid': openid
+          });
+          that.getUserInfo(); // 获取用户信息
+        },
+        fail: function (err) {
+          console.error('[云函数] [getOpenId] 调用失败', err);
+        }
+      });
+    }
+  },
+
+  getUserInfo: function () {
+    const that = this;
+    let userInfo = wx.getStorageSync('userInfo') || null;
+
+    if (userInfo && userInfo.nickName) {
+      // 如果有缓存的 userInfo，直接使用
+      that.setData({
+        userInfo: userInfo
+      });
+    } else {
+      // 调用云函数获取用户信息
+      wx.cloud.callFunction({
+        name: 'getUser',
+        data: {
+          openid: that.data.userInfo.openid
+        },
+        success: function(res) {
+          if (res.result.data) {
+            // 如果数据库中有用户数据，使用并缓存
+            const userData = res.result.data;
+            wx.setStorageSync('userInfo', userData);
+            that.setData({
+              userInfo: userData
+            });
+          } else {
+            // 如果数据库中没有用户数据，初始化并保存默认用户信息
+            const userInfo = {
+              nickName: '用户_' + that.data.userInfo.openid.substring(0, 6),
+              avatarUrl: '/images/default.png',
+              openid: that.data.userInfo.openid,
+              points: 0
+            };
+            wx.setStorageSync('userInfo', userInfo);
+            that.setData({
+              userInfo: userInfo
+            });
+            // 保存到数据库
+            that.addUserToDatabase(userInfo);
+          }
+        },
+        fail: function(err) {
+          console.error('[云函数] [getUser] 调用失败', err);
+          // 初始化并保存默认用户信息
+          const userInfo = {
+            nickName: '用户_' + that.data.userInfo.openid.substring(0, 6),
+            avatarUrl: '/images/default.png',
+            openid: that.data.userInfo.openid,
+            points: 0
+          };
+          wx.setStorageSync('userInfo', userInfo);
+          that.setData({
+            userInfo: userInfo
+          });
+          // 保存到数据库
+          that.addUserToDatabase(userInfo);
+        }
+      });
+    }
+  },
+
+  // 将用户信息保存到数据库
+  addUserToDatabase: function(userInfo) {
+    wx.cloud.callFunction({
+      name: 'addUser',
+      data: {
+        openid: userInfo.openid,
+        nickName: userInfo.nickName,
+        avatarUrl: userInfo.avatarUrl,
+        points: userInfo.points
+      },
+      success: function () {
+        console.log('用户信息已保存到数据库');
+      },
+      fail: function (err) {
+        console.error('[云函数] [addUser] 调用失败', err);
+      }
+    });
+  },
+
+  // 点击头像跳转到个人资料页面
+  goToProfile: function() {
+    wx.navigateTo({
+      url: '/pages/profile/profile',
+    });
+  },
+
+  // 菜单项点击事件，弹出提示框
+  onMenuItemTap: function(e) {
+    const item = e.currentTarget.dataset.item;
+    wx.showModal({
+      title: '提示',
+      content: '你点击了' + item,
+      showCancel: false,
+      confirmText: '确定',
+    });
+  }
+});
+mine.wxml:
+<view class="page-container" style="padding-top: {{navBarHeight}}px;">
+  <!-- 使用新的导航栏组件 -->
+  <title-nav title="我的"></title-nav>
+
+  <!-- 用户头像和昵称 -->
+  <view class="header">
+    <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" bindtap="goToProfile"></image>
+    <text class="username">{{userInfo.nickName}}</text>
+    <!-- 我的积分放在昵称下面 -->
+    <view class="points-section">
+      <text class="points-title">我的积分: {{userInfo.points}}</text>
+    </view>
+  </view>
+
+  <!-- 菜单列表 -->
+  <view class="menu">
+    <block wx:for="{{menuItems}}" wx:key="title">
+      <view class="menu-item" bindtap="onMenuItemTap" data-item="{{item.item}}">
+        <image src="{{item.iconPath}}" class="menu-icon"></image>
+        <view class="menu-content">
+          <text class="menu-title">{{item.title}}</text>
+          <text wx:if="{{item.subtitle}}" class="menu-subtitle">{{item.subtitle}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+mine.wxss:
+.page-container {
+  padding-top: 90rpx; /* 根据导航栏高度调整 */
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 30rpx 0;
+}
+
+.avatar {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+  margin-bottom: 15rpx;
+  background-color: #eaeaea;
+}
+
+.username {
+  font-size: 36rpx;
+  color: #333;
+  margin-top: 10rpx;
+}
+
+.points-section {
+  margin-top: 10rpx;
+}
+
+.points-title {
+  font-size: 32rpx;
+  color: #333;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-icon {
+  width: 50rpx;
+  height: 50rpx;
+  margin-right: 20rpx;
+}
+
+.menu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* 使标题和副标题靠右 */
+}
+.menu-title {
+  font-size: 32rpx;
+  color: #333;
+}
+
+.menu-subtitle {
+  font-size: 24rpx;
+  color: #f00;
+  margin-top: 5rpx;
+}
+profile.js:
+// profile.js
+Page({
+  data: {
+    userInfo: {
+      nickName: '',
+      avatarUrl: '',
+      openid: '',
+      points: 0
+    },
+    navBarHeight: 0 // 导航栏高度
+  },
+
+  onLoad: function () {
+    const systemInfo = wx.getSystemInfoSync();
+    const statusBarHeight = systemInfo.statusBarHeight;
+    const navHeight = 44; // 导航栏的高度
+    const navBarHeight = statusBarHeight + navHeight;
+    this.setData({
+      navBarHeight: navBarHeight
+    });
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    console.log("收到的参数：", { userInfo});
+    this.setData({
+      userInfo: userInfo
+    });
+  },
+
+  // 昵称修改事件
+  onNicknameChange: function (e) {
+    const nickName = e.detail.value;
+    this.setData({
+      'userInfo.nickName': nickName
+    });
+  },
+
+  // 选择头像并上传
+  chooseAvatar: function() {
+    const that = this;
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success (res) {
+        const tempFilePath = res.tempFilePaths[0];
+        // 上传图片到云存储
+        const cloudPath = 'userAvatars/' + that.data.userInfo.openid + Date.now() + tempFilePath.match(/\.[^.]+?$/)[0];
+        wx.cloud.uploadFile({
+          cloudPath: cloudPath,
+          filePath: tempFilePath,
+          success: res => {
+            // 获取文件ID
+            const fileID = res.fileID;
+            that.setData({
+              'userInfo.avatarUrl': fileID
+            });
+          },
+          fail: err => {
+            console.error('头像上传失败：', err);
+            wx.showToast({
+              title: '头像上传失败',
+              icon: 'none'
+            });
+          }
+        });
+      }
+    });
+  },
+
+  // 保存修改
+  saveProfile: function () {
+    const that = this;
+    const userInfo = this.data.userInfo;
+    const openid = userInfo.openid;
+    console.log("正在调用 addUser 云函数，openid:", openid);
+
+    // 保存到本地缓存
+    wx.setStorageSync('userInfo', userInfo);
+
+    // 调用 addUser 云函数更新数据库中的用户信息
+    wx.cloud.callFunction({
+      name: 'addUser',
+      data: {
+        openid: openid,
+        nickName: userInfo.nickName,
+        avatarUrl: userInfo.avatarUrl,
+        points: userInfo.points // 如果需要积分也一同更新
+      },
+      success: function () {
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 2000,
+          success: function () {
+            // 返回上一页
+            wx.navigateBack();
+          }
+        });
+      },
+      fail: function (err) {
+        console.error('[云函数] [addUser] 调用失败', err);
+      }
+    });
+  }
+});
+profile.wxml:
+<view class="page-container" style="padding-top: {{navBarHeight}}px;">
+  <!-- 使用新的导航栏组件 -->
+  <title-nav title="个人资料"></title-nav>
+
+  <view class="profile-item">
+    <text class="label">头像</text>
+    <image class="avatar" src="{{userInfo.avatarUrl}}" bindtap="chooseAvatar"></image>
+  </view>
+  <view class="profile-item">
+    <text class="label">昵称</text>
+    <input class="input" placeholder="请输入您的购物昵称" value="{{userInfo.nickName}}" bindinput="onNicknameChange"/>
+  </view>
+  <!-- 始终显示警告信息 -->
+  <view class="warning-message">
+    <text>如果昵称和购物昵称不一致会影响积分获取</text>
+  </view>
+  <button class="save-button" bindtap="saveProfile">保存修改</button>
+</view>
+profile.wxss:
+.page-container {
+  padding-top: 90rpx; /* 根据导航栏高度调整 */
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.label {
+  width: 150rpx;
+  font-size: 32rpx;
+  color: #333;
+}
+
+.avatar {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+}
+
+.input {
+  flex: 1;
+  height: 64rpx;
+  font-size: 32rpx;
+  border: 1px solid #eee;
+  padding: 0 10rpx;
+}
+
+.warning-message {
+  color: red;
+  font-size: 26rpx;
+  margin-left: 150rpx; /* 与输入框对齐 */
+  margin-bottom: 10rpx;
+}
+
+.save-button {
+  margin-top: 30rpx;
+  width: 100%;
+  height: 80rpx;
+  background-color: #1AAD19;
+  color: #fff;
+  font-size: 32rpx;
+  text-align: center;
+  line-height: 80rpx;
+  border: none;
+  border-radius: 10rpx;
+}

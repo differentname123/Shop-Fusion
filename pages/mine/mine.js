@@ -1,3 +1,4 @@
+// mine.js1
 const app = getApp();
 
 Page({
