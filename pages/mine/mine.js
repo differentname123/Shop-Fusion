@@ -1,4 +1,4 @@
-// mine.js1
+// mine
 const app = getApp();
 
 Page({
