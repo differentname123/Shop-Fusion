@@ -4,7 +4,12 @@
     "pages/share/share",
     "pages/mine/mine",
     "pages/tutorial/tutorial",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/lottery/lottery",
+    "pages/popup/popup",
+    "pages/record/record",
+    "pages/rules/rules",
+    "pages/battle/battle"
   ],
   "window": {
     "backgroundTextStyle": "light",

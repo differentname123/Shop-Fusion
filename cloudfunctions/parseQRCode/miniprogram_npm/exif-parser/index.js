@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1728739681283, function(require, module, exports) {
+__DEFINE__(1729528801653, function(require, module, exports) {
 var Parser = require('./lib/parser');
 
 function getGlobal() {
@@ -24,8 +24,8 @@ module.exports = {
 	}
 };
 
-}, function(modId) {var map = {"./lib/parser":1728739681284,"./lib/dom-bufferstream":1728739681290,"./lib/bufferstream":1728739681291}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681284, function(require, module, exports) {
+}, function(modId) {var map = {"./lib/parser":1729528801654,"./lib/dom-bufferstream":1729528801660,"./lib/bufferstream":1729528801661}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801654, function(require, module, exports) {
 /*jslint browser: true, devel: true, bitwise: false, debug: true, eqeq: false, es5: true, evil: false, forin: false, newcap: false, nomen: true, plusplus: true, regexp: false, unparam: false, sloppy: true, stupid: false, sub: false, todo: true, vars: true, white: true */
 
 var jpeg = require('./jpeg'),
@@ -231,8 +231,8 @@ Parser.prototype = {
 
 module.exports = Parser;
 
-}, function(modId) { var map = {"./jpeg":1728739681285,"./exif":1728739681286,"./simplify":1728739681287,"./exif-tags":1728739681289}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681285, function(require, module, exports) {
+}, function(modId) { var map = {"./jpeg":1729528801655,"./exif":1729528801656,"./simplify":1729528801657,"./exif-tags":1729528801659}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801655, function(require, module, exports) {
 /*jslint browser: true, devel: true, bitwise: false, debug: true, eqeq: false, es5: true, evil: false, forin: false, newcap: false, nomen: true, plusplus: true, regexp: false, unparam: false, sloppy: true, stupid: false, sub: false, todo: true, vars: true, white: true */
 
 module.exports = {
@@ -300,7 +300,7 @@ module.exports = {
 	}
 };
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681286, function(require, module, exports) {
+__DEFINE__(1729528801656, function(require, module, exports) {
 /*jslint browser: true, devel: true, bitwise: false, debug: true, eqeq: false, es5: true, evil: false, forin: false, newcap: false, nomen: true, plusplus: true, regexp: false, unparam: false, sloppy: true, stupid: false, sub: false, todo: true, vars: true, white: true */
 
 function readExifValue(format, stream) {
@@ -467,7 +467,7 @@ module.exports = {
 	}
 };
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681287, function(require, module, exports) {
+__DEFINE__(1729528801657, function(require, module, exports) {
 var exif = require('./exif');
 var date = require('./date');
 
@@ -548,8 +548,8 @@ module.exports = {
 	}
 };
 
-}, function(modId) { var map = {"./exif":1728739681286,"./date":1728739681288}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681288, function(require, module, exports) {
+}, function(modId) { var map = {"./exif":1729528801656,"./date":1729528801658}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801658, function(require, module, exports) {
 function parseNumber(s) {
 	return parseInt(s, 10);
 }
@@ -636,7 +636,7 @@ module.exports = {
 };
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681289, function(require, module, exports) {
+__DEFINE__(1729528801659, function(require, module, exports) {
 module.exports = {
 	exif : {
 		0x0001 : "InteropIndex",
@@ -1106,7 +1106,7 @@ module.exports = {
 	}
 };
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681290, function(require, module, exports) {
+__DEFINE__(1729528801660, function(require, module, exports) {
 /*jslint browser: true, devel: true, bitwise: false, debug: true, eqeq: false, es5: true, evil: false, forin: false, newcap: false, nomen: true, plusplus: true, regexp: false, unparam: false, sloppy: true, stupid: false, sub: false, todo: true, vars: true, white: true */
 
 function DOMBufferStream(arrayBuffer, offset, length, bigEndian, global, parentOffset) {
@@ -1207,7 +1207,7 @@ DOMBufferStream.prototype = {
 module.exports = DOMBufferStream;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681291, function(require, module, exports) {
+__DEFINE__(1729528801661, function(require, module, exports) {
 function BufferStream(buffer, offset, length, bigEndian) {
 	this.buffer = buffer;
 	this.offset = offset || 0;
@@ -1298,7 +1298,7 @@ BufferStream.prototype = {
 module.exports = BufferStream;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1728739681283);
+return __REQUIRE__(1729528801653);
 })()
 //miniprogram-npm-outsideDeps=[]
 //# sourceMappingURL=index.js.map

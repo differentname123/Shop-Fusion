@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1728739681079, function(require, module, exports) {
+__DEFINE__(1729528801449, function(require, module, exports) {
 
 
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
@@ -1297,8 +1297,8 @@ if (process.env.ENVIRONMENT === "BROWSER") {
 var _default = Jimp;
 exports["default"] = _default;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./modules/phash":1728739681080,"./request":1728739681081,"./composite":1728739681082,"./utils/promisify":1728739681085,"./utils/mime":1728739681086,"./utils/image-bitmap":1728739681087,"./constants":1728739681083}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681080, function(require, module, exports) {
+}, function(modId) {var map = {"./modules/phash":1729528801450,"./request":1729528801451,"./composite":1729528801452,"./utils/promisify":1729528801455,"./utils/mime":1729528801456,"./utils/image-bitmap":1729528801457,"./constants":1729528801453}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801450, function(require, module, exports) {
 
 
 /*
@@ -1473,7 +1473,7 @@ function applyDCT(f, size) {
 module.exports = ImagePHash;
 //# sourceMappingURL=phash.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681081, function(require, module, exports) {
+__DEFINE__(1729528801451, function(require, module, exports) {
 
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -1530,7 +1530,7 @@ if (process.browser || process.env.ENVIRONMENT === "BROWSER" || typeof process.v
 }
 //# sourceMappingURL=request.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681082, function(require, module, exports) {
+__DEFINE__(1729528801452, function(require, module, exports) {
 
 
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
@@ -1628,8 +1628,8 @@ function composite(src, x, y) {
 
 module.exports = exports.default;
 //# sourceMappingURL=index.js.map
-}, function(modId) { var map = {"../constants":1728739681083,"./composite-modes":1728739681084}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681083, function(require, module, exports) {
+}, function(modId) { var map = {"../constants":1729528801453,"./composite-modes":1729528801454}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801453, function(require, module, exports) {
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -1684,7 +1684,7 @@ var EDGE_CROP = 3;
 exports.EDGE_CROP = EDGE_CROP;
 //# sourceMappingURL=constants.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681084, function(require, module, exports) {
+__DEFINE__(1729528801454, function(require, module, exports) {
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -1922,7 +1922,7 @@ function exclusion(src, dst) {
 }
 //# sourceMappingURL=composite-modes.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681085, function(require, module, exports) {
+__DEFINE__(1729528801455, function(require, module, exports) {
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -1952,7 +1952,7 @@ exports["default"] = _default;
 module.exports = exports.default;
 //# sourceMappingURL=promisify.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681086, function(require, module, exports) {
+__DEFINE__(1729528801456, function(require, module, exports) {
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -2001,7 +2001,7 @@ var getExtension = function getExtension(type) {
 exports.getExtension = getExtension;
 //# sourceMappingURL=mime.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681087, function(require, module, exports) {
+__DEFINE__(1729528801457, function(require, module, exports) {
 
 
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
@@ -2321,8 +2321,8 @@ function getBufferAsync(mime) {
   return (0, _promisify["default"])(getBuffer, this, mime);
 }
 //# sourceMappingURL=image-bitmap.js.map
-}, function(modId) { var map = {"../constants":1728739681083,"./mime":1728739681086,"./promisify":1728739681085}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1728739681079);
+}, function(modId) { var map = {"../constants":1729528801453,"./mime":1729528801456,"./promisify":1729528801455}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1729528801449);
 })()
 //miniprogram-npm-outsideDeps=["@babel/runtime/helpers/interopRequireWildcard","@babel/runtime/helpers/interopRequireDefault","@babel/runtime/helpers/construct","@babel/runtime/helpers/slicedToArray","@babel/runtime/helpers/classCallCheck","@babel/runtime/helpers/createClass","@babel/runtime/helpers/possibleConstructorReturn","@babel/runtime/helpers/getPrototypeOf","@babel/runtime/helpers/assertThisInitialized","@babel/runtime/helpers/inherits","@babel/runtime/helpers/defineProperty","@babel/runtime/helpers/typeof","fs","path","events","@jimp/utils","any-base","mkdirp","pixelmatch","tinycolor2","@babel/runtime/helpers/extends","phin","@babel/runtime/regenerator","file-type","exif-parser"]
 //# sourceMappingURL=index.js.map

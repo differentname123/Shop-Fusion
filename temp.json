@@ -1,465 +1,699 @@
 我正在使用微信开发者工具开发一款小程序，现在我有下面几点需要修改:
-1.现在自定义的title-nav和tutorial-button产生了重叠，你需要检查一下代码，使用兼容性高的代码以便在不同设备上都能正常显示。
-2.现在我的个人资料页面中的头像和昵称无法修改，你需要检查一下代码，确保用户可以修改头像和昵称。
-所涉及到修改的文件，你直接给我完整的修改后的代码，下面是我原来的相关代码:
-mine.js:
-// mine.js
+1.drawWheel里面很多函数都已经过时包括（context.arc，context.moveTo，context.beginPath，wx.createCanvasContext等），导致现在显示出问题。你看能不能换种实现或者使用开源的组件或者代码。
+2.现在title-nav位置是正确的，但是broadcast和能量条太靠上了，导致被遮挡了一部分，你看能不能使用兼容性更好的实现方法，以便于在不同设备上都能正常显示。wxss文件冗余的也可以去掉。
+所涉及到修改的文件，你直接给我完整的修改后的代码，下面是我原来的相关代码，不用给出中间的过程:
+lottery.js:
+// lottery.js
+
+const app = getApp();
+const innerAudioContext = wx.createInnerAudioContext();
+
 Page({
   data: {
-    userInfo: {
-      nickName: '',
-      avatarUrl: '',
-      openid: '',
-      points: 0
-    },
-    navBarHeight: 0, // 导航栏高度
-    menuItems: [
-      {
-        iconPath: '/images/icon_share.png',
-        title: '分享小程序',
-        subtitle: '可获得2积分',
-        item: '分享小程序'
-      },
-      {
-        iconPath: '/images/icon_video.png',
-        title: '观看视频',
-        subtitle: '可获得1积分',
-        item: '观看视频'
-      },
-      {
-        iconPath: '/images/icon_group.png',
-        title: '多人拼团群',
-        subtitle: '',
-        item: '多人拼团群'
-      },
-      {
-        iconPath: '/images/icon_customer_service.png',
-        title: '联系客服',
-        subtitle: '',
-        item: '联系客服'
-      },
-      {
-        iconPath: '/images/icon_about_us.png',
-        title: '关于我们',
-        subtitle: '',
-        item: '关于我们'
-      }
-    ]
+    energyPercentage: 0, // 能量条百分比
+    energyStyle: '', // 能量条样式
+    chestAnimation: null, // 宝箱动画
+    broadcastList: [], // 广播消息列表
+    currentBroadcast: '', // 当前显示的广播消息
+    broadcastAnimation: null,
+    showPrizePopup: false, // 是否显示中奖弹窗
+    prizeTitle: '',
+    prizeImage: '',
+    prizeDescription: '',
+    prizeAnimation: null,
+    drawButtonAnimation: null,
+    wheelAngle: 0, // 转盘当前角度
+    isDrawing: false, // 是否正在抽奖
+    prizes: [], // 奖品列表
+    luckyValue: 0, // 当前幸运值
+    luckyValueDisplay: '', // 显示的幸运值
+    lotteryCount: 0, // 抽奖次数
+    randomBattleCount: 0, // 随机触发对战的抽奖次数
+    showBattleBar: false, // 是否显示积分消耗对战能量条
+    battleTimeLeft: 60, // 对战剩余时间，秒
+    battleInterval: null, // 对战计时器
+    opponentInterval: null, // 对手积分增加计时器
+    userPoints: 0, // 用户消耗的积分
+    opponentPoints: 0, // 对手消耗的积分
+    userPointsPercentage: '50%', // 用户能量条占比
+    opponentPointsPercentage: '50%', // 对手能量条占比
   },
 
-  onLoad: function () {
-    const systemInfo = wx.getSystemInfoSync();
-    const statusBarHeight = systemInfo.statusBarHeight;
-    const navHeight = 44; // 导航栏的高度
-    const navBarHeight = statusBarHeight + navHeight;
+  onLoad() {
+    this.initWheel();
+    this.initBroadcast();
+    this.initEnergyBar();
+    this.animateDrawButton();
+
+    // 初始化随机触发对战的抽奖次数（1-3次）
     this.setData({
-      navBarHeight: navBarHeight
+      randomBattleCount: Math.floor(Math.random() * 3) + 1,
     });
-    this.getOpenIdAndUserInfo();
   },
 
-  onShow: function() {
-    // 页面显示时，重新获取用户信息，确保修改后立即生效
-    this.getUserInfo();
-  },
-
-  getOpenIdAndUserInfo: function () {
-    const that = this;
-    // 尝试从本地缓存获取 openid
-    let openid = wx.getStorageSync('openid');
-    if (openid) {
-      // 如果有缓存的 openid，直接使用
-      that.setData({
-        'userInfo.openid': openid
-      });
-      that.getUserInfo(); // 获取用户信息
-    } else {
-      // 调用云函数获取 openid
-      wx.cloud.callFunction({
-        name: 'getOpenId', // 云函数的名称
-        success: function (res) {
-          const openid = res.result.openid;
-          wx.setStorageSync('openid', openid);
-          that.setData({
-            'userInfo.openid': openid
-          });
-          that.getUserInfo(); // 获取用户信息
-        },
-        fail: function (err) {
-          console.error('[云函数] [getOpenId] 调用失败', err);
-        }
-      });
-    }
-  },
-
-  getUserInfo: function () {
-    const that = this;
-    let userInfo = wx.getStorageSync('userInfo') || null;
-
-    if (userInfo && userInfo.nickName) {
-      // 如果有缓存的 userInfo，直接使用
-      that.setData({
-        userInfo: userInfo
-      });
-    } else {
-      // 调用云函数获取用户信息
-      wx.cloud.callFunction({
-        name: 'getUser',
-        data: {
-          openid: that.data.userInfo.openid
-        },
-        success: function(res) {
-          if (res.result.data) {
-            // 如果数据库中有用户数据，使用并缓存
-            const userData = res.result.data;
-            wx.setStorageSync('userInfo', userData);
-            that.setData({
-              userInfo: userData
-            });
-          } else {
-            // 如果数据库中没有用户数据，初始化并保存默认用户信息
-            const userInfo = {
-              nickName: '用户_' + that.data.userInfo.openid.substring(0, 6),
-              avatarUrl: '/images/default.png',
-              openid: that.data.userInfo.openid,
-              points: 0
-            };
-            wx.setStorageSync('userInfo', userInfo);
-            that.setData({
-              userInfo: userInfo
-            });
-            // 保存到数据库
-            that.addUserToDatabase(userInfo);
-          }
-        },
-        fail: function(err) {
-          console.error('[云函数] [getUser] 调用失败', err);
-          // 初始化并保存默认用户信息
-          const userInfo = {
-            nickName: '用户_' + that.data.userInfo.openid.substring(0, 6),
-            avatarUrl: '/images/default.png',
-            openid: that.data.userInfo.openid,
-            points: 0
-          };
-          wx.setStorageSync('userInfo', userInfo);
-          that.setData({
-            userInfo: userInfo
-          });
-          // 保存到数据库
-          that.addUserToDatabase(userInfo);
-        }
-      });
-    }
-  },
-
-  // 将用户信息保存到数据库
-  addUserToDatabase: function(userInfo) {
-    wx.cloud.callFunction({
-      name: 'addUser',
-      data: {
-        openid: userInfo.openid,
-        nickName: userInfo.nickName,
-        avatarUrl: userInfo.avatarUrl,
-        points: userInfo.points
+  // 初始化转盘
+  initWheel() {
+    // 配置奖品
+    const prizes = [
+      {
+        name: '传说奖品',
+        icon: '/images/prize_legendary.png',
+        color: '#FFD700', // 金色
+        sector: 45, // 扇形角度
+        level: 'legendary',
       },
-      success: function () {
-        console.log('用户信息已保存到数据库');
+      {
+        name: '史诗奖品',
+        icon: '/images/prize_epic.png',
+        color: '#C0C0C0', // 银色
+        sector: 45,
+        level: 'epic',
       },
-      fail: function (err) {
-        console.error('[云函数] [addUser] 调用失败', err);
+      {
+        name: '稀有奖品',
+        icon: '/images/prize_rare.png',
+        color: '#CD7F32', // 铜色
+        sector: 45,
+        level: 'rare',
+      },
+      {
+        name: '普通奖品',
+        icon: '/images/prize_normal.png',
+        color: '#FFFFFF', // 白色
+        sector: 45,
+        level: 'normal',
+      },
+      {
+        name: '谢谢参与',
+        icon: '/images/prize_thanks.png',
+        color: '#F0F0F0', // 灰色
+        sector: 45,
+        level: 'none',
+      },
+      {
+        name: '再接再厉',
+        icon: '/images/prize_tryagain.png',
+        color: '#FFE4B5', // 浅橙色
+        sector: 45,
+        level: 'none',
+      },
+      {
+        name: '幸运奖品',
+        icon: '/images/prize_lucky.png',
+        color: '#ADD8E6', // 淡蓝色
+        sector: 45,
+        level: 'lucky',
+      },
+      {
+        name: '惊喜奖品',
+        icon: '/images/prize_surprise.png',
+        color: '#E6E6FA', // 薰衣草色
+        sector: 45,
+        level: 'surprise',
+      },
+    ];
+    this.setData({ prizes });
+    this.drawWheel();
+  },
+
+  // 绘制转盘
+  drawWheel() {
+    const context = wx.createCanvasContext('wheelCanvas');
+    const { prizes } = this.data;
+    const totalAngle = 360;
+    let startAngle = 0;
+
+    prizes.forEach((prize) => {
+      const arc = (prize.sector / totalAngle) * 2 * Math.PI;
+      context.beginPath();
+      context.moveTo(150, 150);
+      context.arc(150, 150, 150, startAngle, startAngle + arc);
+      context.setFillStyle(prize.color);
+      context.fill();
+      context.save();
+
+      // 绘制奖品文字和图标
+      context.translate(150, 150);
+      context.rotate(startAngle + arc / 2);
+      context.drawImage(prize.icon, -30, -120, 60, 60);
+      context.setFillStyle('#000');
+      context.setFontSize(14);
+      context.fillText(prize.name, -20, -90);
+      context.restore();
+
+      startAngle += arc;
+    });
+
+    context.draw();
+  },
+
+  // 开始抽奖
+  startDraw() {
+    if (this.data.isDrawing) return;
+    this.setData({ isDrawing: true });
+
+    // 增加抽奖次数
+    let lotteryCount = this.data.lotteryCount + 1;
+    this.setData({ lotteryCount });
+
+    // 随机1-3次抽奖后触发积分消耗对战
+    if (!this.data.showBattleBar && lotteryCount >= this.data.randomBattleCount) {
+      this.startBattle();
+    }
+
+    // 增加幸运值
+    let luckyValue = this.data.luckyValue + 5; // 每次抽奖增加5点幸运值
+    this.setData({
+      luckyValue,
+      luckyValueDisplay: `当前幸运值：${luckyValue}`,
+    });
+
+    // 假设从后端获取的中奖结果
+    const prizeIndex = this.getPrizeIndex();
+
+    // 计算转盘需要旋转的角度
+    const rotationAngle = 360 * 8 - (prizeIndex * (360 / this.data.prizes.length));
+
+    // 创建动画
+    const animation = wx.createAnimation({
+      duration: 4000,
+      timingFunction: 'ease-in-out',
+    });
+    animation.rotate(rotationAngle).step();
+
+    this.setData({
+      wheelAnimation: animation.export(),
+    });
+
+    // 播放转盘音效
+    innerAudioContext.src = '/audio/spin.mp3';
+    innerAudioContext.play();
+
+    // 动画结束后显示中奖信息
+    setTimeout(() => {
+      innerAudioContext.stop();
+      this.showPrize(prizeIndex);
+      this.setData({ isDrawing: false });
+    }, 4000);
+
+    // 更新能量条
+    this.updateEnergyBar();
+  },
+
+  // 开始积分消耗对战
+  startBattle() {
+    this.setData({
+      showBattleBar: true,
+      battleTimeLeft: 60, // 对战时间60秒
+      userPoints: 0,
+      opponentPoints: 0,
+      userPointsPercentage: '50%',
+      opponentPointsPercentage: '50%',
+    });
+
+    // 倒计时
+    this.battleInterval = setInterval(() => {
+      let timeLeft = this.data.battleTimeLeft - 1;
+      if (timeLeft <= 0) {
+        clearInterval(this.battleInterval);
+        this.endBattle();
+      } else {
+        this.setData({ battleTimeLeft: timeLeft });
       }
+    }, 1000);
+
+    // 虚拟对手积分增加
+    this.opponentInterval = setInterval(() => {
+      let opponentPoints = this.data.opponentPoints + 10; // 对手每5秒增加10积分
+      this.setData({ opponentPoints });
+      this.updateBattleBar();
+    }, 5000);
+  },
+
+  // 更新积分消耗对战能量条
+  updateBattleBar() {
+    let userPoints = this.data.userPoints;
+    let opponentPoints = this.data.opponentPoints;
+    let totalPoints = userPoints + opponentPoints;
+
+    let userPercentage = totalPoints > 0 ? (userPoints / totalPoints) * 100 : 50;
+    let opponentPercentage = totalPoints > 0 ? (opponentPoints / totalPoints) * 100 : 50;
+
+    this.setData({
+      userPointsPercentage: `${userPercentage}%`,
+      opponentPointsPercentage: `${opponentPercentage}%`,
     });
   },
 
-  // 点击头像跳转到个人资料页面
-  goToProfile: function() {
-    wx.navigateTo({
-      url: '/pages/profile/profile',
+  // 结束积分消耗对战
+  endBattle() {
+    clearInterval(this.battleInterval);
+    clearInterval(this.opponentInterval);
+    this.setData({
+      showBattleBar: false,
+      battleTimeLeft: 0,
+    });
+
+    // 结算奖励
+    if (this.data.userPoints > this.data.opponentPoints) {
+      // 用户胜利，获得奖励
+      wx.showModal({
+        title: '恭喜',
+        content: '您在积分对战中胜出，获得100积分奖励！',
+        showCancel: false,
+      });
+      // TODO: 给用户增加100积分
+    } else {
+      // 用户失败
+      wx.showModal({
+        title: '很遗憾',
+        content: '您在积分对战中未能胜出，继续努力！',
+        showCancel: false,
+      });
+    }
+  },
+
+  // 显示中奖信息
+  showPrize(index) {
+    const prize = this.data.prizes[index];
+    this.setData({
+      prizeTitle: `恭喜您获得${prize.name}`,
+      prizeImage: prize.icon,
+      prizeDescription: '请前往个人中心查看',
+      showPrizePopup: true,
+    });
+
+    // 根据奖品等级显示特效
+    if (prize.level === 'epic' || prize.level === 'legendary') {
+      const prizeAnimation = wx.createAnimation({
+        duration: 500,
+        timingFunction: 'ease-in-out',
+      });
+      prizeAnimation.scale(1.2).step().scale(1).step();
+      this.setData({ prizeAnimation: prizeAnimation.export() });
+    }
+
+    // 更新能量条和抽奖记录
+    this.saveDrawRecord(prize);
+
+    // 如果正在积分消耗对战，更新用户积分
+    if (this.data.showBattleBar) {
+      let userPoints = this.data.userPoints + 10; // 每次抽奖消耗10积分
+      this.setData({ userPoints });
+      this.updateBattleBar();
+    }
+  },
+
+  // 关闭中奖弹窗
+  closePrizePopup() {
+    this.setData({ showPrizePopup: false });
+  },
+
+  // 获取奖品索引（模拟后端返回）
+  getPrizeIndex() {
+    // 根据业务逻辑和用户信息决定中奖结果
+    return Math.floor(Math.random() * this.data.prizes.length);
+  },
+
+  // 初始化广播
+  initBroadcast() {
+    const broadcastList = [
+      '用户A抽中了传说级别的奖品！',
+      '用户B抽中了史诗级别的奖品！',
+      '用户C抽中了稀有级别的奖品！',
+      // 可添加更多广播消息
+    ];
+    this.setData({ broadcastList });
+    this.startBroadcast();
+  },
+
+  // 开始广播
+  startBroadcast() {
+    let index = 0;
+    setInterval(() => {
+      this.setData({ currentBroadcast: this.data.broadcastList[index] });
+      index = (index + 1) % this.data.broadcastList.length;
+    }, 5000); // 每5秒切换一次
+  },
+
+  // 初始化能量条
+  initEnergyBar() {
+    const energyPercentage = 0;
+    this.setData({
+      energyPercentage,
+      energyStyle: `width: ${energyPercentage}%;`,
     });
   },
 
-  // 菜单项点击事件，弹出提示框
-  onMenuItemTap: function(e) {
-    const item = e.currentTarget.dataset.item;
+  // 更新能量条
+  updateEnergyBar() {
+    let energy = this.data.energyPercentage + 10; // 每次增加10%
+    if (energy >= 100) {
+      energy = 100;
+      this.animateChest();
+    }
+    this.setData({
+      energyPercentage: energy,
+      energyStyle: `width: ${energy}%;`,
+    });
+  },
+
+  // 宝箱动画
+  animateChest() {
+    const chestAnimation = wx.createAnimation({
+      duration: 1000,
+      timingFunction: 'ease-in-out',
+    });
+    chestAnimation.scale(1.2).step().scale(1).step();
+    this.setData({ chestAnimation: chestAnimation.export() });
+  },
+
+  // 打开奖励宝箱
+  openChest() {
+    if (this.data.energyPercentage < 100) return;
+
+    // 重置能量条
+    this.setData({ energyPercentage: 0, energyStyle: 'width: 0%;' });
+
+    // 显示宝箱奖励（可自定义动画和奖励内容）
     wx.showModal({
-      title: '提示',
-      content: '你点击了' + item,
+      title: '宝箱奖励',
+      content: '恭喜你获得宝箱奖励！',
       showCancel: false,
-      confirmText: '确定',
     });
-  }
-});
-mine.wxml:
-<view class="page-container" style="padding-top: {{navBarHeight}}px;">
-  <!-- 使用新的导航栏组件 -->
-  <title-nav title="我的"></title-nav>
+  },
 
-  <!-- 用户头像和昵称 -->
-  <view class="header">
-    <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" bindtap="goToProfile"></image>
-    <text class="username">{{userInfo.nickName}}</text>
-    <!-- 我的积分放在昵称下面 -->
-    <view class="points-section">
-      <text class="points-title">我的积分: {{userInfo.points}}</text>
+  // 保存抽奖记录
+  saveDrawRecord(prize) {
+    // 保存到本地或上传到服务器
+  },
+
+  // 动画抽奖按钮
+  animateDrawButton() {
+    const animation = wx.createAnimation({
+      duration: 1000,
+      timingFunction: 'ease-in-out',
+    });
+    animation.scale(1.1).step().scale(1).step();
+    this.setData({ drawButtonAnimation: animation.export() });
+  },
+
+  // 处理用户滑动抽奖
+  handleTouchStart(e) {
+    this.startY = e.touches[0].clientY;
+  },
+
+  handleTouchEnd(e) {
+    const endY = e.changedTouches[0].clientY;
+    const deltaY = this.startY - endY;
+    if (deltaY > 50) {
+      // 向上滑动，开始抽奖
+      this.startDraw();
+    }
+  },
+
+  onUnload() {
+    clearInterval(this.battleInterval);
+    clearInterval(this.opponentInterval);
+  },
+});
+lottery.wxml:
+<!-- lottery.wxml -->
+
+<view class="lottery-page">
+  <!-- 头部区域 -->
+  <title-nav title="积分抽奖"></title-nav>
+
+  <!-- 显示当前幸运值 -->
+  <view class="lucky-value">{{luckyValueDisplay}}</view>
+
+  <!-- 宝箱能量条 -->
+  <view class="energy-bar-container">
+    <view class="energy-bar">
+      <view class="energy-fill" style="{{energyStyle}}"></view>
+    </view>
+    <view class="chest" bindtap="openChest" animation="{{chestAnimation}}">
+      <image src="/images/chest.png" class="chest-image"></image>
     </view>
   </view>
 
-  <!-- 菜单列表 -->
-  <view class="menu">
-    <block wx:for="{{menuItems}}" wx:key="title">
-      <view class="menu-item" bindtap="onMenuItemTap" data-item="{{item.item}}">
-        <image src="{{item.iconPath}}" class="menu-icon"></image>
-        <view class="menu-content">
-          <text class="menu-title">{{item.title}}</text>
-          <text wx:if="{{item.subtitle}}" class="menu-subtitle">{{item.subtitle}}</text>
-        </view>
+  <!-- 广播消息 -->
+  <view class="broadcast">
+    <image src="/images/icon_horn.png" class="horn-icon"></image>
+    <text class="broadcast-text" animation="{{broadcastAnimation}}">{{currentBroadcast}}</text>
+  </view>
+
+  <!-- 大转盘区域 -->
+  <view class="wheel-container" bindtouchstart="handleTouchStart" bindtouchend="handleTouchEnd">
+    <canvas canvas-id="wheelCanvas" class="wheel-canvas"></canvas>
+    <image src="/images/pointer.png" class="pointer"></image>
+    <!-- 抽奖按钮 -->
+    <button class="draw-button" bindtap="startDraw" animation="{{drawButtonAnimation}}">开始抽奖</button>
+  </view>
+
+  <!-- 积分消耗对战能量条 -->
+  <view wx:if="{{showBattleBar}}" class="battle-bar">
+    <view class="battle-info">
+      <text class="user-name">你</text>
+      <view class="battle-energy-bar">
+        <view class="user-energy" style="width: {{userPointsPercentage}};"></view>
+        <view class="opponent-energy" style="width: {{opponentPointsPercentage}};"></view>
+        <view class="vs-icon">VS</view>
       </view>
-    </block>
+      <text class="opponent-name">对手</text>
+    </view>
+    <text class="battle-timer">剩余时间：{{battleTimeLeft}} 秒</text>
+  </view>
+
+  <!-- 中奖弹窗 -->
+  <view wx:if="{{showPrizePopup}}" class="prize-popup">
+    <view class="prize-content" animation="{{prizeAnimation}}">
+      <text class="prize-title">{{prizeTitle}}</text>
+      <image src="{{prizeImage}}" class="prize-image"></image>
+      <text class="prize-description">{{prizeDescription}}</text>
+      <button class="close-button" bindtap="closePrizePopup">确定</button>
+    </view>
   </view>
 </view>
-mine.wxss:
-.page-container {
-  padding-top: 90rpx; /* 根据导航栏高度调整 */
+lottery.wxss:
+/* lottery.wxss */
+
+/* 页面容器 */
+.lottery-page {
+  background-color: #f5f7fa;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #f5f5f5;
-  padding: 30rpx 0;
-}
-
-.avatar {
-  width: 150rpx;
-  height: 150rpx;
-  border-radius: 50%;
-  margin-bottom: 15rpx;
-  background-color: #eaeaea;
-}
-
-.username {
-  font-size: 36rpx;
+/* 幸运值样式 */
+.lucky-value {
+  font-size: 28rpx;
   color: #333;
-  margin-top: 10rpx;
+  margin-top: 80rpx;
+  text-align: center;
 }
 
-.points-section {
-  margin-top: 10rpx;
-}
-
-.points-title {
-  font-size: 32rpx;
-  color: #333;
-}
-
-.menu {
-  display: flex;
-  flex-direction: column;
-}
-
-.menu-item {
+/* 能量条区域 */
+.energy-bar-container {
+  width: 90%;
+  margin: 10rpx auto;
   display: flex;
   align-items: center;
-  padding: 30rpx;
-  border-bottom: 1px solid #eee;
 }
 
-.menu-icon {
-  width: 50rpx;
-  height: 50rpx;
-  margin-right: 20rpx;
-}
-
-.menu-content {
+.energy-bar {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* 使标题和副标题靠右 */
-}
-.menu-title {
-  font-size: 32rpx;
-  color: #333;
+  height: 20rpx;
+  background-color: #e0e0e0;
+  border-radius: 10rpx;
+  overflow: hidden;
 }
 
-.menu-subtitle {
+.energy-fill {
+  height: 100%;
+  background-color: #4caf50;
+}
+
+.chest {
+  width: 60rpx;
+  height: 60rpx;
+  margin-left: 10rpx;
+}
+
+.chest-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 广播区域 */
+.broadcast {
+  width: 100%;
+  height: 50rpx;
+  background-color: #fffbe6;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  margin-top: 10rpx;
+}
+
+.horn-icon {
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 10rpx;
+}
+
+.broadcast-text {
+  font-size: 26rpx;
+  color: #f56c6c;
+}
+
+/* 大转盘区域 */
+.wheel-container {
+  position: relative;
+  width: 600rpx;
+  height: 600rpx;
+  margin: 20rpx auto;
+}
+
+.wheel-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.pointer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80rpx;
+  height: 160rpx;
+}
+
+/* 抽奖按钮 */
+.draw-button {
+  position: absolute;
+  bottom: 30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200rpx;
+  height: 60rpx;
+  background-color: #ff9800;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 30rpx;
+  text-align: center;
+  line-height: 60rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 积分消耗对战能量条 */
+.battle-bar {
+  width: 100%;
+  padding: 10rpx 20rpx;
+  background-color: #fff;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.battle-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-name,
+.opponent-name {
+  font-size: 28rpx;
+  color: #333;
+  width: 60rpx;
+  text-align: center;
+}
+
+.battle-energy-bar {
+  flex: 1;
+  height: 40rpx;
+  background-color: #e0e0e0;
+  position: relative;
+  margin: 0 10rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.user-energy {
+  background-color: #4a90e2;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.opponent-energy {
+  background-color: #f56c6c;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.vs-icon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 24rpx;
-  color: #f00;
+  color: #fff;
+  font-weight: bold;
+  line-height: 40rpx;
+}
+
+.battle-timer {
+  font-size: 24rpx;
+  color: #666;
+  text-align: center;
   margin-top: 5rpx;
 }
-profile.js:
-// profile.js
-Page({
-  data: {
-    userInfo: {
-      nickName: '',
-      avatarUrl: '',
-      openid: '',
-      points: 0
-    },
-    navBarHeight: 0 // 导航栏高度
-  },
 
-  onLoad: function () {
-    const systemInfo = wx.getSystemInfoSync();
-    const statusBarHeight = systemInfo.statusBarHeight;
-    const navHeight = 44; // 导航栏的高度
-    const navBarHeight = statusBarHeight + navHeight;
-    this.setData({
-      navBarHeight: navBarHeight
-    });
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    console.log("收到的参数：", { userInfo});
-    this.setData({
-      userInfo: userInfo
-    });
-  },
-
-  // 昵称修改事件
-  onNicknameChange: function (e) {
-    const nickName = e.detail.value;
-    this.setData({
-      'userInfo.nickName': nickName
-    });
-  },
-
-  // 选择头像并上传
-  chooseAvatar: function() {
-    const that = this;
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success (res) {
-        const tempFilePath = res.tempFilePaths[0];
-        // 上传图片到云存储
-        const cloudPath = 'userAvatars/' + that.data.userInfo.openid + Date.now() + tempFilePath.match(/\.[^.]+?$/)[0];
-        wx.cloud.uploadFile({
-          cloudPath: cloudPath,
-          filePath: tempFilePath,
-          success: res => {
-            // 获取文件ID
-            const fileID = res.fileID;
-            that.setData({
-              'userInfo.avatarUrl': fileID
-            });
-          },
-          fail: err => {
-            console.error('头像上传失败：', err);
-            wx.showToast({
-              title: '头像上传失败',
-              icon: 'none'
-            });
-          }
-        });
-      }
-    });
-  },
-
-  // 保存修改
-  saveProfile: function () {
-    const that = this;
-    const userInfo = this.data.userInfo;
-    const openid = userInfo.openid;
-    console.log("正在调用 addUser 云函数，openid:", openid);
-
-    // 保存到本地缓存
-    wx.setStorageSync('userInfo', userInfo);
-
-    // 调用 addUser 云函数更新数据库中的用户信息
-    wx.cloud.callFunction({
-      name: 'addUser',
-      data: {
-        openid: openid,
-        nickName: userInfo.nickName,
-        avatarUrl: userInfo.avatarUrl,
-        points: userInfo.points // 如果需要积分也一同更新
-      },
-      success: function () {
-        wx.showToast({
-          title: '保存成功',
-          icon: 'success',
-          duration: 2000,
-          success: function () {
-            // 返回上一页
-            wx.navigateBack();
-          }
-        });
-      },
-      fail: function (err) {
-        console.error('[云函数] [addUser] 调用失败', err);
-      }
-    });
-  }
-});
-profile.wxml:
-<view class="page-container" style="padding-top: {{navBarHeight}}px;">
-  <!-- 使用新的导航栏组件 -->
-  <title-nav title="个人资料"></title-nav>
-
-  <view class="profile-item">
-    <text class="label">头像</text>
-    <image class="avatar" src="{{userInfo.avatarUrl}}" bindtap="chooseAvatar"></image>
-  </view>
-  <view class="profile-item">
-    <text class="label">昵称</text>
-    <input class="input" placeholder="请输入您的购物昵称" value="{{userInfo.nickName}}" bindinput="onNicknameChange"/>
-  </view>
-  <!-- 始终显示警告信息 -->
-  <view class="warning-message">
-    <text>如果昵称和购物昵称不一致会影响积分获取</text>
-  </view>
-  <button class="save-button" bindtap="saveProfile">保存修改</button>
-</view>
-profile.wxss:
-.page-container {
-  padding-top: 90rpx; /* 根据导航栏高度调整 */
-  padding-left: 30rpx;
-  padding-right: 30rpx;
-}
-
-.profile-item {
+/* 中奖弹窗 */
+.prize-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.prize-content {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  text-align: center;
+}
+
+.prize-title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.prize-image {
+  width: 200rpx;
+  height: 200rpx;
+  margin: 20rpx 0;
+}
+
+.prize-description {
+  font-size: 28rpx;
+  color: #666;
   margin-bottom: 20rpx;
 }
 
-.label {
-  width: 150rpx;
-  font-size: 32rpx;
-  color: #333;
-}
-
-.avatar {
-  width: 150rpx;
-  height: 150rpx;
-  border-radius: 50%;
-}
-
-.input {
-  flex: 1;
-  height: 64rpx;
-  font-size: 32rpx;
-  border: 1px solid #eee;
-  padding: 0 10rpx;
-}
-
-.warning-message {
-  color: red;
-  font-size: 26rpx;
-  margin-left: 150rpx; /* 与输入框对齐 */
-  margin-bottom: 10rpx;
-}
-
-.save-button {
-  margin-top: 30rpx;
+.close-button {
   width: 100%;
-  height: 80rpx;
-  background-color: #1AAD19;
+  height: 60rpx;
+  background-color: #4a90e2;
   color: #fff;
-  font-size: 32rpx;
-  text-align: center;
-  line-height: 80rpx;
-  border: none;
-  border-radius: 10rpx;
+  font-size: 28rpx;
+  border-radius: 30rpx;
+  line-height: 60rpx;
 }

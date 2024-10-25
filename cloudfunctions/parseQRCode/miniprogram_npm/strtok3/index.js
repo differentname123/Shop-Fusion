@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1728739681583, function(require, module, exports) {
+__DEFINE__(1729528801953, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fromStream = exports.fromBuffer = exports.EndOfStreamError = exports.fromFile = void 0;
@@ -33,8 +33,8 @@ async function fromStream(stream, fileInfo) {
 }
 exports.fromStream = fromStream;
 
-}, function(modId) {var map = {"./FsPromise":1728739681584,"./core":1728739681585,"./FileTokenizer":1728739681589}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681584, function(require, module, exports) {
+}, function(modId) {var map = {"./FsPromise":1729528801954,"./core":1729528801955,"./FileTokenizer":1729528801959}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801954, function(require, module, exports) {
 
 /**
  * Module convert fs functions to promise based functions
@@ -116,7 +116,7 @@ async function readFile(path) {
 exports.readFile = readFile;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681585, function(require, module, exports) {
+__DEFINE__(1729528801955, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fromBuffer = exports.fromStream = exports.EndOfStreamError = void 0;
@@ -147,8 +147,8 @@ function fromBuffer(uint8Array, fileInfo) {
 }
 exports.fromBuffer = fromBuffer;
 
-}, function(modId) { var map = {"./ReadStreamTokenizer":1728739681586,"./BufferTokenizer":1728739681588}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681586, function(require, module, exports) {
+}, function(modId) { var map = {"./ReadStreamTokenizer":1729528801956,"./BufferTokenizer":1729528801958}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801956, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReadStreamTokenizer = void 0;
@@ -248,8 +248,8 @@ class ReadStreamTokenizer extends AbstractTokenizer_1.AbstractTokenizer {
 }
 exports.ReadStreamTokenizer = ReadStreamTokenizer;
 
-}, function(modId) { var map = {"./AbstractTokenizer":1728739681587}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681587, function(require, module, exports) {
+}, function(modId) { var map = {"./AbstractTokenizer":1729528801957}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801957, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractTokenizer = void 0;
@@ -356,7 +356,7 @@ class AbstractTokenizer {
 exports.AbstractTokenizer = AbstractTokenizer;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681588, function(require, module, exports) {
+__DEFINE__(1729528801958, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BufferTokenizer = void 0;
@@ -413,8 +413,8 @@ class BufferTokenizer extends AbstractTokenizer_1.AbstractTokenizer {
 }
 exports.BufferTokenizer = BufferTokenizer;
 
-}, function(modId) { var map = {"./AbstractTokenizer":1728739681587}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681589, function(require, module, exports) {
+}, function(modId) { var map = {"./AbstractTokenizer":1729528801957}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801959, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fromFile = exports.FileTokenizer = void 0;
@@ -471,8 +471,8 @@ async function fromFile(sourceFilePath) {
 }
 exports.fromFile = fromFile;
 
-}, function(modId) { var map = {"./AbstractTokenizer":1728739681587,"./FsPromise":1728739681584}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1728739681583);
+}, function(modId) { var map = {"./AbstractTokenizer":1729528801957,"./FsPromise":1729528801954}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1729528801953);
 })()
 //miniprogram-npm-outsideDeps=["fs","peek-readable"]
 //# sourceMappingURL=index.js.map

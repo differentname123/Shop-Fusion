@@ -168,7 +168,7 @@ Page({
         break;
       case '多人拼团群':
         wx.navigateTo({
-          url: '/pages/group/group',
+          url: '/pages/lottery/lottery',
         });
         break;
       case '联系客服':

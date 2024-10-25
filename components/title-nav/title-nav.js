@@ -1,3 +1,4 @@
+// components/title-nav/title-nav.js
 Component({
   properties: {
     title: {
@@ -7,7 +8,6 @@ Component({
   },
   data: {
     statusBarHeight: 20,
-    navHeight: 44,
     navBarHeight: 64
   },
   lifetimes: {
@@ -18,10 +18,9 @@ Component({
       const navBarHeight = statusBarHeight + navHeight;
       this.setData({
         statusBarHeight,
-        navHeight,
         navBarHeight
       });
-    }    
+    }
   },
   methods: {}
 });

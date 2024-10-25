@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1728739681444, function(require, module, exports) {
+__DEFINE__(1729528801814, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StreamReader = exports.EndOfStreamError = void 0;
@@ -13,8 +13,8 @@ Object.defineProperty(exports, "EndOfStreamError", { enumerable: true, get: func
 var StreamReader_1 = require("./StreamReader");
 Object.defineProperty(exports, "StreamReader", { enumerable: true, get: function () { return StreamReader_1.StreamReader; } });
 
-}, function(modId) {var map = {"./EndOfFileStream":1728739681445,"./StreamReader":1728739681446}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681445, function(require, module, exports) {
+}, function(modId) {var map = {"./EndOfFileStream":1729528801815,"./StreamReader":1729528801816}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801815, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EndOfStreamError = exports.defaultMessages = void 0;
@@ -30,7 +30,7 @@ class EndOfStreamError extends Error {
 exports.EndOfStreamError = EndOfStreamError;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681446, function(require, module, exports) {
+__DEFINE__(1729528801816, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StreamReader = exports.EndOfStreamError = void 0;
@@ -166,8 +166,8 @@ class StreamReader {
 }
 exports.StreamReader = StreamReader;
 
-}, function(modId) { var map = {"./EndOfFileStream":1728739681445,"./Deferred":1728739681447}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739681447, function(require, module, exports) {
+}, function(modId) { var map = {"./EndOfFileStream":1729528801815,"./Deferred":1729528801817}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528801817, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Deferred = void 0;
@@ -184,7 +184,7 @@ class Deferred {
 exports.Deferred = Deferred;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1728739681444);
+return __REQUIRE__(1729528801814);
 })()
 //miniprogram-npm-outsideDeps=[]
 //# sourceMappingURL=index.js.map

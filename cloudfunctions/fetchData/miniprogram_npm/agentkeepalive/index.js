@@ -4,15 +4,15 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1728739680061, function(require, module, exports) {
+__DEFINE__(1729528800431, function(require, module, exports) {
 
 
 module.exports = require('./lib/agent');
 module.exports.HttpsAgent = require('./lib/https_agent');
 module.exports.constants = require('./lib/constants');
 
-}, function(modId) {var map = {"./lib/agent":1728739680062,"./lib/https_agent":1728739680064,"./lib/constants":1728739680063}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739680062, function(require, module, exports) {
+}, function(modId) {var map = {"./lib/agent":1729528800432,"./lib/https_agent":1729528800434,"./lib/constants":1729528800433}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528800432, function(require, module, exports) {
 
 
 const OriginalAgent = require('http').Agent;
@@ -416,8 +416,8 @@ function inspect(obj) {
   return res;
 }
 
-}, function(modId) { var map = {"./constants":1728739680063}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739680063, function(require, module, exports) {
+}, function(modId) { var map = {"./constants":1729528800433}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729528800433, function(require, module, exports) {
 
 
 module.exports = {
@@ -434,7 +434,7 @@ module.exports = {
 };
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1728739680064, function(require, module, exports) {
+__DEFINE__(1729528800434, function(require, module, exports) {
 
 
 const OriginalHttpsAgent = require('https').Agent;
@@ -487,8 +487,8 @@ HttpsAgent.prototype[CREATE_HTTPS_CONNECTION] = OriginalHttpsAgent.prototype.cre
 
 module.exports = HttpsAgent;
 
-}, function(modId) { var map = {"./agent":1728739680062,"./constants":1728739680063}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1728739680061);
+}, function(modId) { var map = {"./agent":1729528800432,"./constants":1729528800433}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1729528800431);
 })()
 //miniprogram-npm-outsideDeps=["http","humanize-ms","util","https"]
 //# sourceMappingURL=index.js.map
