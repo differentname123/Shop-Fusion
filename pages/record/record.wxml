@@ -1,0 +1,23 @@
+<!-- pages/record/record.wxml -->
+<view class="record-page">
+  <view class="header">
+    <text class="title">抽奖记录</text>
+  </view>
+
+  <view class="record-list">
+    <block wx:for="{{records}}" wx:key="index">
+      <view class="record-item">
+        <text class="time">{{item.time}}</text>
+        <text class="method">{{item.method}}</text>
+        <text wx:if="{{item.method === '积分消耗对战'}}">
+          <text class="result">{{item.result}}</text>
+          <text class="scores">你的积分: {{item.userScore}}, 对手积分: {{item.opponentScore}}</text>
+        </text>
+        <text wx:else>
+          <text class="prize">{{item.prize}}</text>
+          <text class="result">{{item.result}}</text>
+        </text>
+      </view>
+    </block>
+  </view>
+</view>

@@ -1,0 +1,14 @@
+import withGuide, { GuideProps } from './withGuide';
+declare const TextGuide: import("@antv/f-engine").ComponentType<import("./views/Text").TextGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const PointGuide: import("@antv/f-engine").ComponentType<import("./views/Point").PointGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const LineGuide: import("@antv/f-engine").ComponentType<import("./views/Line").LineGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const ArcGuide: import("@antv/f-engine").ComponentType<import("./views/Arc").ArcGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const RectGuide: import("@antv/f-engine").ComponentType<import("./views/Rect").RectGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const ImageGuide: import("@antv/f-engine").ComponentType<import("./views/Image").ImageGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const TagGuide: import("@antv/f-engine").ComponentType<import("./views/Tag").TagGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const LottieGuide: import("@antv/f-engine").ComponentType<import("./views/Lottie").LottieGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+declare const PolylineGuide: import("@antv/f-engine").ComponentType<import("./views/Polyline").LineGuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+export { GuideProps };
+declare const _default: import("@antv/f-engine").ComponentType<GuideProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>>;
+export default _default;
+export { withGuide, TextGuide, PointGuide, ArcGuide, LineGuide, RectGuide, ImageGuide, TagGuide, LottieGuide, PolylineGuide, };

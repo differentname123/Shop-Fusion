@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "lucky-wheel": "/miniprogram_npm/mini-luck-draw/lucky-wheel/index"
+  }
+}

@@ -1,0 +1,17 @@
+<view class="rules-page">
+  <view class="header">
+    <text class="title">抽奖规则</text>
+  </view>
+
+  <scroll-view class="content" scroll-y>
+    <view class="rule-item">
+      <text class="rule-title">1. 抽奖时间</text>
+      <text class="rule-text">每天可参与抽奖，无时间限制。</text>
+    </view>
+    <view class="rule-item">
+      <text class="rule-title">2. 奖品说明</text>
+      <text class="rule-text">奖品包括普通、稀有、史诗和传说级别。</text>
+    </view>
+    <!-- 更多规则 -->
+  </scroll-view>
+</view>

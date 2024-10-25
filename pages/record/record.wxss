@@ -1,0 +1,43 @@
+/* record.wxss */
+
+.record-page {
+  background-color: #f5f7fa;
+}
+
+.header {
+  width: 100%;
+  padding: 20rpx;
+  background-color: #fff;
+}
+
+.title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.record-list {
+  padding: 20rpx;
+}
+
+.record-item {
+  background-color: #fff;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.time,
+.method,
+.prize,
+.result {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 5rpx;
+}
+
+.scores {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 5rpx;
+}

@@ -1,0 +1,45 @@
+import withTooltip, { TooltipProps } from './withTooltip';
+import TooltipView from './tooltipView';
+export { TooltipProps, withTooltip, TooltipView };
+declare const _default: {
+    new <IProps extends TooltipProps = TooltipProps>(props: IProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>): {
+        updateCoord(): void;
+        willMount(): void;
+        didMount(): void;
+        _initEvent(): void;
+        willReceiveProps(nextProps: any): void;
+        _initShow(): void;
+        _showByData(dataItem: any): void;
+        _triggerOn: (ev: any) => void;
+        _triggerOff: () => void;
+        show(point: any, _ev?: any): void;
+        showSnapRecords(snapRecords: any): void;
+        hide(): void;
+        render(): import("@antv/f-engine").JSX.Element;
+        props: IProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>;
+        state: import("./withTooltip").TooltipState;
+        context: import("@antv/f-engine").IContext;
+        refs: {
+            [key: string]: import("@antv/f-engine/es/component").default<import("@antv/f-engine").IProps, import("@antv/f-engine").IState>;
+        };
+        updater: import("@antv/f-engine/es/component/updater").Updater<import("./withTooltip").TooltipState>;
+        container: import("@antv/g-lite").Group;
+        layout: import("@antv/f-engine").LayoutProps;
+        children: import("@antv/f-engine/es/canvas/vnode").VNode | import("@antv/f-engine/es/canvas/vnode").VNode[];
+        isMounted: boolean;
+        animate: boolean;
+        animator: import("@antv/f-engine/es/canvas/render/animator").default;
+        destroyed: boolean;
+        _vNode: import("@antv/f-engine/es/canvas/vnode").VNode;
+        shouldUpdate(_nextProps: IProps & import("../../chart").ChartChildProps<import("../../chart/Data").DataRecord>): boolean;
+        willUpdate(): void;
+        didUpdate(): void;
+        willUnmount(): void;
+        didUnmount(): void;
+        setState(partialState: import("./withTooltip").TooltipState, callback?: () => void): void;
+        forceUpdate(callback?: () => void): void;
+        setAnimate(animate: boolean): void;
+        destroy(): void;
+    };
+};
+export default _default;

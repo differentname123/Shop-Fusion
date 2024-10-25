@@ -1,0 +1,51 @@
+import Component from '../component';
+import { Group, CanvasLike, IRenderer, DataURLType } from '@antv/g-lite';
+import { Theme as ThemeType } from './theme';
+import { VNode } from './vnode';
+import { IProps, IContext } from '../types';
+import '@antv/g-web-animations-api';
+export interface CanvasProps extends IProps {
+    context?: CanvasRenderingContext2D | WebGLRenderingContext | null;
+    container?: HTMLElement;
+    renderer?: IRenderer;
+    width?: number;
+    height?: number;
+    pixelRatio?: number;
+    padding?: number | string | (number | string)[];
+    animate?: boolean;
+    children?: any;
+    px2hd?: any;
+    theme?: ThemeType;
+    style?: any;
+    landscape?: boolean;
+    createImage?: (src?: string) => HTMLImageElement;
+    offscreenCanvas?: CanvasLike;
+}
+declare class Canvas<P extends CanvasProps = CanvasProps> {
+    props: P;
+    private updater;
+    private theme;
+    private gesture;
+    private canvas;
+    private _ee;
+    container: Group;
+    context: IContext;
+    children: VNode | VNode[] | null;
+    private vNode;
+    landscape: boolean;
+    el: CanvasLike;
+    constructor(props: P);
+    updateComponents(components: Component[]): void;
+    update(nextProps: P): Promise<void>;
+    render(): Promise<void>;
+    emit(type: string, event: any): void;
+    on(type: string, listener: any): void;
+    off(type: string, listener?: any): void;
+    getCanvasEl(): CanvasLike;
+    resize(width: number, height: number): Promise<void>;
+    toDataURL(type?: DataURLType, encoderOptions?: number): Promise<string>;
+    updateLayout(props: any): void;
+    toRawChildren(children: any): any;
+    destroy(): void;
+}
+export default Canvas;

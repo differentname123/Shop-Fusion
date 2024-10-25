@@ -1,0 +1,38 @@
+/* rules.wxss */
+
+.rules-page {
+  background-color: #f5f7fa;
+}
+
+.header {
+  width: 100%;
+  padding: 20rpx;
+  background-color: #fff;
+}
+
+.title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.content {
+  padding: 20rpx;
+  height: calc(100vh - 80rpx);
+}
+
+.rule-item {
+  margin-bottom: 20rpx;
+}
+
+.rule-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.rule-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 10rpx;
+}

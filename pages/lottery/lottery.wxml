@@ -1,0 +1,18 @@
+<view class="container">
+  <lucky-wheel
+    id="myLucky"
+    width="500rpx"
+    height="500rpx"
+    blocks="{{blocks}}"
+    prizes="{{prizes}}"
+    buttons="{{buttons}}"
+    default-style="{{defaultStyle}}"
+    speed="{{speed}}"
+    bind:start="onStart"
+    bind:end="onEnd"
+    bind:touchstart="onTouchStart"
+    bind:touchmove="onTouchMove"
+    bind:touchend="onTouchEnd"
+  />
+  <button bindtap="onClick" class="draw-button">点击抽奖</button>
+</view>

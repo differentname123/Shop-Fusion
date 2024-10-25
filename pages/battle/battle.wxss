@@ -1,0 +1,117 @@
+/* pages/battle/battle.wxss */
+.battle-page {
+  background-color: #f5f7fa;
+  height: 100%;
+}
+
+.battle-container {
+  padding: 20rpx;
+}
+
+.battle-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-name, .opponent-name {
+  font-size: 28rpx;
+  color: #333;
+  width: 60rpx;
+  text-align: center;
+}
+
+.energy-bar {
+  flex: 1;
+  height: 40rpx;
+  background-color: #e0e0e0;
+  position: relative;
+  margin: 0 10rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.user-energy {
+  background-color: #4a90e2;
+  height: 100%;
+}
+
+.opponent-energy {
+  background-color: #f56c6c;
+  height: 100%;
+}
+
+.vs-icon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: bold;
+  line-height: 40rpx;
+}
+
+.score-display {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10rpx;
+}
+
+.user-score, .opponent-score {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.consume-points-button {
+  width: 80%;
+  height: 80rpx;
+  background-color: #ff9800;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 40rpx;
+  text-align: center;
+  line-height: 80rpx;
+  margin: 40rpx auto 0;
+}
+
+.result-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-content {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  text-align: center;
+}
+
+.result-title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.result-message {
+  font-size: 28rpx;
+  color: #666;
+  margin: 20rpx 0;
+}
+
+.close-button {
+  width: 100%;
+  height: 60rpx;
+  background-color: #4a90e2;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 30rpx;
+  line-height: 60rpx;
+}

@@ -1,0 +1,36 @@
+<!-- pages/battle/battle.wxml -->
+<view class="battle-page">
+  <!-- 导航栏 -->
+  <title-nav title="积分消耗对战"></title-nav>
+
+  <!-- 对战能量条 -->
+  <view class="battle-container" style="margin-top: {{navBarHeight + statusBarHeight}}px;">
+    <view class="battle-info">
+      <text class="user-name">你</text>
+      <view class="energy-bar">
+        <view class="user-energy" style="{{userEnergyStyle}}"></view>
+        <view class="vs-icon">VS</view>
+        <view class="opponent-energy" style="{{opponentEnergyStyle}}"></view>
+      </view>
+      <text class="opponent-name">对手</text>
+    </view>
+
+    <!-- 显示双方的积分消耗 -->
+    <view class="score-display">
+      <text class="user-score">{{userScore}} 积分</text>
+      <text class="opponent-score">{{opponentScore}} 积分</text>
+    </view>
+
+    <!-- 消耗积分按钮 -->
+    <button class="consume-points-button" bindtap="consumePoints">消耗积分</button>
+  </view>
+
+  <!-- 对战结果弹窗 -->
+  <view wx:if="{{showResultPopup}}" class="result-popup">
+    <view class="result-content">
+      <text class="result-title">{{battleResult}}</text>
+      <text class="result-message">{{resultMessage}}</text>
+      <button class="close-button" bindtap="closeResultPopup">确定</button>
+    </view>
+  </view>
+</view>

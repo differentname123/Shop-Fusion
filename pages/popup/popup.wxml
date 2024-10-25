@@ -1,0 +1,9 @@
+<view wx:if="{{showPopup}}" class="popup">
+  <view class="popup-content" animation="{{popupAnimation}}">
+    <text class="popup-title">恭喜您！</text>
+    <text class="popup-text">您是幸运用户，快来参与抽奖吧！</text>
+    <button class="close-button" bindtap="closePopup">关闭</button>
+    <button class="go-button" bindtap="goToLottery">去抽奖</button>
+    <text class="countdown">倒计时 {{countdown}} 秒</text>
+  </view>
+</view>
