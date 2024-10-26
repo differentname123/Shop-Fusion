@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1729528802258, function(require, module, exports) {
+__DEFINE__(1729954662463, function(require, module, exports) {
 var encode = require('./lib/encoder'),
     decode = require('./lib/decoder');
 
@@ -13,8 +13,8 @@ module.exports = {
   decode: decode
 };
 
-}, function(modId) {var map = {"./lib/encoder":1729528802259,"./lib/decoder":1729528802260}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528802259, function(require, module, exports) {
+}, function(modId) {var map = {"./lib/encoder":1729954662464,"./lib/decoder":1729954662465}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954662464, function(require, module, exports) {
 /*
   Copyright (c) 2008, Adobe Systems Incorporated
   All rights reserved.
@@ -831,7 +831,7 @@ function getImageDataFromImage(idOrElement){
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528802260, function(require, module, exports) {
+__DEFINE__(1729954662465, function(require, module, exports) {
 /* -*- tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- /
 /* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 /*
@@ -1985,7 +1985,7 @@ function decode(jpegData, userOpts = {}) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1729528802258);
+return __REQUIRE__(1729954662463);
 })()
 //miniprogram-npm-outsideDeps=[]
 //# sourceMappingURL=index.js.map

@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1729528801505, function(require, module, exports) {
+__DEFINE__(1729954661710, function(require, module, exports) {
 
 
 var compileSchema = require('./compile')
@@ -512,8 +512,8 @@ function setLogger(self) {
 
 function noop() {}
 
-}, function(modId) {var map = {"./compile":1729528801506,"./compile/resolve":1729528801507,"./cache":1729528801513,"./compile/schema_obj":1729528801510,"./compile/formats":1729528801514,"./compile/rules":1729528801515,"./data":1729528801540,"./compile/util":1729528801508,"./compile/async":1729528801541,"./keyword":1729528801542,"./compile/error_classes":1729528801511,"./refs/data.json":1729528801546,"./refs/json-schema-draft-07.json":1729528801545}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801506, function(require, module, exports) {
+}, function(modId) {var map = {"./compile":1729954661711,"./compile/resolve":1729954661712,"./cache":1729954661718,"./compile/schema_obj":1729954661715,"./compile/formats":1729954661719,"./compile/rules":1729954661720,"./data":1729954661745,"./compile/util":1729954661713,"./compile/async":1729954661746,"./keyword":1729954661747,"./compile/error_classes":1729954661716,"./refs/data.json":1729954661751,"./refs/json-schema-draft-07.json":1729954661750}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661711, function(require, module, exports) {
 
 
 var resolve = require('./resolve')
@@ -902,8 +902,8 @@ function vars(arr, statement) {
   return code;
 }
 
-}, function(modId) { var map = {"./resolve":1729528801507,"./util":1729528801508,"./error_classes":1729528801511,"../dotjs/validate":1729528801512}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801507, function(require, module, exports) {
+}, function(modId) { var map = {"./resolve":1729954661712,"./util":1729954661713,"./error_classes":1729954661716,"../dotjs/validate":1729954661717}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661712, function(require, module, exports) {
 
 
 var URI = require('uri-js')
@@ -1175,8 +1175,8 @@ function resolveIds(schema) {
   return localRefs;
 }
 
-}, function(modId) { var map = {"./util":1729528801508,"./schema_obj":1729528801510}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801508, function(require, module, exports) {
+}, function(modId) { var map = {"./util":1729954661713,"./schema_obj":1729954661715}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661713, function(require, module, exports) {
 
 
 
@@ -1417,8 +1417,8 @@ function unescapeJsonPointer(str) {
   return str.replace(/~1/g, '/').replace(/~0/g, '~');
 }
 
-}, function(modId) { var map = {"./ucs2length":1729528801509}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801509, function(require, module, exports) {
+}, function(modId) { var map = {"./ucs2length":1729954661714}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661714, function(require, module, exports) {
 
 
 // https://mathiasbynens.be/notes/javascript-encoding
@@ -1441,7 +1441,7 @@ module.exports = function ucs2length(str) {
 };
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801510, function(require, module, exports) {
+__DEFINE__(1729954661715, function(require, module, exports) {
 
 
 var util = require('./util');
@@ -1452,8 +1452,8 @@ function SchemaObject(obj) {
   util.copy(obj, this);
 }
 
-}, function(modId) { var map = {"./util":1729528801508}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801511, function(require, module, exports) {
+}, function(modId) { var map = {"./util":1729954661713}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661716, function(require, module, exports) {
 
 
 var resolve = require('./resolve');
@@ -1489,8 +1489,8 @@ function errorSubclass(Subclass) {
   return Subclass;
 }
 
-}, function(modId) { var map = {"./resolve":1729528801507}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801512, function(require, module, exports) {
+}, function(modId) { var map = {"./resolve":1729954661712}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661717, function(require, module, exports) {
 
 module.exports = function generate_validate(it, $keyword, $ruleType) {
   var out = '';
@@ -1975,7 +1975,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801513, function(require, module, exports) {
+__DEFINE__(1729954661718, function(require, module, exports) {
 
 
 
@@ -2004,7 +2004,7 @@ Cache.prototype.clear = function Cache_clear() {
 };
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801514, function(require, module, exports) {
+__DEFINE__(1729954661719, function(require, module, exports) {
 
 
 var util = require('./util');
@@ -2148,8 +2148,8 @@ function regex(str) {
   }
 }
 
-}, function(modId) { var map = {"./util":1729528801508}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801515, function(require, module, exports) {
+}, function(modId) { var map = {"./util":1729954661713}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661720, function(require, module, exports) {
 
 
 var ruleModules = require('../dotjs')
@@ -2217,8 +2217,8 @@ module.exports = function rules() {
   return RULES;
 };
 
-}, function(modId) { var map = {"../dotjs":1729528801516,"./util":1729528801508}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801516, function(require, module, exports) {
+}, function(modId) { var map = {"../dotjs":1729954661721,"./util":1729954661713}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661721, function(require, module, exports) {
 
 
 //all requires must be explicit because browserify won't work with dynamic requires
@@ -2253,8 +2253,8 @@ module.exports = {
   validate: require('./validate')
 };
 
-}, function(modId) { var map = {"./ref":1729528801517,"./allOf":1729528801518,"./anyOf":1729528801519,"./comment":1729528801520,"./const":1729528801521,"./contains":1729528801522,"./dependencies":1729528801523,"./enum":1729528801524,"./format":1729528801525,"./if":1729528801526,"./items":1729528801527,"./_limit":1729528801528,"./_limitItems":1729528801529,"./_limitLength":1729528801530,"./_limitProperties":1729528801531,"./multipleOf":1729528801532,"./not":1729528801533,"./oneOf":1729528801534,"./pattern":1729528801535,"./properties":1729528801536,"./propertyNames":1729528801537,"./required":1729528801538,"./uniqueItems":1729528801539,"./validate":1729528801512}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801517, function(require, module, exports) {
+}, function(modId) { var map = {"./ref":1729954661722,"./allOf":1729954661723,"./anyOf":1729954661724,"./comment":1729954661725,"./const":1729954661726,"./contains":1729954661727,"./dependencies":1729954661728,"./enum":1729954661729,"./format":1729954661730,"./if":1729954661731,"./items":1729954661732,"./_limit":1729954661733,"./_limitItems":1729954661734,"./_limitLength":1729954661735,"./_limitProperties":1729954661736,"./multipleOf":1729954661737,"./not":1729954661738,"./oneOf":1729954661739,"./pattern":1729954661740,"./properties":1729954661741,"./propertyNames":1729954661742,"./required":1729954661743,"./uniqueItems":1729954661744,"./validate":1729954661717}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661722, function(require, module, exports) {
 
 module.exports = function generate_ref(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2381,7 +2381,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801518, function(require, module, exports) {
+__DEFINE__(1729954661723, function(require, module, exports) {
 
 module.exports = function generate_allOf(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2426,7 +2426,7 @@ module.exports = function generate_allOf(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801519, function(require, module, exports) {
+__DEFINE__(1729954661724, function(require, module, exports) {
 
 module.exports = function generate_anyOf(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2502,7 +2502,7 @@ module.exports = function generate_anyOf(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801520, function(require, module, exports) {
+__DEFINE__(1729954661725, function(require, module, exports) {
 
 module.exports = function generate_comment(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2519,7 +2519,7 @@ module.exports = function generate_comment(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801521, function(require, module, exports) {
+__DEFINE__(1729954661726, function(require, module, exports) {
 
 module.exports = function generate_const(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2578,7 +2578,7 @@ module.exports = function generate_const(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801522, function(require, module, exports) {
+__DEFINE__(1729954661727, function(require, module, exports) {
 
 module.exports = function generate_contains(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2662,7 +2662,7 @@ module.exports = function generate_contains(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801523, function(require, module, exports) {
+__DEFINE__(1729954661728, function(require, module, exports) {
 
 module.exports = function generate_dependencies(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2833,7 +2833,7 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801524, function(require, module, exports) {
+__DEFINE__(1729954661729, function(require, module, exports) {
 
 module.exports = function generate_enum(it, $keyword, $ruleType) {
   var out = ' ';
@@ -2902,7 +2902,7 @@ module.exports = function generate_enum(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801525, function(require, module, exports) {
+__DEFINE__(1729954661730, function(require, module, exports) {
 
 module.exports = function generate_format(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3055,7 +3055,7 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801526, function(require, module, exports) {
+__DEFINE__(1729954661731, function(require, module, exports) {
 
 module.exports = function generate_if(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3161,7 +3161,7 @@ module.exports = function generate_if(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801527, function(require, module, exports) {
+__DEFINE__(1729954661732, function(require, module, exports) {
 
 module.exports = function generate_items(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3304,7 +3304,7 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801528, function(require, module, exports) {
+__DEFINE__(1729954661733, function(require, module, exports) {
 
 module.exports = function generate__limit(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3470,7 +3470,7 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801529, function(require, module, exports) {
+__DEFINE__(1729954661734, function(require, module, exports) {
 
 module.exports = function generate__limitItems(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3553,7 +3553,7 @@ module.exports = function generate__limitItems(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801530, function(require, module, exports) {
+__DEFINE__(1729954661735, function(require, module, exports) {
 
 module.exports = function generate__limitLength(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3641,7 +3641,7 @@ module.exports = function generate__limitLength(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801531, function(require, module, exports) {
+__DEFINE__(1729954661736, function(require, module, exports) {
 
 module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3724,7 +3724,7 @@ module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801532, function(require, module, exports) {
+__DEFINE__(1729954661737, function(require, module, exports) {
 
 module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3807,7 +3807,7 @@ module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801533, function(require, module, exports) {
+__DEFINE__(1729954661738, function(require, module, exports) {
 
 module.exports = function generate_not(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3894,7 +3894,7 @@ module.exports = function generate_not(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801534, function(require, module, exports) {
+__DEFINE__(1729954661739, function(require, module, exports) {
 
 module.exports = function generate_oneOf(it, $keyword, $ruleType) {
   var out = ' ';
@@ -3970,7 +3970,7 @@ module.exports = function generate_oneOf(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801535, function(require, module, exports) {
+__DEFINE__(1729954661740, function(require, module, exports) {
 
 module.exports = function generate_pattern(it, $keyword, $ruleType) {
   var out = ' ';
@@ -4048,7 +4048,7 @@ module.exports = function generate_pattern(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801536, function(require, module, exports) {
+__DEFINE__(1729954661741, function(require, module, exports) {
 
 module.exports = function generate_properties(it, $keyword, $ruleType) {
   var out = ' ';
@@ -4386,7 +4386,7 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801537, function(require, module, exports) {
+__DEFINE__(1729954661742, function(require, module, exports) {
 
 module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
   var out = ' ';
@@ -4470,7 +4470,7 @@ module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801538, function(require, module, exports) {
+__DEFINE__(1729954661743, function(require, module, exports) {
 
 module.exports = function generate_required(it, $keyword, $ruleType) {
   var out = ' ';
@@ -4743,7 +4743,7 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801539, function(require, module, exports) {
+__DEFINE__(1729954661744, function(require, module, exports) {
 
 module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
   var out = ' ';
@@ -4832,7 +4832,7 @@ module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801540, function(require, module, exports) {
+__DEFINE__(1729954661745, function(require, module, exports) {
 
 
 var KEYWORDS = [
@@ -4884,7 +4884,7 @@ module.exports = function (metaSchema, keywordsJsonPointers) {
 };
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801541, function(require, module, exports) {
+__DEFINE__(1729954661746, function(require, module, exports) {
 
 
 var MissingRefError = require('./error_classes').MissingRef;
@@ -4976,8 +4976,8 @@ function compileAsync(schema, meta, callback) {
   }
 }
 
-}, function(modId) { var map = {"./error_classes":1729528801511}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801542, function(require, module, exports) {
+}, function(modId) { var map = {"./error_classes":1729954661716}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661747, function(require, module, exports) {
 
 
 var IDENTIFIER = /^[a-z_$][a-z0-9_$-]*$/i;
@@ -5125,8 +5125,8 @@ function validateKeyword(definition, throwError) {
     return false;
 }
 
-}, function(modId) { var map = {"./dotjs/custom":1729528801543,"./definition_schema":1729528801544}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801543, function(require, module, exports) {
+}, function(modId) { var map = {"./dotjs/custom":1729954661748,"./definition_schema":1729954661749}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661748, function(require, module, exports) {
 
 module.exports = function generate_custom(it, $keyword, $ruleType) {
   var out = ' ';
@@ -5357,7 +5357,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801544, function(require, module, exports) {
+__DEFINE__(1729954661749, function(require, module, exports) {
 
 
 var metaSchema = require('./refs/json-schema-draft-07.json');
@@ -5396,8 +5396,8 @@ module.exports = {
   }
 };
 
-}, function(modId) { var map = {"./refs/json-schema-draft-07.json":1729528801545}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801545, function(require, module, exports) {
+}, function(modId) { var map = {"./refs/json-schema-draft-07.json":1729954661750}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1729954661750, function(require, module, exports) {
 module.exports = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://json-schema.org/draft-07/schema#",
@@ -5568,7 +5568,7 @@ module.exports = {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729528801546, function(require, module, exports) {
+__DEFINE__(1729954661751, function(require, module, exports) {
 module.exports = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
@@ -5588,7 +5588,7 @@ module.exports = {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1729528801505);
+return __REQUIRE__(1729954661710);
 })()
 //miniprogram-npm-outsideDeps=["fast-json-stable-stringify","fast-deep-equal","uri-js","json-schema-traverse"]
 //# sourceMappingURL=index.js.map

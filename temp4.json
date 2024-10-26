@@ -1,15 +1,272 @@
-我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，最好先搜索有哪些开源的相关组件，然后使用合适的组件来实现功能，要求尽量精美高级，下面是详细的功能设计，请给我具体实现的代码，如果需要安装包的话也给出具体的步骤:
-  大转盘抽奖模块:
-  功能描述：用户进行抽奖的主要交互区域，包含转盘、抽奖按钮、抽奖动画和音效等。
-  要求：
-    转盘设计：
-    奖品设置：转盘上有可定义的奖品数量，每个扇形显示奖品的描述、图标和对应的颜色。
-    色彩搭配：不同等级的奖品使用不同的背景颜色（如白色：普通，蓝色：稀有，紫色：史诗，橙色：传说）。
-    动画效果：转盘需要有平滑的旋转动画，转动过程中可以有光效或特效增加视觉冲击力。
-    抽奖方式：
-    点击抽奖：用户点击抽奖按钮，转盘开始转动。
-    滑动抽奖：支持用户在转盘上滑动进行抽奖，滑动速度影响转盘的初始转速，增加用户的参与感。
-    抽奖逻辑：
-    后端控制：抽奖结果由后端决定，前端根据结果展示相应的动画，转盘转动到对应的奖品位置。(暂时使用随机返回)
-    贴近中奖：当用户抽到普通奖品时，转盘停留的位置要给用户一种“差一点就中奖”的感觉，增加用户继续抽奖的欲望。
-    音效：转盘转动时需要有音效，转动结束时有提示音效，提升用户体验。
+我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，我使用了LuckyWheel 这个组件，现在有下面几点需要修改:
+1.https://100px.net/docs/wheel.html 这是LuckyWheel 的官方文档，你仔细读一下这个官方文档，检查一下我的代码有些实现是不是没生效或者重复了，帮我删除或者重新按照文档来实现。
+相关代码如下,所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
+lottery.js代码如下:
+// lottery.js
+Page({
+  data: {
+    blocks: [{ padding: '10px', background: '#fff' }],
+    prizes: [
+      {
+        background: '#f9e3bb',
+        fonts: [{ text: '10积分', top: '18%' }],
+        imgs: [{ src: '/assets/icon1.png', width: '40px', top: '35%' }],
+      },
+      {
+        background: '#f8d384',
+        fonts: [{ text: '20积分', top: '18%' }],
+        imgs: [{ src: '/assets/icon2.png', width: '40px', top: '35%' }],
+      },
+      {
+        background: '#f9e3bb',
+        fonts: [{ text: '30积分', top: '18%' }],
+        imgs: [{ src: '/assets/icon3.png', width: '40px', top: '35%' }],
+      },
+      {
+        background: '#f8d384',
+        fonts: [{ text: '40积分', top: '18%' }],
+        imgs: [{ src: '/assets/icon4.png', width: '40px', top: '35%' }],
+      },
+      {
+        background: '#f9e3bb',
+        fonts: [{ text: '50积分', top: '18%' }],
+        imgs: [{ src: '/assets/icon5.png', width: '40px', top: '35%' }],
+      },
+      {
+        background: '#f8d384',
+        fonts: [{ text: '100积分', top: '18%' }],
+        imgs: [{ src: '/assets/icon6.png', width: '40px', top: '35%' }],
+      },
+    ],
+    buttons: [
+      {
+        radius: '20px',
+        background: '#ffdd57',
+        fonts: [{ text: '开始', fontColor: '#d64737', top: '-8%' }],
+        pointer: true
+      }
+    ],
+    defaultStyle: { fontColor: '#d64737', fontSize: '14px' },
+    defaultConfig: { accelerationTime: 100, decelerationTime: 100 },
+    speed: 20,
+    startAngle: 0,
+    touchStartY: 0,
+    isSpinning: false,
+    selectedPrizeIndex: null,
+    swipeDirection: null,
+    playbackRateTimer: null,
+  },
+
+  onLoad() {
+    // 初始化音效
+    this.rotateSound = wx.createInnerAudioContext();
+    this.rotateSound.src = '/audio/rotate.mp3';
+    this.endSound = wx.createInnerAudioContext();
+    this.endSound.src = '/audio/end.mp3';
+
+    // 检查是否支持调整播放速率
+    this.supportPlaybackRate = typeof this.rotateSound.playbackRate === 'number';
+  },
+
+  onUnload() {
+    if (this.playbackRateTimer) {
+      clearInterval(this.playbackRateTimer);
+      this.playbackRateTimer = null;
+    }
+    if (this.rotateSound) {
+      this.rotateSound.stop();
+      this.rotateSound.destroy();
+    }
+    if (this.endSound) {
+      this.endSound.stop();
+      this.endSound.destroy();
+    }
+  },
+
+  // 点击抽奖按钮
+  onClick() {
+    if (this.data.isSpinning) return;
+
+    if (this.playbackRateTimer) {
+      clearInterval(this.playbackRateTimer);
+      this.playbackRateTimer = null;
+    }
+
+    let selectedPrizeIndex = Math.floor(Math.random() * this.data.prizes.length);
+
+    this.setData({
+      isSpinning: true,
+      selectedPrizeIndex
+    });
+
+    // 根据初始速度调整减速时间
+    let decelerationTime = 5000; // 默认减速时间
+    if (this.data.speed <= 5) {
+      decelerationTime = 3000; // 当速度小于等于5时，设置减速时间为3秒
+    }
+
+    // 播放旋转音效
+    this.rotateSound.play();
+
+    // 开始旋转，设置加速和减速时间
+    this.selectComponent('#myLucky').play({
+      speed: 20,
+      accelerationTime: 2000, // 加速时间
+      decelerationTime: decelerationTime, // 减速时间
+    });
+
+    // 调整音效播放速率
+    if (this.supportPlaybackRate) {
+      this.adjustSoundPlaybackRate();
+    }
+
+    // 在指定时间后停止转盘
+    const totalTime = 2000 + decelerationTime;
+    setTimeout(() => {
+      // 让指针停在奖品边缘
+      const prizeCount = this.data.prizes.length;
+      const anglePerPrize = 360 / prizeCount;
+      const stopAngle = anglePerPrize * this.data.selectedPrizeIndex;
+      const offsetAngle = anglePerPrize / 2; // 调整指针指向两个奖品的边缘
+
+      this.selectComponent('#myLucky').stop(this.data.selectedPrizeIndex, {
+        rotation: stopAngle + offsetAngle,
+      });
+    }, totalTime);
+  },
+
+  // 音效速率调整函数
+  adjustSoundPlaybackRate() {
+    let playbackRate = 2.0;
+    this.rotateSound.playbackRate = playbackRate;
+
+    this.playbackRateTimer = setInterval(() => {
+      playbackRate -= 0.05;
+      if (playbackRate <= 0.5) {
+        playbackRate = 0.5;
+        clearInterval(this.playbackRateTimer);
+        this.playbackRateTimer = null;
+      }
+      this.rotateSound.playbackRate = playbackRate;
+    }, 200);
+  },
+
+  onStart() {
+    // 转盘动画开始
+  },
+
+  onEnd(event) {
+    this.setData({ isSpinning: false });
+
+    // 停止旋转音效，播放结束音效
+    this.rotateSound.stop();
+    if (this.playbackRateTimer) {
+      clearInterval(this.playbackRateTimer);
+      this.playbackRateTimer = null;
+    }
+    this.endSound.play();
+
+    // 获取中奖信息
+    let index = this.data.selectedPrizeIndex;
+    const prize = this.data.prizes[index];
+    wx.showToast({
+      title: `很遗憾，差一点获得：${prize.fonts[0].text}`,
+      icon: 'none'
+    });
+  },
+
+  // 触摸开始事件
+  onTouchStart(event) {
+    if (!this.data.isSpinning) {
+      this.setData({ touchStartY: event.touches[0].pageY });
+    }
+  },
+
+  // 触摸移动事件
+  onTouchMove(event) {
+    if (!this.data.isSpinning) {
+      const moveY = event.touches[0].pageY;
+      const deltaY = moveY - this.data.touchStartY;
+      const speed = Math.min(Math.abs(deltaY) / 2, 50);
+      const direction = deltaY > 0 ? 'down' : 'up';
+      this.setData({ speed, swipeDirection: direction });
+    }
+  },
+
+  // 触摸结束事件
+  onTouchEnd(event) {
+    if (!this.data.isSpinning && this.data.swipeDirection === 'down') {
+      if (this.playbackRateTimer) {
+        clearInterval(this.playbackRateTimer);
+        this.playbackRateTimer = null;
+      }
+
+      let selectedPrizeIndex = Math.floor(Math.random() * this.data.prizes.length);
+
+      this.setData({
+        isSpinning: true,
+        selectedPrizeIndex
+      });
+
+      // 根据初始速度调整减速时间
+      let decelerationTime = 5000; // 默认减速时间
+      if (this.data.speed <= 5) {
+        decelerationTime = 3000; // 当速度小于等于5时，设置减速时间为3秒
+      }
+
+      // 播放旋转音效
+      this.rotateSound.play();
+
+      // 开始旋转，设置加速和减速时间
+      this.selectComponent('#myLucky').play({
+        speed: this.data.speed,
+        accelerationTime: 1000,
+        decelerationTime: decelerationTime,
+      });
+
+      // 调整音效播放速率
+      if (this.supportPlaybackRate) {
+        this.adjustSoundPlaybackRate();
+      }
+
+      // 在指定时间后停止转盘
+      const totalTime = 2000 + decelerationTime;
+      setTimeout(() => {
+        this.selectComponent('#myLucky').stop(this.data.selectedPrizeIndex);
+      }, totalTime);
+    }
+  },
+});
+lottery.wxml代码如下:
+<view class="container">
+  <lucky-wheel
+    id="myLucky"
+    width="500rpx"
+    height="500rpx"
+    blocks="{{blocks}}"
+    prizes="{{prizes}}"
+    buttons="{{buttons}}"
+    default-style="{{defaultStyle}}"
+    default-config="{{defaultConfig}}"
+    bind:start="onStart"
+    bind:end="onEnd"
+  />
+  <button bindtap="onClick" class="draw-button">点击抽奖</button>
+</view>
+lottery.wxss代码如下:
+/* lottery.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.draw-button {
+  margin-top: 20px;
+  width: 200rpx;
+  height: 80rpx;
+  background-color: #f39c12;
+  color: white;
+  text-align: center;
+  line-height: 80rpx;
+  border-radius: 10px;
+}
