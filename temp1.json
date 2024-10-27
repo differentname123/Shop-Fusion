@@ -1,4 +1,22 @@
 还有下面几点需要修改，所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
-1.现在指针指向的图标和最后中奖的信息不匹配
-2.我希望改变图标跳动的情况；我希望某些图标能够在没开始转动的时候跳动
-3.我希望增加相应的音乐分别是'/audio/rotate.mp3'和'/audio/rotate.mp3'，音乐的播放和停止分别是在转动和停止的时候
+1.现在进入页面时报错：
+TypeError: Cannot read property 'createImage' of undefined
+    at wheel.js? [sm]:104
+    at new Promise (<anonymous>)
+    at wheel.js? [sm]:103
+    at Array.map (<anonymous>)
+    at Oi.loadPrizeImages (wheel.js? [sm]:102)
+    at Oi.observer (wheel.js? [sm]:16)
+    at Function.o.safeCallback (WASubContext.js?t=wechat&s=1730025319294&v=3.6.0:1)
+    at s.<anonymous> (WASubContext.js?t=wechat&s=1730025319294&v=3.6.0:1)
+    at c.doUpdates (WASubContext.js?t=wechat&s=1730025319294&v=3.6.0:1)
+    at Qn (WASubContext.js?t=wechat&s=1730025319294&v=3.6.0:1)(env: Windows,mp,1.06.2407120; lib: 3.6.0)
+2.使用消除道具时也报错:
+TypeError: Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLImageElement or SVGImageElement or HTMLVideoElement or HTMLCanvasElement or ImageBitmap or OffscreenCanvas or VideoFrame)'
+    at CanvasRenderingContext2D.e.<computed> [as drawImage] (WAServiceMainContext.js?t=wechat&s=1730025319294&v=3.6.0:1)
+    at wheel.js? [sm]:192
+    at Array.forEach (<anonymous>)
+    at Oi.drawWheel (wheel.js? [sm]:159)
+    at Oi.removePrize (wheel.js? [sm]:444)
+    at animate (wheel.js? [sm]:376)(env: Windows,mp,1.06.2407120; lib: 3.6.0)
+3.幸运值的能量条还是没有，第一版还没有把能量条封装成组件的时候都有能量条的，现在封装成组件后就没有了，需要把能量条加上。

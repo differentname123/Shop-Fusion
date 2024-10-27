@@ -1,0 +1,23 @@
+/* components/wheel/wheel.wxss */
+.wheel-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spin-button,
+.eliminate-button {
+  margin-top: 20px;
+  width: 200rpx;
+  height: 80rpx;
+  background-color: #f39c12;
+  color: white;
+  text-align: center;
+  line-height: 80rpx;
+  border-radius: 10px;
+}
+
+.eliminate-button {
+  background-color: #e74c3c;
+}

@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "lucky-wheel": "/miniprogram_npm/mini-luck-draw/lucky-wheel/index"
+    "wheel": "/components/wheel/wheel",
+    "energy-bar": "/components/energy-bar/energy-bar"
   }
 }

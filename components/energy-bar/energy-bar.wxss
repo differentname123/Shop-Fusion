@@ -1,33 +1,4 @@
-/* pages/lottery/lottery.wxss */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-.header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 10rpx 20rpx;
-}
-
-.user-info {
-  font-size: 28rpx;
-}
-
-.menu {
-  display: flex;
-}
-
-.menu-item {
-  margin-left: 20rpx;
-  font-size: 28rpx;
-  color: #007aff;
-}
-
-/* 能量条样式 */
+/* components/energy-bar/energy-bar.wxss */
 .energy-bar {
   width: 80%;
   margin-top: 20rpx;

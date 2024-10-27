@@ -1,318 +1,228 @@
-// lottery.js
-Page({
-  data: {
-    blocks: [{ padding: '10px', background: '#fff' }],
-    prizes: [
-      {
-        background: '#f9e3bb',
-        fonts: [{ text: '10积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon1.png', width: '40px', top: '35%' }],
-      },
-      {
-        background: '#f8d384',
-        fonts: [{ text: '20积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon2.png', width: '40px', top: '35%' }],
-      },
-      {
-        background: '#f9e3bb',
-        fonts: [{ text: '30积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon3.png', width: '40px', top: '35%' }],
-      },
-      {
-        background: '#f8d384',
-        fonts: [{ text: '40积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon4.png', width: '40px', top: '35%' }],
-      },
-      {
-        background: '#f9e3bb',
-        fonts: [{ text: '50积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon5.png', width: '40px', top: '35%' }],
-      },
-      {
-        background: '#f8d384',
-        fonts: [{ text: '100积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon6.png', width: '40px', top: '35%' }],
-      },
-    ],
-    buttons: [
-      {
-        radius: '20px',
-        background: '#ffdd57',
-        fonts: [{ text: '开始', fontColor: '#d64737', top: '-8%' }],
-        pointer: true
-      }
-    ],
-    defaultStyle: { fontColor: '#d64737', fontSize: '14px' },
-    speed: 20,
-    startAngle: 0,
-    touchStartY: 0,
-    isSpinning: false,
-    selectedPrizeIndex: null,
-    swipeDirection: null,
-    playbackRateTimer: null,
+我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，现在有下面几点需要修改:
+1.现在幸运值没有显示相应的能量条，能量条上也没有相应的幸运值。
+相关代码如下,所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
+
+energy-bar.js代码如下:
+// components/energy-bar/energy-bar.js
+Component({
+  properties: {
+    energyPercentage: {
+      type: Number,
+      value: 0,
+    },
+    energyValue: {
+      type: Number,
+      value: 0,
+    },
   },
-
-  onLoad() {
-    // 初始化音效
-    this.rotateSound = wx.createInnerAudioContext();
-    this.rotateSound.src = '/audio/rotate.mp3';
-    this.endSound = wx.createInnerAudioContext();
-    this.endSound.src = '/audio/end.mp3';
-
-    // 检查是否支持调整播放速率
-    this.supportPlaybackRate = typeof this.rotateSound.playbackRate === 'number';
-  },
-
-  onUnload() {
-    if (this.playbackRateTimer) {
-      clearInterval(this.playbackRateTimer);
-      this.playbackRateTimer = null;
-    }
-    if (this.rotateSound) {
-      this.rotateSound.stop();
-      this.rotateSound.destroy();
-    }
-    if (this.endSound) {
-      this.endSound.stop();
-      this.endSound.destroy();
-    }
-  },
-
-  // 点击抽奖按钮
-  onClick() {
-    if (this.data.isSpinning) return;
-
-    if (this.playbackRateTimer) {
-      clearInterval(this.playbackRateTimer);
-      this.playbackRateTimer = null;
-    }
-
-    let selectedPrizeIndex = Math.floor(Math.random() * this.data.prizes.length);
-
-    this.setData({
-      isSpinning: true,
-      selectedPrizeIndex
-    });
-
-    // 根据初始速度调整减速时间
-    let decelerationTime = 5000; // 默认减速时间
-    if (this.data.speed <= 5) {
-      decelerationTime = 3000; // 当速度小于等于5时，设置减速时间为3秒
-    }
-
-    // 播放旋转音效
-    this.rotateSound.play();
-
-    // 开始旋转，设置加速和减速时间
-    this.selectComponent('#myLucky').play({
-      speed: 20,
-      accelerationTime: 2000, // 加速时间
-      decelerationTime: decelerationTime, // 减速时间
-    });
-
-    // 调整音效播放速率
-    if (this.supportPlaybackRate) {
-      this.adjustSoundPlaybackRate();
-    }
-
-    // 在指定时间后停止转盘
-    const totalTime = 2000 + decelerationTime;
-    setTimeout(() => {
-      // 让指针停在奖品边缘
-      const prizeCount = this.data.prizes.length;
-      const anglePerPrize = 360 / prizeCount;
-      const stopAngle = anglePerPrize * this.data.selectedPrizeIndex;
-      const offsetAngle = anglePerPrize / 2; // 调整指针指向两个奖品的边缘
-
-      this.selectComponent('#myLucky').stop(this.data.selectedPrizeIndex, {
-        rotation: stopAngle + offsetAngle,
+  data: {},
+  methods: {
+    showEnergyInfo() {
+      wx.showModal({
+        title: '幸运值说明',
+        content: '幸运值表示您当前的幸运程度，幸运值越高，获得大奖的概率越高。',
+        showCancel: false,
       });
-    }, totalTime);
-  },
-
-  // 音效速率调整函数
-  adjustSoundPlaybackRate() {
-    let playbackRate = 2.0;
-    this.rotateSound.playbackRate = playbackRate;
-
-    this.playbackRateTimer = setInterval(() => {
-      playbackRate -= 0.05;
-      if (playbackRate <= 0.5) {
-        playbackRate = 0.5;
-        clearInterval(this.playbackRateTimer);
-        this.playbackRateTimer = null;
-      }
-      this.rotateSound.playbackRate = playbackRate;
-    }, 200);
-  },
-
-  onStart() {
-    // 转盘动画开始
-  },
-
-  onEnd(event) {
-    this.setData({ isSpinning: false });
-
-    // 停止旋转音效，播放结束音效
-    this.rotateSound.stop();
-    if (this.playbackRateTimer) {
-      clearInterval(this.playbackRateTimer);
-      this.playbackRateTimer = null;
-    }
-    this.endSound.play();
-
-    // 获取中奖信息
-    let index = this.data.selectedPrizeIndex;
-    const prize = this.data.prizes[index];
-    wx.showToast({
-      title: `很遗憾，差一点获得：${prize.fonts[0].text}`,
-      icon: 'none'
-    });
-  },
-
-  // 触摸开始事件
-  onTouchStart(event) {
-    if (!this.data.isSpinning) {
-      this.setData({ touchStartY: event.touches[0].pageY });
-    }
-  },
-
-  // 触摸移动事件
-  onTouchMove(event) {
-    if (!this.data.isSpinning) {
-      const moveY = event.touches[0].pageY;
-      const deltaY = moveY - this.data.touchStartY;
-      const speed = Math.min(Math.abs(deltaY) / 2, 50);
-      const direction = deltaY > 0 ? 'down' : 'up';
-      this.setData({ speed, swipeDirection: direction });
-    }
-  },
-
-  // 触摸结束事件
-  onTouchEnd(event) {
-    if (!this.data.isSpinning && this.data.swipeDirection === 'down') {
-      if (this.playbackRateTimer) {
-        clearInterval(this.playbackRateTimer);
-        this.playbackRateTimer = null;
-      }
-
-      let selectedPrizeIndex = Math.floor(Math.random() * this.data.prizes.length);
-
-      this.setData({
-        isSpinning: true,
-        selectedPrizeIndex
-      });
-
-      // 根据初始速度调整减速时间
-      let decelerationTime = 5000; // 默认减速时间
-      if (this.data.speed <= 5) {
-        decelerationTime = 3000; // 当速度小于等于5时，设置减速时间为3秒
-      }
-
-      // 播放旋转音效
-      this.rotateSound.play();
-
-      // 开始旋转，设置加速和减速时间
-      this.selectComponent('#myLucky').play({
-        speed: this.data.speed,
-        accelerationTime: 2000,
-        decelerationTime: decelerationTime,
-      });
-
-      // 调整音效播放速率
-      if (this.supportPlaybackRate) {
-        this.adjustSoundPlaybackRate();
-      }
-
-      // 在指定时间后停止转盘
-      const totalTime = 2000 + decelerationTime;
-      setTimeout(() => {
-        // 让指针停在奖品边缘
-        const prizeCount = this.data.prizes.length;
-        const anglePerPrize = 360 / prizeCount;
-        const stopAngle = anglePerPrize * this.data.selectedPrizeIndex;
-        const offsetAngle = anglePerPrize / 2; // 调整指针指向两个奖品的边缘
-
-        this.selectComponent('#myLucky').stop(this.data.selectedPrizeIndex, {
-          rotation: stopAngle + offsetAngle,
-        });
-      }, totalTime);
-    }
+    },
   },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<view class="container">
-  <lucky-wheel
-    id="myLucky"
-    width="500rpx"
-    height="500rpx"
-    blocks="{{blocks}}"
-    prizes="{{prizes}}"
-    buttons="{{buttons}}"
-    default-style="{{defaultStyle}}"
-    default-config="{{defaultConfig}}"
-    bind:start="onStart"
-    bind:end="onEnd"
-  />
-  <button bindtap="onClick" class="draw-button">点击抽奖</button>
+energy-bar.wxml代码如下:
+<!-- components/energy-bar/energy-bar.wxml -->
+<view class="energy-bar">
+  <text class="energy-text">幸运值：{{energyValue.toFixed(2)}}</text>
+  <view class="energy-bar-bg">
+    <view class="energy-bar-fill" style="{{'width:' + energyPercentage + '%;'}}"></view>
+  </view>
+  <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
 </view>
+energy-bar.wxss代码如下:
+/* components/energy-bar/energy-bar.wxss */
+.energy-bar {
+  width: 80%;
+  margin-top: 20rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
+.energy-bar-bg {
+  flex: 1;
+  height: 20rpx;
+  background-color: #ccc;
+  border-radius: 10rpx;
+  overflow: hidden;
+  position: relative;
+  margin-left: 10rpx;
+}
 
+.energy-bar-fill {
+  height: 100%;
+  background-color: #ffcc00;
+  border-radius: 10rpx;
+  transition: width 0.5s ease;
+}
 
+.energy-text {
+  font-size: 24rpx;
+  color: #333;
+}
 
+.info-icon {
+  width: 30rpx;
+  height: 30rpx;
+  margin-left: 10rpx;
+}
+2.现在抽奖页面的lottery页面的代码如下:
+lottery.js代码如下:
+// pages/lottery/lottery.js
+const { prizes: initialPrizes } = require('config.js');
 
+Page({
+  data: {
+    points: 50, // 用户积分
+    energy: 0, // 幸运值能量，取值范围为0-100
+    energyPercentage: 0, // 能量百分比，用于能量条显示
+    prizes: JSON.parse(JSON.stringify(initialPrizes)), // 奖品信息
+    spinCount: 0, // 转盘次数
+    propCount: 0, // 消除奖品道具数量
+  },
+  onLoad() {
+    // 获取用户积分，假设从后台接口获取
+    this.getUserPoints();
+  },
+  getUserPoints() {
+    // 模拟从后台获取用户积分，初始值为50
+    // 实际场景应该调用wx.request或者异步接口获取积分
+    this.setData({
+      points: 50,
+    });
+  },
+  consumePoints(e) {
+    const { points } = e.detail;
+    this.setData({
+      points: this.data.points - points,
+    });
+  },
+  addPoints(e) {
+    const { points } = e.detail;
+    this.setData({
+      points: this.data.points + points,
+    });
+  },
+  updateEnergy() {
+    // 幸运值能量增加规则：
+    // 每次抽奖都会增加能量，当前能量值越小，增加的能量越多，越接近满值，增加的能量越少
+    // 能量值永远不会达到满值，只会无限接近满值
+    // 可以使用一个指数衰减函数模拟
 
+    let currentEnergy = this.data.energy;
+    const increase = (100 - currentEnergy) / 10; // 能量值越小，增加越多
 
+    currentEnergy += increase;
 
+    if (currentEnergy > 100) {
+      currentEnergy = 100;
+    }
 
-
-
-
-
-
-
-/* lottery.wxss */
+    this.setData({
+      energy: currentEnergy,
+      energyPercentage: currentEnergy.toFixed(2),
+    });
+  },
+  updateSpinCount() {
+    // 更新转盘次数
+    let spinCount = this.data.spinCount + 1;
+    let propCount = this.data.propCount;
+    if (spinCount % 5 === 0) {
+      // 每5次增加一个消除奖品道具
+      propCount += 1;
+      wx.showToast({
+        title: '获得一个消除奖品道具',
+        icon: 'none',
+      });
+    }
+    this.setData({
+      spinCount,
+      propCount,
+    });
+  },
+  updateProp(e) {
+    const { propChange } = e.detail;
+    this.setData({
+      propCount: this.data.propCount + propChange,
+    });
+  },
+  updatePrizes(e) {
+    const { prizes } = e.detail;
+    this.setData({
+      prizes,
+    });
+  },
+  onShowRules() {
+    // 显示规则列表
+    const rules = `1. 每次抽奖消耗10积分
+2. 抽奖结果由后台返回
+3. 每次抽奖会增加幸运值
+4. 幸运值越高，中奖概率可能越大（示例规则）
+5. 每抽取5次，获得一个消除奖品的道具`;
+    wx.showModal({
+      title: '抽奖规则',
+      content: rules,
+      showCancel: false,
+    });
+  },
+});
+lottery.wxml代码如下:
+<!-- pages/lottery/lottery.wxml -->
+<view class="container">
+  <view class="header">
+    <view class="user-info">
+      <text>积分：{{points}}</text>
+    </view>
+    <view class="menu">
+      <text class="menu-item" bindtap="onShowRules">规则</text>
+    </view>
+  </view>
+  <energy-bar energyPercentage="{{energyPercentage}}" energyValue="{{energy}}" />
+  <wheel
+    id="wheelComponent"
+    prizes="{{prizes}}"
+    points="{{points}}"
+    propCount="{{propCount}}"
+    bind:consumePoints="consumePoints"
+    bind:addPoints="addPoints"
+    bind:updateEnergy="updateEnergy"
+    bind:spinFinished="updateSpinCount"
+    bind:updateProp="updateProp"
+    bind:updatePrizes="updatePrizes"
+  />
+</view>
+lottery.wxss代码如下:
+/* pages/lottery/lottery.wxss */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.draw-button {
-  margin-top: 20px;
-  width: 200rpx;
-  height: 80rpx;
-  background-color: #f39c12;
-  color: white;
-  text-align: center;
-  line-height: 80rpx;
-  border-radius: 10px;
+  position: relative;
 }
 
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 20rpx;
+}
 
+.user-info {
+  font-size: 28rpx;
+}
 
-"lucky-wheel": "/miniprogram_npm/@lucky-canvas/mini/lucky-wheel/index"
+.menu {
+  display: flex;
+}
+
+.menu-item {
+  margin-left: 20rpx;
+  font-size: 28rpx;
+  color: #007aff;
+}

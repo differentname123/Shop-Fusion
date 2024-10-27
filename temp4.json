@@ -1,77 +1,111 @@
-我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，我使用了LuckyWheel 这个组件，现在有下面几点需要修改:
-1.https://100px.net/docs/wheel.html 这是LuckyWheel 的官方文档，你仔细读一下这个官方文档，检查一下我的代码有些实现是不是没生效或者重复了，帮我删除或者重新按照文档来实现。
+我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，现在有下面几点需要修改:
+1.你帮我分析一下，下面代码有没有能够优化的地方，比如 性能 结构 可读性 冗余代码之类的，给我优化后的完整代码。
+2.现在逻辑和相关配置都在js中间是不是有点不合理。
 相关代码如下,所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
 lottery.js代码如下:
+
 // lottery.js
 Page({
   data: {
-    blocks: [{ padding: '10px', background: '#fff' }],
+    canvasWidth: 500,
+    canvasHeight: 500,
     prizes: [
       {
-        background: '#f9e3bb',
-        fonts: [{ text: '10积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon1.png', width: '40px', top: '35%' }],
+        name: '10积分',
+        icon: '/assets/icon1.png',
+        range: 1,
+        idleAnimation: true,
       },
       {
-        background: '#f8d384',
-        fonts: [{ text: '20积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon2.png', width: '40px', top: '35%' }],
+        name: '20积分',
+        icon: '/assets/icon2.png',
+        range: 2,
+        idleAnimation: false,
       },
       {
-        background: '#f9e3bb',
-        fonts: [{ text: '30积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon3.png', width: '40px', top: '35%' }],
+        name: '30积分',
+        icon: '/assets/icon3.png',
+        range: 3,
+        idleAnimation: true,
       },
       {
-        background: '#f8d384',
-        fonts: [{ text: '40积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon4.png', width: '40px', top: '35%' }],
+        name: '40积分',
+        icon: '/assets/icon4.png',
+        range: 2,
+        idleAnimation: false,
       },
       {
-        background: '#f9e3bb',
-        fonts: [{ text: '50积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon5.png', width: '40px', top: '35%' }],
+        name: '50积分',
+        icon: '/assets/icon5.png',
+        range: 1,
+        idleAnimation: true,
       },
       {
-        background: '#f8d384',
-        fonts: [{ text: '100积分', top: '18%' }],
-        imgs: [{ src: '/assets/icon6.png', width: '40px', top: '35%' }],
+        name: '100积分',
+        icon: '/assets/icon6.png',
+        range: 1,
+        idleAnimation: false,
       },
     ],
-    buttons: [
-      {
-        radius: '20px',
-        background: '#ffdd57',
-        fonts: [{ text: '开始', fontColor: '#d64737', top: '-8%' }],
-        pointer: true
-      }
-    ],
-    defaultStyle: { fontColor: '#d64737', fontSize: '14px' },
-    defaultConfig: { accelerationTime: 100, decelerationTime: 100 },
-    speed: 20,
-    startAngle: 0,
-    touchStartY: 0,
+    totalRange: 0,
     isSpinning: false,
+    spinningAngle: 0,
     selectedPrizeIndex: null,
-    swipeDirection: null,
-    playbackRateTimer: null,
+    prizeAnimationFrameId: null,
+    idleAnimationFrameId: null,
+    canvas: null,
+    ctx: null,
+    rotationFrameId: null,
+    rotateSound: null,
+    endSound: null,
+    pointerImage: null,
   },
 
   onLoad() {
-    // 初始化音效
+    const totalRange = this.data.prizes.reduce((sum, prize) => sum + prize.range, 0);
+    this.setData({
+      totalRange,
+    });
+
     this.rotateSound = wx.createInnerAudioContext();
     this.rotateSound.src = '/audio/rotate.mp3';
     this.endSound = wx.createInnerAudioContext();
     this.endSound.src = '/audio/end.mp3';
 
-    // 检查是否支持调整播放速率
-    this.supportPlaybackRate = typeof this.rotateSound.playbackRate === 'number';
+    const query = wx.createSelectorQuery().in(this);
+    query.select('#wheelCanvas')
+      .node()
+      .exec((res) => {
+        const canvas = res[0].node;
+        const ctx = canvas.getContext('2d');
+
+        this.canvas = canvas;
+        this.ctx = ctx;
+
+        const dpr = wx.getSystemInfoSync().pixelRatio;
+        canvas.width = this.data.canvasWidth * dpr;
+        canvas.height = this.data.canvasHeight * dpr;
+        ctx.scale(dpr, dpr);
+
+        Promise.all([
+          this.loadPrizeImages(),
+          this.loadPointerImage(),
+        ]).then(() => {
+          this.drawWheel(0);
+          this.startIdleAnimation();
+        });
+      });
   },
 
   onUnload() {
-    if (this.playbackRateTimer) {
-      clearInterval(this.playbackRateTimer);
-      this.playbackRateTimer = null;
+    if (this.rotationFrameId) {
+      this.canvas.cancelAnimationFrame(this.rotationFrameId);
+    }
+    if (this.prizeAnimationFrameId) {
+      this.canvas.cancelAnimationFrame(this.prizeAnimationFrameId);
+    }
+    if (this.idleAnimationFrameId) {
+      this.canvas.cancelAnimationFrame(this.idleAnimationFrameId);
     }
     if (this.rotateSound) {
       this.rotateSound.stop();
@@ -83,174 +117,275 @@ Page({
     }
   },
 
-  // 点击抽奖按钮
+  loadPrizeImages() {
+    const loadPromises = this.data.prizes.map((prize) => {
+      return new Promise((resolve, reject) => {
+        const image = this.canvas.createImage();
+        image.src = prize.icon;
+        image.onload = () => {
+          prize.image = image;
+          resolve();
+        };
+        image.onerror = (err) => {
+          console.error('加载图片失败：', err);
+          reject(err);
+        };
+      });
+    });
+    return Promise.all(loadPromises);
+  },
+
+  loadPointerImage() {
+    return new Promise((resolve, reject) => {
+      const image = this.canvas.createImage();
+      image.src = '/assets/pointer_rotate1.png';
+      image.onload = () => {
+        this.pointerImage = image;
+        resolve();
+      };
+      image.onerror = (err) => {
+        console.error('加载指针图片失败：', err);
+        reject(err);
+      };
+    });
+  },
+
+  drawWheel(angle) {
+    const ctx = this.ctx;
+    const { canvasWidth, canvasHeight, prizes, totalRange } = this.data;
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+    const radius = Math.min(centerX, centerY) - 10;
+
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(((angle - 90) * Math.PI) / 180);
+    ctx.translate(-centerX, -centerY);
+
+    let startAngle = 0;
+    prizes.forEach((prize, index) => {
+      const anglePerPrize = (prize.range / totalRange) * 2 * Math.PI;
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, startAngle, startAngle + anglePerPrize);
+      ctx.closePath();
+      ctx.fillStyle = this.getColor(index);
+      ctx.fill();
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(startAngle + anglePerPrize / 2);
+
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold 18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(prize.name, radius - 60, 0);
+
+      const imgSize = 40;
+      let scale = 1;
+      if (this.prizeAnimationFrameId && index === this.data.selectedPrizeIndex) {
+        scale = 1 + 0.05 * Math.sin((Date.now() % 500) / 500 * Math.PI * 2); // 中奖奖品跳动幅度
+      } else if (!this.data.isSpinning && prize.idleAnimation) {
+        scale = 1 + 0.1 * Math.sin((Date.now() % 1000) / 1000 * Math.PI * 2); // 闲置状态跳动
+      }
+      ctx.scale(scale, scale);
+
+
+      if (prize.image) {
+        ctx.drawImage(
+          prize.image,
+          radius - 180,
+          -imgSize / 2,
+          imgSize,
+          imgSize
+        );
+      }
+
+      ctx.restore();
+
+      startAngle += anglePerPrize;
+    });
+
+    ctx.restore();
+
+    if (this.pointerImage) {
+      const pointerSize = 60;
+      ctx.drawImage(
+        this.pointerImage,
+        centerX - pointerSize / 2,
+        centerY - pointerSize / 2,
+        pointerSize,
+        pointerSize
+      );
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - 20);
+      ctx.lineTo(centerX - 10, centerY + 10);
+      ctx.lineTo(centerX + 10, centerY + 10);
+      ctx.closePath();
+      ctx.fillStyle = '#FF0000';
+      ctx.fill();
+    }
+  },
+
+  getColor(index) {
+    const colors = ['#FFB6C1', '#FFD700', '#ADFF2F', '#87CEFA', '#FFA500', '#90EE90'];
+    return colors[index % colors.length];
+  },
+
+  startIdleAnimation() {
+    const animate = () => {
+      if (!this.data.isSpinning) {
+        this.drawWheel(this.data.spinningAngle);
+      }
+      this.idleAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+    };
+    this.idleAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+  },
+
   onClick() {
     if (this.data.isSpinning) return;
 
-    if (this.playbackRateTimer) {
-      clearInterval(this.playbackRateTimer);
-      this.playbackRateTimer = null;
-    }
-
-    let selectedPrizeIndex = Math.floor(Math.random() * this.data.prizes.length);
-
     this.setData({
       isSpinning: true,
-      selectedPrizeIndex
     });
 
-    // 根据初始速度调整减速时间
-    let decelerationTime = 5000; // 默认减速时间
-    if (this.data.speed <= 5) {
-      decelerationTime = 3000; // 当速度小于等于5时，设置减速时间为3秒
+    if (this.idleAnimationFrameId) {
+      this.canvas.cancelAnimationFrame(this.idleAnimationFrameId);
+      this.idleAnimationFrameId = null;
     }
 
-    // 播放旋转音效
     this.rotateSound.play();
-
-    // 开始旋转，设置加速和减速时间
-    this.selectComponent('#myLucky').play({
-      speed: 20,
-      accelerationTime: 2000, // 加速时间
-      decelerationTime: decelerationTime, // 减速时间
-    });
-
-    // 调整音效播放速率
-    if (this.supportPlaybackRate) {
-      this.adjustSoundPlaybackRate();
-    }
-
-    // 在指定时间后停止转盘
-    const totalTime = 2000 + decelerationTime;
-    setTimeout(() => {
-      // 让指针停在奖品边缘
-      const prizeCount = this.data.prizes.length;
-      const anglePerPrize = 360 / prizeCount;
-      const stopAngle = anglePerPrize * this.data.selectedPrizeIndex;
-      const offsetAngle = anglePerPrize / 2; // 调整指针指向两个奖品的边缘
-
-      this.selectComponent('#myLucky').stop(this.data.selectedPrizeIndex, {
-        rotation: stopAngle + offsetAngle,
-      });
-    }, totalTime);
+    let stopAngle = this.getStopAngle();
+    console.log(stopAngle);
+    this.startRotation(stopAngle);
   },
 
-  // 音效速率调整函数
-  adjustSoundPlaybackRate() {
-    let playbackRate = 2.0;
-    this.rotateSound.playbackRate = playbackRate;
+  getStopAngle() {
+    const { prizes, totalRange } = this.data;
 
-    this.playbackRateTimer = setInterval(() => {
-      playbackRate -= 0.05;
-      if (playbackRate <= 0.5) {
-        playbackRate = 0.5;
-        clearInterval(this.playbackRateTimer);
-        this.playbackRateTimer = null;
+    const randomNum = Math.floor(Math.random() * totalRange) + 1;
+    let accumulatedRange = 0;
+    let selectedPrizeIndex = 0;
+    for (let i = 0; i < prizes.length; i++) {
+      accumulatedRange += prizes[i].range;
+      if (randomNum <= accumulatedRange) {
+        selectedPrizeIndex = i;
+        break;
       }
-      this.rotateSound.playbackRate = playbackRate;
-    }, 200);
-  },
-
-  onStart() {
-    // 转盘动画开始
-  },
-
-  onEnd(event) {
-    this.setData({ isSpinning: false });
-
-    // 停止旋转音效，播放结束音效
-    this.rotateSound.stop();
-    if (this.playbackRateTimer) {
-      clearInterval(this.playbackRateTimer);
-      this.playbackRateTimer = null;
     }
-    this.endSound.play();
 
-    // 获取中奖信息
-    let index = this.data.selectedPrizeIndex;
-    const prize = this.data.prizes[index];
-    wx.showToast({
-      title: `很遗憾，差一点获得：${prize.fonts[0].text}`,
-      icon: 'none'
+    this.setData({
+      selectedPrizeIndex,
     });
-  },
-
-  // 触摸开始事件
-  onTouchStart(event) {
-    if (!this.data.isSpinning) {
-      this.setData({ touchStartY: event.touches[0].pageY });
+    console.log(selectedPrizeIndex)
+    let startAngle = 0;
+    for (let i = 0; i < selectedPrizeIndex; i++) {
+      startAngle += (prizes[i].range / totalRange) * 360;
     }
+    const prizeAngle = (prizes[selectedPrizeIndex].range / totalRange) * 360;
+    const prizeCenterAngle = 360 - startAngle - 9 * prizeAngle / 10;
+    const stopAngle = 360 * 5 + prizeCenterAngle;
+
+    return stopAngle;
   },
 
-  // 触摸移动事件
-  onTouchMove(event) {
-    if (!this.data.isSpinning) {
-      const moveY = event.touches[0].pageY;
-      const deltaY = moveY - this.data.touchStartY;
-      const speed = Math.min(Math.abs(deltaY) / 2, 50);
-      const direction = deltaY > 0 ? 'down' : 'up';
-      this.setData({ speed, swipeDirection: direction });
-    }
-  },
+  startRotation(stopAngle) {
+    const duration = 500; // 动画持续时间5秒
+    const startTime = Date.now();
+    console.log(startTime);
+    const initialAngle = this.data.spinningAngle;
 
-  // 触摸结束事件
-  onTouchEnd(event) {
-    if (!this.data.isSpinning && this.data.swipeDirection === 'down') {
-      if (this.playbackRateTimer) {
-        clearInterval(this.playbackRateTimer);
-        this.playbackRateTimer = null;
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = elapsed / duration;
+
+      if (progress >= 1) {
+        // 动画结束
+        this.setData({
+          spinningAngle: stopAngle % 360,
+          isSpinning: false,
+        });
+        this.drawWheel(this.data.spinningAngle);
+        this.rotateSound.stop();
+        this.endSound.play();
+        const endTime = Date.now();
+        console.log(endTime);
+        this.showPrize();
+        return;
       }
 
-      let selectedPrizeIndex = Math.floor(Math.random() * this.data.prizes.length);
+      // 使用一个更加平滑的减速缓动函数
+      const easeOutExpo = (t) => 1 - Math.pow(2, -10 * t);
+      const easedProgress = easeOutExpo(progress);
+
+      // 更新旋转角度
+      const currentAngle = initialAngle + (stopAngle - initialAngle) * easedProgress;
 
       this.setData({
-        isSpinning: true,
-        selectedPrizeIndex
+        spinningAngle: currentAngle % 360,
       });
 
-      // 根据初始速度调整减速时间
-      let decelerationTime = 5000; // 默认减速时间
-      if (this.data.speed <= 5) {
-        decelerationTime = 3000; // 当速度小于等于5时，设置减速时间为3秒
-      }
+      this.drawWheel(this.data.spinningAngle);
 
-      // 播放旋转音效
-      this.rotateSound.play();
+      // 继续请求动画帧
+      this.rotationFrameId = this.canvas.requestAnimationFrame(animate);
+    };
 
-      // 开始旋转，设置加速和减速时间
-      this.selectComponent('#myLucky').play({
-        speed: this.data.speed,
-        accelerationTime: 1000,
-        decelerationTime: decelerationTime,
-      });
+    this.rotationFrameId = this.canvas.requestAnimationFrame(animate);
+  },
 
-      // 调整音效播放速率
-      if (this.supportPlaybackRate) {
-        this.adjustSoundPlaybackRate();
-      }
 
-      // 在指定时间后停止转盘
-      const totalTime = 2000 + decelerationTime;
-      setTimeout(() => {
-        this.selectComponent('#myLucky').stop(this.data.selectedPrizeIndex);
-      }, totalTime);
-    }
+  showPrize() {
+    const prize = this.data.prizes[this.data.selectedPrizeIndex];
+
+    // 开始中奖奖品的跳动动画
+    this.startPrizeBounceAnimation();
+
+    wx.showModal({
+      title: '恭喜中奖',
+      content: `您获得了：${prize.name}`,
+      showCancel: false,
+      success: () => {
+        // 停止跳动动画
+        if (this.prizeAnimationFrameId) {
+          this.canvas.cancelAnimationFrame(this.prizeAnimationFrameId);
+          this.prizeAnimationFrameId = null;
+        }
+        // 重新绘制转盘，停止跳动
+        this.drawWheel(this.data.spinningAngle);
+        // 恢复闲置动画
+        this.startIdleAnimation();
+      },
+    });
+  },
+
+  startPrizeBounceAnimation() {
+    const animate = () => {
+      this.drawWheel(this.data.spinningAngle);
+      this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+    };
+    this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+  },
+
+
+  animatePrize() {
+    const animate = () => {
+      if (this.data.isSpinning) return;
+      this.drawWheel(this.data.spinningAngle);
+      this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+    };
+    this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
   },
 });
 lottery.wxml代码如下:
+<!-- lottery.wxml -->
 <view class="container">
-  <lucky-wheel
-    id="myLucky"
-    width="500rpx"
-    height="500rpx"
-    blocks="{{blocks}}"
-    prizes="{{prizes}}"
-    buttons="{{buttons}}"
-    default-style="{{defaultStyle}}"
-    default-config="{{defaultConfig}}"
-    bind:start="onStart"
-    bind:end="onEnd"
-  />
+  <canvas type="2d" id="wheelCanvas" style="width: 500rpx; height: 500rpx;"></canvas>
   <button bindtap="onClick" class="draw-button">点击抽奖</button>
 </view>
 lottery.wxss代码如下:
@@ -259,6 +394,7 @@ lottery.wxss代码如下:
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 .draw-button {
   margin-top: 20px;

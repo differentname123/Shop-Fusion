@@ -1,0 +1,8 @@
+<!-- components/wheel/wheel.wxml -->
+<view class="wheel-container">
+  <canvas type="2d" id="wheelCanvas" style="width: 500rpx; height: 500rpx;"></canvas>
+  <button bindtap="startSpin" class="spin-button">点击抽奖</button>
+  <block wx:if="{{propCount > 0}}">
+    <button bindtap="eliminatePrize" class="eliminate-button">消除奖品（{{propCount}}）</button>
+  </block>
+</view>

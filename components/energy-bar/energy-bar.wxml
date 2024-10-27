@@ -1,0 +1,8 @@
+<!-- components/energy-bar/energy-bar.wxml -->
+<view class="energy-bar">
+  <text class="energy-text">幸运值：{{energyValue.toFixed(2)}}</text>
+  <view class="energy-bar-bg">
+    <view class="energy-bar-fill" style="{{energyFillStyle}}"></view>
+  </view>
+  <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
+</view>
