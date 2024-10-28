@@ -421,8 +421,7 @@ Component({
       // 开始中奖奖品的跳动动画
       this.startPrizeBounceAnimation();
 
-      // 更新幸运值
-      this.triggerEvent('updateEnergy');
+
 
       // 增加用户积分
       this.triggerEvent('addPoints', { points: prize.points });
@@ -441,8 +440,11 @@ Component({
           this.drawWheel(this.spinningAngle);
           // 恢复闲置动画
           this.startIdleAnimation();
+          // 更新幸运值
+          this.triggerEvent('updateEnergy');
         },
       });
+
     },
     // 消除奖品
     removePrize() {

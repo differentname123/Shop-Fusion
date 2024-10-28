@@ -3,91 +3,104 @@ const { prizes: initialPrizes } = require('config.js');
 
 Page({
   data: {
-    points: 50, // 用户积分
-    energy: 0, // 幸运值能量，取值范围为0-100
-    energyPercentage: 0, // 能量百分比，用于能量条显示
-    prizes: JSON.parse(JSON.stringify(initialPrizes)), // 奖品信息
-    spinCount: 0, // 转盘次数
-    propCount: 0, // 消除奖品道具数量
+    points: 50,
+    energy: 0,
+    energyPercentage: 0,
+    energyDisplay: '0.00', // 用于显示格式化的幸运值
+    energyIncrease: 0, // 显示本次增加的能量
+    showEnergyIncrease: false, // 控制+X的显示
+    prizes: JSON.parse(JSON.stringify(initialPrizes)),
+    spinCount: 0,
+    propCount: 0,
   },
   onLoad() {
-    // 获取用户积分，假设从后台接口获取
     this.getUserPoints();
   },
   getUserPoints() {
-    // 模拟从后台获取用户积分，初始值为50
-    // 实际场景应该调用wx.request或者异步接口获取积分
     this.setData({
       points: 50,
     });
   },
-  consumePoints(e) {
-    const { points } = e.detail;
-    this.setData({
-      points: this.data.points - points,
-    });
+  consumePoints({ detail: { points } }) {
+    this.updatePoints(-points);
   },
-  addPoints(e) {
-    const { points } = e.detail;
+  addPoints({ detail: { points } }) {
+    this.updatePoints(points);
+  },
+  updatePoints(change) {
     this.setData({
-      points: this.data.points + points,
+      points: this.data.points + change,
     });
   },
   updateEnergy() {
-    // 幸运值能量增加规则：
-    // 每次抽奖都会增加能量，当前能量值越小，增加的能量越多，越接近满值，增加的能量越少
-    // 能量值永远不会达到满值，只会无限接近满值
-    // 可以使用一个指数衰减函数模拟
+    const currentEnergy = this.data.energy;
+    const increase = (100 - currentEnergy) / 10; // 按现有规则计算的增加量
+    const newEnergy = Math.min(100, currentEnergy + increase);
 
-    let currentEnergy = this.data.energy;
-    const increase = (100 - currentEnergy) / 10; // 能量值越小，增加越多
-
-    currentEnergy += increase;
-
-    if (currentEnergy > 100) {
-      currentEnergy = 100;
-    }
-
+    // 设置增加的幸运值，但不立即播放动画
     this.setData({
-      energy: currentEnergy,
-      energyPercentage: currentEnergy.toFixed(2),
+      energyIncrease: increase.toFixed(2),
+      showEnergyIncrease: false, // 隐藏+X动画
     });
+
+    // 在用户触发后，开始播放+X动画和能量增长动画
+    this.triggerEnergyIncreaseAnimation(newEnergy);
+  },
+  triggerEnergyIncreaseAnimation(targetEnergy) {
+    // 显示+X动画
+    this.setData({ showEnergyIncrease: true });
+    setTimeout(() => {
+      this.setData({ showEnergyIncrease: false });
+    }, 3000); // 控制+X动画显示时间为3秒
+
+    // 同时开始能量增长动画
+    this.animateEnergyIncrease(targetEnergy);
+  },
+  animateEnergyIncrease(targetEnergy) {
+    const step = (targetEnergy - this.data.energy) / 30; // 延长动画效果
+    const increaseInterval = setInterval(() => {
+      let newEnergy = this.data.energy + step;
+      if (newEnergy >= targetEnergy) {
+        newEnergy = targetEnergy;
+        clearInterval(increaseInterval);
+      }
+      this.setData({
+        energy: newEnergy,
+        energyPercentage: newEnergy.toFixed(2),
+        energyDisplay: newEnergy.toFixed(2),
+      });
+    }, 40);
   },
   updateSpinCount() {
-    // 更新转盘次数
-    let spinCount = this.data.spinCount + 1;
-    let propCount = this.data.propCount;
-    if (spinCount % 5 === 0) {
-      // 每5次增加一个消除奖品道具
-      propCount += 1;
+    const newSpinCount = this.data.spinCount + 1;
+    const newPropCount = newSpinCount % 5 === 0 ? this.data.propCount + 1 : this.data.propCount;
+
+    if (newPropCount > this.data.propCount) {
       wx.showToast({
         title: '获得一个消除奖品道具',
         icon: 'none',
       });
     }
+
     this.setData({
-      spinCount,
-      propCount,
+      spinCount: newSpinCount,
+      propCount: newPropCount,
     });
   },
-  updateProp(e) {
-    const { propChange } = e.detail;
+  updateProp({ detail: { propChange } }) {
     this.setData({
       propCount: this.data.propCount + propChange,
     });
   },
-  updatePrizes(e) {
-    const { prizes } = e.detail;
-    this.setData({
-      prizes,
-    });
+  updatePrizes({ detail: { prizes } }) {
+    this.setData({ prizes });
   },
   onShowRules() {
-    // 显示规则列表
-    const rules = `1. 每次抽奖消耗10积分
+    const rules = `
+1. 每次抽奖消耗10积分
 2. 抽奖结果由后台返回
 3. 每次抽奖会增加幸运值
-4. 幸运值越高，中奖概率可能越大（示例规则）
+4. 幸运值越高，中奖概率可能越大
 5. 每抽取5次，获得一个消除奖品的道具`;
     wx.showModal({
       title: '抽奖规则',
@@ -96,7 +109,6 @@ Page({
     });
   },
   showEnergyInfo() {
-    // 显示幸运值说明
     wx.showModal({
       title: '幸运值说明',
       content: '幸运值表示您当前的幸运程度，幸运值越高，获得大奖的概率越高。',

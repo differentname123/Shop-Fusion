@@ -8,15 +8,25 @@
       <text class="menu-item" bindtap="onShowRules">规则</text>
     </view>
   </view>
-  <!-- 能量条 -->
+
   <view class="energy-bar">
-    <text class="energy-text">幸运值：{{energy.toFixed(2)}}</text>
+    <text class="energy-text">幸运值：{{energyDisplay}}/100</text>
     <view class="energy-bar-bg">
       <view class="energy-bar-fill" style="{{'width:' + energyPercentage + '%;'}}"></view>
+      <!-- 激光效果 -->
+      <view class="energy-bar-glow" style="{{'left:' + energyPercentage + '%;'}}"></view>
+      <!-- 显示+X的动画，位置在能量条上方 -->
+      <view
+        wx:if="{{showEnergyIncrease}}"
+        class="energy-increase-text"
+        style="{{'left:' + energyPercentage + '%;'}}"
+      >
+        +{{energyIncrease}}
+      </view>
     </view>
     <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
   </view>
-  <!-- 转盘组件 -->
+
   <wheel
     id="wheelComponent"
     prizes="{{prizes}}"
@@ -28,5 +38,6 @@
     bind:spinFinished="updateSpinCount"
     bind:updateProp="updateProp"
     bind:updatePrizes="updatePrizes"
+    bind:prizeConfirmed="onPrizeConfirmed"
   />
 </view>

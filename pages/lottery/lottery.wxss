@@ -3,63 +3,93 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
+  background-color: #f2f2f2;
+  padding-top: 40rpx; /* 向下移动页面 */
 }
 
 .header {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 10rpx 20rpx;
+  padding: 20rpx;
 }
 
 .user-info {
-  font-size: 28rpx;
-}
-
-.menu {
-  display: flex;
+  font-size: 30rpx;
+  color: #333;
 }
 
 .menu-item {
-  margin-left: 20rpx;
-  font-size: 28rpx;
-  color: #007aff;
+  color: #ff6600;
+  font-size: 30rpx;
 }
 
-/* 能量条样式 */
 .energy-bar {
-  width: 80%;
+  width: 90%;
   margin-top: 20rpx;
-  position: relative;
   display: flex;
   align-items: center;
 }
 
+.energy-text {
+  font-size: 26rpx;
+  color: #555;
+  flex-shrink: 0;
+}
+
 .energy-bar-bg {
   flex: 1;
-  height: 20rpx;
-  background-color: #ccc;
-  border-radius: 10rpx;
-  overflow: hidden;
+  height: 24rpx;
+  background: linear-gradient(90deg, #d1eaff, #66ccff);
+  border-radius: 12rpx;
+  margin: 0 10rpx;
   position: relative;
-  margin-left: 10rpx;
 }
 
 .energy-bar-fill {
   height: 100%;
-  background-color: #ffcc00;
-  border-radius: 10rpx;
+  background: linear-gradient(90deg, #ffcc00, #ff6600);
   transition: width 0.5s ease;
-}
-
-.energy-text {
-  font-size: 24rpx;
-  color: #333;
+  z-index: 1;
 }
 
 .info-icon {
-  width: 30rpx;
-  height: 30rpx;
-  margin-left: 10rpx;
+  width: 32rpx;
+  height: 32rpx;
+  flex-shrink: 0;
+}
+
+.energy-increase-text {
+  position: absolute;
+  top: -40rpx;
+  transform: translateX(-50%);
+  font-size: 24rpx;
+  color: #ff3333;
+  animation: fadeInOut 3s ease forwards;
+  z-index: 3;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(10px); }
+ 20% { opacity: 1; }
+ 80% { opacity: 1; }
+ 100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* 能量条上的激光效果 */
+.energy-bar-glow {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 6rpx;
+  background: linear-gradient(180deg, transparent, #ffdd55, #ff9900, transparent);
+  box-shadow: 0 0 14rpx rgba(255, 204, 0, 1);
+  animation: glowMove 1s infinite linear;
+  z-index: 2;
+}
+
+@keyframes glowMove {
+  0% { opacity: 0.5; }
+ 50% { opacity: 1; }
+ 100% { opacity: 0.5; }
 }

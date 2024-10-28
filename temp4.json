@@ -1,402 +1,717 @@
 我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，现在有下面几点需要修改:
 1.你帮我分析一下，下面代码有没有能够优化的地方，比如 性能 结构 可读性 冗余代码之类的，给我优化后的完整代码。
-2.现在逻辑和相关配置都在js中间是不是有点不合理。
+2.现在感觉整体页面看起来并不高级美观，你帮我设计一个更加美观的页面，包括布局、颜色、字体等等，你先仔细分析一下有哪些优化的方面，然后再根据当前的代码进行优化，我觉得转盘背景配色不好看，而且整个页面留白的地方太多了，全是白色的。
 相关代码如下,所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
 lottery.js代码如下:
+// pages/lottery/lottery.js
+const { prizes: initialPrizes } = require('config.js');
 
-// lottery.js
 Page({
   data: {
-    canvasWidth: 500,
-    canvasHeight: 500,
-    prizes: [
-      {
-        name: '10积分',
-        icon: '/assets/icon1.png',
-        range: 1,
-        idleAnimation: true,
-      },
-      {
-        name: '20积分',
-        icon: '/assets/icon2.png',
-        range: 2,
-        idleAnimation: false,
-      },
-      {
-        name: '30积分',
-        icon: '/assets/icon3.png',
-        range: 3,
-        idleAnimation: true,
-      },
-      {
-        name: '40积分',
-        icon: '/assets/icon4.png',
-        range: 2,
-        idleAnimation: false,
-      },
-      {
-        name: '50积分',
-        icon: '/assets/icon5.png',
-        range: 1,
-        idleAnimation: true,
-      },
-      {
-        name: '100积分',
-        icon: '/assets/icon6.png',
-        range: 1,
-        idleAnimation: false,
-      },
-    ],
-    totalRange: 0,
-    isSpinning: false,
-    spinningAngle: 0,
-    selectedPrizeIndex: null,
-    prizeAnimationFrameId: null,
-    idleAnimationFrameId: null,
-    canvas: null,
-    ctx: null,
-    rotationFrameId: null,
-    rotateSound: null,
-    endSound: null,
-    pointerImage: null,
+    points: 50, // 用户积分
+    energy: 0, // 幸运值能量，取值范围为0-100
+    energyPercentage: 0, // 能量百分比，用于能量条显示
+    prizes: JSON.parse(JSON.stringify(initialPrizes)), // 奖品信息
+    spinCount: 0, // 转盘次数
+    propCount: 0, // 消除奖品道具数量
   },
-
   onLoad() {
-    const totalRange = this.data.prizes.reduce((sum, prize) => sum + prize.range, 0);
+    // 获取用户积分，假设从后台接口获取
+    this.getUserPoints();
+  },
+  getUserPoints() {
+    // 模拟从后台获取用户积分，初始值为50
+    // 实际场景应该调用wx.request或者异步接口获取积分
     this.setData({
-      totalRange,
-    });
-
-    this.rotateSound = wx.createInnerAudioContext();
-    this.rotateSound.src = '/audio/rotate.mp3';
-    this.endSound = wx.createInnerAudioContext();
-    this.endSound.src = '/audio/end.mp3';
-
-    const query = wx.createSelectorQuery().in(this);
-    query.select('#wheelCanvas')
-      .node()
-      .exec((res) => {
-        const canvas = res[0].node;
-        const ctx = canvas.getContext('2d');
-
-        this.canvas = canvas;
-        this.ctx = ctx;
-
-        const dpr = wx.getSystemInfoSync().pixelRatio;
-        canvas.width = this.data.canvasWidth * dpr;
-        canvas.height = this.data.canvasHeight * dpr;
-        ctx.scale(dpr, dpr);
-
-        Promise.all([
-          this.loadPrizeImages(),
-          this.loadPointerImage(),
-        ]).then(() => {
-          this.drawWheel(0);
-          this.startIdleAnimation();
-        });
-      });
-  },
-
-  onUnload() {
-    if (this.rotationFrameId) {
-      this.canvas.cancelAnimationFrame(this.rotationFrameId);
-    }
-    if (this.prizeAnimationFrameId) {
-      this.canvas.cancelAnimationFrame(this.prizeAnimationFrameId);
-    }
-    if (this.idleAnimationFrameId) {
-      this.canvas.cancelAnimationFrame(this.idleAnimationFrameId);
-    }
-    if (this.rotateSound) {
-      this.rotateSound.stop();
-      this.rotateSound.destroy();
-    }
-    if (this.endSound) {
-      this.endSound.stop();
-      this.endSound.destroy();
-    }
-  },
-
-  loadPrizeImages() {
-    const loadPromises = this.data.prizes.map((prize) => {
-      return new Promise((resolve, reject) => {
-        const image = this.canvas.createImage();
-        image.src = prize.icon;
-        image.onload = () => {
-          prize.image = image;
-          resolve();
-        };
-        image.onerror = (err) => {
-          console.error('加载图片失败：', err);
-          reject(err);
-        };
-      });
-    });
-    return Promise.all(loadPromises);
-  },
-
-  loadPointerImage() {
-    return new Promise((resolve, reject) => {
-      const image = this.canvas.createImage();
-      image.src = '/assets/pointer_rotate1.png';
-      image.onload = () => {
-        this.pointerImage = image;
-        resolve();
-      };
-      image.onerror = (err) => {
-        console.error('加载指针图片失败：', err);
-        reject(err);
-      };
+      points: 50,
     });
   },
-
-  drawWheel(angle) {
-    const ctx = this.ctx;
-    const { canvasWidth, canvasHeight, prizes, totalRange } = this.data;
-    const centerX = canvasWidth / 2;
-    const centerY = canvasHeight / 2;
-    const radius = Math.min(centerX, centerY) - 10;
-
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(((angle - 90) * Math.PI) / 180);
-    ctx.translate(-centerX, -centerY);
-
-    let startAngle = 0;
-    prizes.forEach((prize, index) => {
-      const anglePerPrize = (prize.range / totalRange) * 2 * Math.PI;
-
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.arc(centerX, centerY, radius, startAngle, startAngle + anglePerPrize);
-      ctx.closePath();
-      ctx.fillStyle = this.getColor(index);
-      ctx.fill();
-
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(startAngle + anglePerPrize / 2);
-
-      ctx.fillStyle = '#000';
-      ctx.font = 'bold 18px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(prize.name, radius - 60, 0);
-
-      const imgSize = 40;
-      let scale = 1;
-      if (this.prizeAnimationFrameId && index === this.data.selectedPrizeIndex) {
-        scale = 1 + 0.05 * Math.sin((Date.now() % 500) / 500 * Math.PI * 2); // 中奖奖品跳动幅度
-      } else if (!this.data.isSpinning && prize.idleAnimation) {
-        scale = 1 + 0.1 * Math.sin((Date.now() % 1000) / 1000 * Math.PI * 2); // 闲置状态跳动
-      }
-      ctx.scale(scale, scale);
-
-
-      if (prize.image) {
-        ctx.drawImage(
-          prize.image,
-          radius - 180,
-          -imgSize / 2,
-          imgSize,
-          imgSize
-        );
-      }
-
-      ctx.restore();
-
-      startAngle += anglePerPrize;
-    });
-
-    ctx.restore();
-
-    if (this.pointerImage) {
-      const pointerSize = 60;
-      ctx.drawImage(
-        this.pointerImage,
-        centerX - pointerSize / 2,
-        centerY - pointerSize / 2,
-        pointerSize,
-        pointerSize
-      );
-    } else {
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY - 20);
-      ctx.lineTo(centerX - 10, centerY + 10);
-      ctx.lineTo(centerX + 10, centerY + 10);
-      ctx.closePath();
-      ctx.fillStyle = '#FF0000';
-      ctx.fill();
-    }
-  },
-
-  getColor(index) {
-    const colors = ['#FFB6C1', '#FFD700', '#ADFF2F', '#87CEFA', '#FFA500', '#90EE90'];
-    return colors[index % colors.length];
-  },
-
-  startIdleAnimation() {
-    const animate = () => {
-      if (!this.data.isSpinning) {
-        this.drawWheel(this.data.spinningAngle);
-      }
-      this.idleAnimationFrameId = this.canvas.requestAnimationFrame(animate);
-    };
-    this.idleAnimationFrameId = this.canvas.requestAnimationFrame(animate);
-  },
-
-  onClick() {
-    if (this.data.isSpinning) return;
-
+  consumePoints(e) {
+    const { points } = e.detail;
     this.setData({
-      isSpinning: true,
+      points: this.data.points - points,
     });
-
-    if (this.idleAnimationFrameId) {
-      this.canvas.cancelAnimationFrame(this.idleAnimationFrameId);
-      this.idleAnimationFrameId = null;
-    }
-
-    this.rotateSound.play();
-    let stopAngle = this.getStopAngle();
-    console.log(stopAngle);
-    this.startRotation(stopAngle);
   },
+  addPoints(e) {
+    const { points } = e.detail;
+    this.setData({
+      points: this.data.points + points,
+    });
+  },
+  updateEnergy() {
+    // 幸运值能量增加规则：
+    // 每次抽奖都会增加能量，当前能量值越小，增加的能量越多，越接近满值，增加的能量越少
+    // 能量值永远不会达到满值，只会无限接近满值
+    // 可以使用一个指数衰减函数模拟
 
-  getStopAngle() {
-    const { prizes, totalRange } = this.data;
+    let currentEnergy = this.data.energy;
+    const increase = (100 - currentEnergy) / 10; // 能量值越小，增加越多
 
-    const randomNum = Math.floor(Math.random() * totalRange) + 1;
-    let accumulatedRange = 0;
-    let selectedPrizeIndex = 0;
-    for (let i = 0; i < prizes.length; i++) {
-      accumulatedRange += prizes[i].range;
-      if (randomNum <= accumulatedRange) {
-        selectedPrizeIndex = i;
-        break;
-      }
+    currentEnergy += increase;
+
+    if (currentEnergy > 100) {
+      currentEnergy = 100;
     }
 
     this.setData({
-      selectedPrizeIndex,
+      energy: currentEnergy,
+      energyPercentage: currentEnergy.toFixed(2),
     });
-    console.log(selectedPrizeIndex)
-    let startAngle = 0;
-    for (let i = 0; i < selectedPrizeIndex; i++) {
-      startAngle += (prizes[i].range / totalRange) * 360;
-    }
-    const prizeAngle = (prizes[selectedPrizeIndex].range / totalRange) * 360;
-    const prizeCenterAngle = 360 - startAngle - 9 * prizeAngle / 10;
-    const stopAngle = 360 * 5 + prizeCenterAngle;
-
-    return stopAngle;
   },
-
-  startRotation(stopAngle) {
-    const duration = 500; // 动画持续时间5秒
-    const startTime = Date.now();
-    console.log(startTime);
-    const initialAngle = this.data.spinningAngle;
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = elapsed / duration;
-
-      if (progress >= 1) {
-        // 动画结束
-        this.setData({
-          spinningAngle: stopAngle % 360,
-          isSpinning: false,
-        });
-        this.drawWheel(this.data.spinningAngle);
-        this.rotateSound.stop();
-        this.endSound.play();
-        const endTime = Date.now();
-        console.log(endTime);
-        this.showPrize();
-        return;
-      }
-
-      // 使用一个更加平滑的减速缓动函数
-      const easeOutExpo = (t) => 1 - Math.pow(2, -10 * t);
-      const easedProgress = easeOutExpo(progress);
-
-      // 更新旋转角度
-      const currentAngle = initialAngle + (stopAngle - initialAngle) * easedProgress;
-
-      this.setData({
-        spinningAngle: currentAngle % 360,
+  updateSpinCount() {
+    // 更新转盘次数
+    let spinCount = this.data.spinCount + 1;
+    let propCount = this.data.propCount;
+    if (spinCount % 5 === 0) {
+      // 每5次增加一个消除奖品道具
+      propCount += 1;
+      wx.showToast({
+        title: '获得一个消除奖品道具',
+        icon: 'none',
       });
-
-      this.drawWheel(this.data.spinningAngle);
-
-      // 继续请求动画帧
-      this.rotationFrameId = this.canvas.requestAnimationFrame(animate);
-    };
-
-    this.rotationFrameId = this.canvas.requestAnimationFrame(animate);
+    }
+    this.setData({
+      spinCount,
+      propCount,
+    });
   },
-
-
-  showPrize() {
-    const prize = this.data.prizes[this.data.selectedPrizeIndex];
-
-    // 开始中奖奖品的跳动动画
-    this.startPrizeBounceAnimation();
-
+  updateProp(e) {
+    const { propChange } = e.detail;
+    this.setData({
+      propCount: this.data.propCount + propChange,
+    });
+  },
+  updatePrizes(e) {
+    const { prizes } = e.detail;
+    this.setData({
+      prizes,
+    });
+  },
+  onShowRules() {
+    // 显示规则列表
+    const rules = `1. 每次抽奖消耗10积分
+2. 抽奖结果由后台返回
+3. 每次抽奖会增加幸运值
+4. 幸运值越高，中奖概率可能越大（示例规则）
+5. 每抽取5次，获得一个消除奖品的道具`;
     wx.showModal({
-      title: '恭喜中奖',
-      content: `您获得了：${prize.name}`,
+      title: '抽奖规则',
+      content: rules,
       showCancel: false,
-      success: () => {
-        // 停止跳动动画
-        if (this.prizeAnimationFrameId) {
-          this.canvas.cancelAnimationFrame(this.prizeAnimationFrameId);
-          this.prizeAnimationFrameId = null;
-        }
-        // 重新绘制转盘，停止跳动
-        this.drawWheel(this.data.spinningAngle);
-        // 恢复闲置动画
-        this.startIdleAnimation();
-      },
     });
   },
-
-  startPrizeBounceAnimation() {
-    const animate = () => {
-      this.drawWheel(this.data.spinningAngle);
-      this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
-    };
-    this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
-  },
-
-
-  animatePrize() {
-    const animate = () => {
-      if (this.data.isSpinning) return;
-      this.drawWheel(this.data.spinningAngle);
-      this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
-    };
-    this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+  showEnergyInfo() {
+    // 显示幸运值说明
+    wx.showModal({
+      title: '幸运值说明',
+      content: '幸运值表示您当前的幸运程度，幸运值越高，获得大奖的概率越高。',
+      showCancel: false,
+    });
   },
 });
 lottery.wxml代码如下:
-<!-- lottery.wxml -->
+<!-- pages/lottery/lottery.wxml -->
 <view class="container">
-  <canvas type="2d" id="wheelCanvas" style="width: 500rpx; height: 500rpx;"></canvas>
-  <button bindtap="onClick" class="draw-button">点击抽奖</button>
+  <view class="header">
+    <view class="user-info">
+      <text>积分：{{points}}</text>
+    </view>
+    <view class="menu">
+      <text class="menu-item" bindtap="onShowRules">规则</text>
+    </view>
+  </view>
+  <!-- 能量条 -->
+  <view class="energy-bar">
+    <text class="energy-text">幸运值：{{energy.toFixed(2)}}</text>
+    <view class="energy-bar-bg">
+      <view class="energy-bar-fill" style="{{'width:' + energyPercentage + '%;'}}"></view>
+    </view>
+    <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
+  </view>
+  <!-- 转盘组件 -->
+  <wheel
+    id="wheelComponent"
+    prizes="{{prizes}}"
+    points="{{points}}"
+    propCount="{{propCount}}"
+    bind:consumePoints="consumePoints"
+    bind:addPoints="addPoints"
+    bind:updateEnergy="updateEnergy"
+    bind:spinFinished="updateSpinCount"
+    bind:updateProp="updateProp"
+    bind:updatePrizes="updatePrizes"
+  />
 </view>
 lottery.wxss代码如下:
-/* lottery.wxss */
+/* pages/lottery/lottery.wxss */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
 }
-.draw-button {
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 20rpx;
+}
+
+.user-info {
+  font-size: 28rpx;
+}
+
+.menu {
+  display: flex;
+}
+
+.menu-item {
+  margin-left: 20rpx;
+  font-size: 28rpx;
+  color: #007aff;
+}
+
+/* 能量条样式 */
+.energy-bar {
+  width: 80%;
+  margin-top: 20rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.energy-bar-bg {
+  flex: 1;
+  height: 20rpx;
+  background-color: #ccc;
+  border-radius: 10rpx;
+  overflow: hidden;
+  position: relative;
+  margin-left: 10rpx;
+}
+
+.energy-bar-fill {
+  height: 100%;
+  background-color: #ffcc00;
+  border-radius: 10rpx;
+  transition: width 0.5s ease;
+}
+
+.energy-text {
+  font-size: 24rpx;
+  color: #333;
+}
+
+.info-icon {
+  width: 30rpx;
+  height: 30rpx;
+  margin-left: 10rpx;
+}
+wheel组件代码如下:
+wheel.js代码如下:
+// components/wheel/wheel.js
+Component({
+  properties: {
+    points: {
+      type: Number,
+      value: 0,
+    },
+    prizes: {
+      type: Array,
+      value: [],
+      observer(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          // 奖品信息发生变化
+          this.prizes = newVal;
+          this.totalRange = this.prizes.reduce((sum, prize) => sum + prize.range, 0);
+          if (this.canvas) {
+            this.loadPrizeImages().then(() => {
+              this.drawWheel(this.spinningAngle);
+            });
+          } else {
+            this.needLoadPrizes = true;
+          }
+        }
+      },
+    },
+    propCount: {
+      type: Number,
+      value: 0,
+    },
+  },
+  data: {
+    canvasWidth: 500,
+    canvasHeight: 500,
+    isSpinning: false,
+    spinningAngle: 0,
+    selectedPrizeIndex: null,
+    spinType: 'draw',
+    needLoadPrizes: false, // 新增
+  },
+  lifetimes: {
+    attached() {
+      // Initialize properties
+      this.prizes = this.properties.prizes;
+      this.totalRange = this.prizes.reduce((sum, prize) => sum + prize.range, 0);
+      this.spinningAngle = 0;
+      this.selectedPrizeIndex = null;
+      this.prizeAnimationFrameId = null;
+      this.idleAnimationFrameId = null;
+      this.rotationFrameId = null;
+      this.rotateSound = null;
+      this.endSound = null;
+      this.pointerImage = null;
+
+      // 初始化音频
+      this.rotateSound = wx.createInnerAudioContext();
+      this.rotateSound.src = '/audio/rotate.mp3';
+      this.endSound = wx.createInnerAudioContext();
+      this.endSound.src = '/audio/end.mp3';
+
+      // 获取画布上下文
+      const query = this.createSelectorQuery();
+      query
+        .select('#wheelCanvas')
+        .node()
+        .exec((res) => {
+          const canvas = res[0].node;
+          const ctx = canvas.getContext('2d');
+
+          this.canvas = canvas;
+          this.ctx = ctx;
+
+          const dpr = wx.getSystemInfoSync().pixelRatio;
+          canvas.width = this.data.canvasWidth * dpr;
+          canvas.height = this.data.canvasHeight * dpr;
+          ctx.scale(dpr, dpr);
+
+          // 加载资源并开始动画
+          Promise.all([this.loadPrizeImages(), this.loadPointerImage()])
+            .then(() => {
+              this.drawWheel(0);
+              this.startIdleAnimation();
+
+              // 如果在 canvas 初始化之前有奖品更新，加载奖品图片
+              if (this.needLoadPrizes) {
+                this.loadPrizeImages().then(() => {
+                  this.drawWheel(this.spinningAngle);
+                });
+                this.needLoadPrizes = false;
+              }
+            });
+        });
+    },
+    detached() {
+      // 清理动画帧和音频
+      if (this.rotationFrameId) {
+        this.canvas.cancelAnimationFrame(this.rotationFrameId);
+      }
+      if (this.prizeAnimationFrameId) {
+        this.canvas.cancelAnimationFrame(this.prizeAnimationFrameId);
+      }
+      if (this.idleAnimationFrameId) {
+        this.canvas.cancelAnimationFrame(this.idleAnimationFrameId);
+      }
+      if (this.rotateSound) {
+        this.rotateSound.stop();
+        this.rotateSound.destroy();
+      }
+      if (this.endSound) {
+        this.endSound.stop();
+        this.endSound.destroy();
+      }
+    },
+  },
+  methods: {
+    loadPrizeImages() {
+      // 加载奖品图片
+      const loadPromises = this.prizes.map((prize) => {
+        return new Promise((resolve, reject) => {
+          const image = this.canvas.createImage();
+          image.src = prize.icon;
+          image.onload = () => {
+            prize.image = image;
+            resolve();
+          };
+          image.onerror = (err) => {
+            console.error('加载图片失败：', err);
+            reject(err);
+          };
+        });
+      });
+      return Promise.all(loadPromises);
+    },
+    loadPointerImage() {
+      // 加载指针图片
+      return new Promise((resolve, reject) => {
+        const image = this.canvas.createImage();
+        image.src = '/assets/pointer_rotate1.png';
+        image.onload = () => {
+          this.pointerImage = image;
+          resolve();
+        };
+        image.onerror = (err) => {
+          console.error('加载指针图片失败：', err);
+          reject(err);
+        };  // 修正了这里的位置
+      });
+    },
+    drawWheel(angle) {
+      const ctx = this.ctx;
+      const { canvasWidth, canvasHeight } = this.data;
+      const { prizes, totalRange, selectedPrizeIndex } = this;
+      const centerX = canvasWidth / 2;
+      const centerY = canvasHeight / 2;
+      const radius = Math.min(centerX, centerY) - 10;
+
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      if (prizes.length === 0) {
+        // 没有奖品时显示提示信息
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('暂无奖品', centerX, centerY);
+        return;
+      }
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(((angle - 90) * Math.PI) / 180);
+      ctx.translate(-centerX, -centerY);
+
+      let startAngle = 0;
+      prizes.forEach((prize, index) => {
+        const anglePerPrize = (prize.range / totalRange) * 2 * Math.PI;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, startAngle + anglePerPrize);
+        ctx.closePath();
+        ctx.fillStyle = this.getColor(index);
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(startAngle + anglePerPrize / 2);
+
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(prize.name, radius - 60, 0);
+
+        const imgSize = 40;
+        let scale = 1;
+
+        const currentTime = Date.now();
+
+        if (this.prizeAnimationFrameId && index === selectedPrizeIndex) {
+          scale = 1 + 0.05 * Math.sin(((currentTime % 500) / 500) * Math.PI * 2);
+        } else if (!this.data.isSpinning && prize.idleAnimation) {
+          scale = 1 + 0.1 * Math.sin(((currentTime % 1000) / 1000) * Math.PI * 2);
+        }
+        ctx.scale(scale, scale);
+
+        if (prize.image) {
+          ctx.drawImage(prize.image, radius - 180, -imgSize / 2, imgSize, imgSize);
+        }
+
+        ctx.restore();
+
+        startAngle += anglePerPrize;
+      });
+
+      ctx.restore();
+
+      if (this.pointerImage) {
+        const pointerSize = 60;
+        ctx.drawImage(
+          this.pointerImage,
+          centerX - pointerSize / 2,
+          centerY - pointerSize / 2,
+          pointerSize,
+          pointerSize
+        );
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 20);
+        ctx.lineTo(centerX - 10, centerY + 10);
+        ctx.lineTo(centerX + 10, centerY + 10);
+        ctx.closePath();
+        ctx.fillStyle = '#FF0000';
+        ctx.fill();
+      }
+    },
+    getColor(index) {
+      const colors = ['#FFB6C1', '#FFD700', '#ADFF2F', '#87CEFA', '#FFA500', '#90EE90'];
+      return colors[index % colors.length];
+    },
+    startIdleAnimation() {
+      const animate = () => {
+        if (!this.data.isSpinning) {
+          this.drawWheel(this.spinningAngle);
+        }
+        this.idleAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+      };
+      this.idleAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+    },
+    // 点击“抽奖”按钮
+    startSpin() {
+      if (this.data.isSpinning) return;
+
+      if (this.prizes.length === 0) {
+        wx.showToast({
+          title: '没有奖品可抽',
+          icon: 'none',
+        });
+        return;
+      }
+
+      // 判断用户积分是否足够
+      if (this.properties.points < 10) {
+        wx.showToast({
+          title: '积分不足，无法抽奖',
+          icon: 'none',
+        });
+        return;
+      }
+
+      // 触发事件通知父组件扣除积分
+      this.triggerEvent('consumePoints', { points: 10 });
+
+      this.setData({
+        isSpinning: true,
+        spinType: 'draw',
+      });
+
+      if (this.idleAnimationFrameId) {
+        this.canvas.cancelAnimationFrame(this.idleAnimationFrameId);
+        this.idleAnimationFrameId = null;
+      }
+
+      this.rotateSound.play();
+
+      const stopAngle = this.getStopAngle();
+      if (stopAngle === undefined) {
+        return;
+      }
+      this.startRotation(stopAngle);
+    },
+    // 点击“消除奖品”按钮
+    eliminatePrize() {
+      if (this.data.isSpinning) return;
+
+      if (this.prizes.length === 0) {
+        wx.showToast({
+          title: '没有奖品可以消除',
+          icon: 'none',
+        });
+        return;
+      }
+
+      // 判断是否有消除奖品的道具
+      if (this.properties.propCount <= 0) {
+        wx.showToast({
+          title: '没有消除奖品的道具',
+          icon: 'none',
+        });
+        return;
+      }
+
+      this.setData({
+        isSpinning: true,
+        spinType: 'eliminate',
+      });
+
+      if (this.idleAnimationFrameId) {
+        this.canvas.cancelAnimationFrame(this.idleAnimationFrameId);
+        this.idleAnimationFrameId = null;
+      }
+
+      this.rotateSound.play();
+
+      const stopAngle = this.getStopAngle();
+      if (stopAngle === undefined) {
+        return;
+      }
+      this.startRotation(stopAngle);
+    },
+    getStopAngle() {
+      const { prizes, totalRange } = this;
+
+      if (prizes.length === 0 || totalRange === 0) {
+        wx.showToast({
+          title: '奖品已全部消除，无法操作',
+          icon: 'none',
+        });
+        this.setData({
+          isSpinning: false,
+        });
+        return;
+      }
+
+      const randomNum = Math.floor(Math.random() * totalRange) + 1;
+      let accumulatedRange = 0;
+      let selectedPrizeIndex = 0;
+      for (let i = 0; i < prizes.length; i++) {
+        accumulatedRange += prizes[i].range;
+        if (randomNum <= accumulatedRange) {
+          selectedPrizeIndex = i;
+          break;
+        }
+      }
+
+      this.selectedPrizeIndex = selectedPrizeIndex;
+
+      let startAngle = 0;
+      for (let i = 0; i < selectedPrizeIndex; i++) {
+        startAngle += (prizes[i].range / totalRange) * 360;
+      }
+      const prizeAngle = (prizes[selectedPrizeIndex].range / totalRange) * 360;
+      const prizeCenterAngle = 360 - startAngle - prizeAngle / 2;
+      const stopAngle = 360 * 5 + prizeCenterAngle;
+
+      return stopAngle;
+    },
+    startRotation(stopAngle) {
+      const duration = 500; // 动画持续时间500毫秒
+      const startTime = Date.now();
+      const initialAngle = this.spinningAngle;
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = elapsed / duration;
+
+        if (progress >= 1) {
+          // 动画结束
+          this.spinningAngle = stopAngle % 360;
+          this.setData({
+            isSpinning: false,
+          });
+          this.drawWheel(this.spinningAngle);
+          this.rotateSound.stop();
+          this.endSound.play();
+
+          if (this.data.spinType === 'draw') {
+            // 显示中奖结果
+            this.showPrize();
+          } else if (this.data.spinType === 'eliminate') {
+            // 消除奖品
+            this.removePrize();
+          }
+
+          // 触发转盘结束事件，让父组件更新spinCount等
+          this.triggerEvent('spinFinished');
+
+          return;
+        }
+
+        // 平滑的减速缓动函数
+        const easeOutExpo = (t) => 1 - Math.pow(2, -10 * t);
+        const easedProgress = easeOutExpo(progress);
+
+        // 更新旋转角度
+        const currentAngle = initialAngle + (stopAngle - initialAngle) * easedProgress;
+
+        this.spinningAngle = currentAngle % 360;
+
+        this.drawWheel(this.spinningAngle);
+
+        // 继续请求动画帧
+        this.rotationFrameId = this.canvas.requestAnimationFrame(animate);
+      };
+
+      this.rotationFrameId = this.canvas.requestAnimationFrame(animate);
+    },
+    // 显示中奖奖品
+    showPrize() {
+      const prize = this.prizes[this.selectedPrizeIndex];
+
+      // 开始中奖奖品的跳动动画
+      this.startPrizeBounceAnimation();
+
+      // 更新幸运值
+      this.triggerEvent('updateEnergy');
+
+      // 增加用户积分
+      this.triggerEvent('addPoints', { points: prize.points });
+
+      wx.showModal({
+        title: '恭喜中奖',
+        content: `您获得了：${prize.name}`,
+        showCancel: false,
+        success: () => {
+          // 停止跳动动画
+          if (this.prizeAnimationFrameId) {
+            this.canvas.cancelAnimationFrame(this.prizeAnimationFrameId);
+            this.prizeAnimationFrameId = null;
+          }
+          // 重新绘制转盘，停止跳动
+          this.drawWheel(this.spinningAngle);
+          // 恢复闲置动画
+          this.startIdleAnimation();
+        },
+      });
+    },
+    // 消除奖品
+    removePrize() {
+      const eliminatedPrize = this.prizes.splice(this.selectedPrizeIndex, 1)[0];
+
+      // 重新计算总权重
+      this.totalRange = this.prizes.reduce((sum, prize) => sum + prize.range, 0);
+
+      // 通知父组件减少一个道具数量并更新奖品列表
+      this.triggerEvent('updateProp', { propChange: -1 });
+      this.triggerEvent('updatePrizes', { prizes: this.prizes });
+
+      // 重新加载奖品图片
+      this.loadPrizeImages().then(() => {
+        // 重新绘制转盘
+        this.drawWheel(this.spinningAngle);
+      });
+
+      wx.showModal({
+        title: '奖品已消除',
+        content: `已消除奖品：${eliminatedPrize.name}`,
+        showCancel: false,
+        success: () => {
+          // 恢复闲置动画
+          this.startIdleAnimation();
+        },
+      });
+    },
+    startPrizeBounceAnimation() {
+      const animate = () => {
+        this.drawWheel(this.spinningAngle);
+        this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+      };
+      this.prizeAnimationFrameId = this.canvas.requestAnimationFrame(animate);
+    },
+  },
+});
+wheel.wxml代码如下:
+<!-- components/wheel/wheel.wxml -->
+<view class="wheel-container">
+  <canvas type="2d" id="wheelCanvas" style="width: 500rpx; height: 500rpx;"></canvas>
+  <button bindtap="startSpin" class="spin-button">点击抽奖</button>
+  <block wx:if="{{propCount > 0}}">
+    <button bindtap="eliminatePrize" class="eliminate-button">消除奖品（{{propCount}}）</button>
+  </block>
+</view>
+wheel.wxss代码如下:
+/* components/wheel/wheel.wxss */
+.wheel-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spin-button,
+.eliminate-button {
   margin-top: 20px;
   width: 200rpx;
   height: 80rpx;
@@ -405,4 +720,8 @@ lottery.wxss代码如下:
   text-align: center;
   line-height: 80rpx;
   border-radius: 10px;
+}
+
+.eliminate-button {
+  background-color: #e74c3c;
 }

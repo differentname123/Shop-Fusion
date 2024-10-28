@@ -1,15 +1,277 @@
-我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，帮我使用LuckyCanvas来实现功能，要求尽量精美高级，下面是详细的功能设计，请给我具体实现的代码，如果需要安装包的话也给出具体的步骤:
-  大转盘抽奖模块:
-  功能描述：用户进行抽奖的主要交互区域，包含转盘、抽奖按钮、抽奖动画和音效等。
-  要求：
-    转盘设计：
-    奖品设置：转盘上有可定义的奖品数量，每个扇形显示奖品的描述、图标和对应的颜色。
-    色彩搭配：不同等级的奖品使用不同的背景颜色（如白色：普通，蓝色：稀有，紫色：史诗，橙色：传说）。
-    动画效果：转盘需要有平滑的旋转动画，转动过程中可以有光效或特效增加视觉冲击力。
-    抽奖方式：
-    点击抽奖：用户点击抽奖按钮，转盘开始转动。
-    滑动抽奖：支持用户在转盘上滑动进行抽奖，滑动速度影响转盘的初始转速，增加用户的参与感。
-    抽奖逻辑：
-    后端控制：抽奖结果由后端决定，前端根据结果展示相应的动画，转盘转动到对应的奖品位置。(暂时使用随机返回)
-    贴近中奖：当用户抽到普通奖品时，转盘停留的位置要给用户一种“差一点就中奖”的感觉，增加用户继续抽奖的欲望。
-    音效：转盘转动时需要有音效，转动结束时有提示音效，提升用户体验。
+我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，现在有下面几点需要修改:
+1.现在能量条的 +X 动画播放得太快了，而且会被涨上来的能量所覆盖。
+2.当前幸运值没有正常的显示，可能被覆盖了。能量条尾部需要 100 的标记。现在的不合适未能完全显示。
+相关代码如下,所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
+lottery.js代码如下:
+// pages/lottery/lottery.js
+const { prizes: initialPrizes } = require('config.js');
+
+Page({
+  data: {
+    points: 50,
+    energy: 0,
+    energyPercentage: 0,
+    energyIncrease: 0, // 显示本次增加的能量
+    showEnergyIncrease: false, // 控制+X的显示
+    prizes: JSON.parse(JSON.stringify(initialPrizes)),
+    spinCount: 0,
+    propCount: 0,
+  },
+  onLoad() {
+    this.getUserPoints();
+  },
+  getUserPoints() {
+    this.setData({
+      points: 50,
+    });
+  },
+  consumePoints({ detail: { points } }) {
+    this.updatePoints(-points);
+  },
+  addPoints({ detail: { points } }) {
+    this.updatePoints(points);
+  },
+  updatePoints(change) {
+    this.setData({
+      points: this.data.points + change,
+    });
+  },
+  updateEnergy() {
+    const currentEnergy = this.data.energy;
+    const increase = (100 - currentEnergy) / 10; // 按现有规则计算的增加量
+    const newEnergy = Math.min(100, currentEnergy + increase);
+
+    // 显示增加的幸运值，暂不触发动画
+    this.setData({
+      energyIncrease: increase.toFixed(2),
+      showEnergyIncrease: true,
+    });
+
+    // 用户点击“确定”后，开始增长动画
+    setTimeout(() => {
+      this.setData({ showEnergyIncrease: false });
+      this.animateEnergyIncrease(newEnergy);
+    }, 1000); // 延迟3秒后关闭 +X 动画
+  },
+  animateEnergyIncrease(targetEnergy) {
+    const step = (targetEnergy - this.data.energy) / 30; // 延长动画效果
+    const increaseInterval = setInterval(() => {
+      const newEnergy = this.data.energy + step;
+      if (newEnergy >= targetEnergy) {
+        clearInterval(increaseInterval);
+        this.setData({
+          energy: targetEnergy,
+          energyPercentage: targetEnergy.toFixed(2),
+        });
+      } else {
+        this.setData({
+          energy: newEnergy,
+          energyPercentage: newEnergy.toFixed(2),
+        });
+      }
+    }, 40);
+  },
+  updateSpinCount() {
+    const newSpinCount = this.data.spinCount + 1;
+    const newPropCount = newSpinCount % 5 === 0 ? this.data.propCount + 1 : this.data.propCount;
+
+    if (newPropCount > this.data.propCount) {
+      wx.showToast({
+        title: '获得一个消除奖品道具',
+        icon: 'none',
+      });
+    }
+
+    this.setData({
+      spinCount: newSpinCount,
+      propCount: newPropCount,
+    });
+  },
+  updateProp({ detail: { propChange } }) {
+    this.setData({
+      propCount: this.data.propCount + propChange,
+    });
+  },
+  updatePrizes({ detail: { prizes } }) {
+    this.setData({ prizes });
+  },
+  onShowRules() {
+    const rules = `
+1. 每次抽奖消耗10积分
+2. 抽奖结果由后台返回
+3. 每次抽奖会增加幸运值
+4. 幸运值越高，中奖概率可能越大
+5. 每抽取5次，获得一个消除奖品的道具`;
+    wx.showModal({
+      title: '抽奖规则',
+      content: rules,
+      showCancel: false,
+    });
+  },
+  showEnergyInfo() {
+    wx.showModal({
+      title: '幸运值说明',
+      content: '幸运值表示您当前的幸运程度，幸运值越高，获得大奖的概率越高。',
+      showCancel: false,
+    });
+  },
+});
+lottery.wxml代码如下:
+<!-- pages/lottery/lottery.wxml -->
+<view class="container">
+  <view class="header">
+    <view class="user-info">
+      <text>积分：{{points}}</text>
+    </view>
+    <view class="menu">
+      <text class="menu-item" bindtap="onShowRules">规则</text>
+    </view>
+  </view>
+
+  <view class="energy-bar">
+    <text class="energy-text">幸运值：{{energy.toFixed(2)}}</text>
+    <view class="energy-bar-bg">
+      <view class="energy-bar-fill" style="{{'width:' + energyPercentage + '%;'}}"></view>
+      <!-- 显示+X的动画，位置在能量条上方 -->
+      <view wx:if="{{showEnergyIncrease}}" class="energy-increase-text">
+        +{{energyIncrease}}
+      </view>
+      <!-- 激光效果 -->
+      <view class="energy-bar-glow" style="{{'left:' + energyPercentage + '%;'}}"></view>
+      <!-- 显示当前幸运值 -->
+      <view class="energy-current-value" style="{{'left:' + (energyPercentage - 5) + '%;'}}">
+        {{energy.toFixed(2)}}
+      </view>
+      <!-- 100标记 -->
+      <view class="energy-max-label">100</view>
+    </view>
+    <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
+  </view>
+
+  <wheel
+    id="wheelComponent"
+    prizes="{{prizes}}"
+    points="{{points}}"
+    propCount="{{propCount}}"
+    bind:consumePoints="consumePoints"
+    bind:addPoints="addPoints"
+    bind:updateEnergy="updateEnergy"
+    bind:spinFinished="updateSpinCount"
+    bind:updateProp="updateProp"
+    bind:updatePrizes="updatePrizes"
+  />
+</view>
+lottery.wxss代码如下:
+/* pages/lottery/lottery.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f2f2f2;
+  padding: 40rpx; /* 向下移动页面 */
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx;
+}
+
+.user-info {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.menu-item {
+  color: #ff6600;
+  font-size: 30rpx;
+}
+
+.energy-bar {
+  width: 90%;
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.energy-bar-bg {
+  flex: 1;
+  height: 24rpx;
+  background: linear-gradient(90deg, #d1eaff, #66ccff);
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-left: 10rpx;
+  position: relative;
+}
+
+.energy-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffcc00, #ff6600);
+  transition: width 0.5s ease;
+}
+
+.energy-text {
+  font-size: 26rpx;
+  color: #555;
+}
+
+.info-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-left: 12rpx;
+}
+
+/* 动态显示的幸运值增加文本 */
+.energy-increase-text {
+  position: absolute;
+  top: -40rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24rpx;
+  color: #ff3333;
+  animation: fadeInOut 3s ease forwards; /* 延长3秒 */
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(10px); }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* 能量条上的激光效果 */
+.energy-bar-glow {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 6rpx; /* 更显眼的宽度 */
+  background: linear-gradient(180deg, transparent, #ffdd55, #ff9900, transparent); /* 更亮的颜色 */
+  box-shadow: 0 0 14rpx rgba(255, 204, 0, 1);
+  animation: glowMove 1s infinite linear;
+}
+
+@keyframes glowMove {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* 当前能量值 */
+.energy-current-value {
+  position: absolute;
+  top: -30rpx;
+  font-size: 22rpx;
+  color: #333;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+
+/* 能量条的最大值标记 */
+.energy-max-label {
+  position: absolute;
+  right: -20rpx;
+  top: -8rpx;
+  font-size: 22rpx;
+  color: #333;
+}
