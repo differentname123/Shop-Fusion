@@ -16,31 +16,43 @@ Page({
         iconPath: '/images/icon_share.png',
         title: '分享小程序',
         subtitle: '可获得2积分',
-        item: '分享小程序'
+        item: '分享小程序',
+        isBouncing: false
       },
       {
         iconPath: '/images/icon_video.png',
         title: '观看视频',
         subtitle: '可获得1积分',
-        item: '观看视频'
+        item: '观看视频',
+        isBouncing: false
       },
       {
         iconPath: '/images/icon_group.png',
         title: '多人拼团群',
         subtitle: '',
-        item: '多人拼团群'
+        item: '多人拼团群',
+        isBouncing: false
+      },
+      {
+        iconPath: '/images/choujiang.png',
+        title: '幸运大抽奖',
+        subtitle: '',
+        item: '幸运大抽奖',
+        isBouncing: true // 设置跳动效果和小红点
       },
       {
         iconPath: '/images/icon_customer_service.png',
         title: '联系客服',
         subtitle: '',
-        item: '联系客服'
+        item: '联系客服',
+        isBouncing: false
       },
       {
         iconPath: '/images/icon_about_us.png',
         title: '关于我们',
         subtitle: '',
-        item: '关于我们'
+        item: '关于我们',
+        isBouncing: false
       }
     ],
     isLoading: true
@@ -155,7 +167,7 @@ Page({
   // 菜单项点击事件
   onMenuItemTap(e) {
     const item = e.currentTarget.dataset.item;
-    switch(item){
+    switch (item) {
       case '分享小程序':
         wx.showShareMenu({
           withShareTicket: true
@@ -171,9 +183,15 @@ Page({
           url: '/pages/lottery/lottery',
         });
         break;
+      case '幸运大抽奖':
+        this.removeRedDotAndBounce('幸运大抽奖'); // 移除小红点和跳动效果
+        wx.navigateTo({
+          url: '/pages/lottery/lottery',
+        });
+        break;
       case '联系客服':
         wx.openCustomerServiceChat({
-          extInfo: {url: 'https://your.customer.service.url'},
+          extInfo: { url: 'https://your.customer.service.url' },
           corpId: 'your_corp_id',
           success(res) { }
         });
@@ -193,5 +211,18 @@ Page({
         });
         break;
     }
+  },
+
+  // 移除小红点和跳动效果
+  removeRedDotAndBounce(title) {
+    const updatedMenuItems = this.data.menuItems.map(item => {
+      if (item.title === title) {
+        item.isBouncing = false; // 关闭跳动效果和小红点
+      }
+      return item;
+    });
+    this.setData({
+      menuItems: updatedMenuItems
+    });
   }
 });

@@ -145,6 +145,17 @@ Component({
         };  // 修正了这里的位置
       });
     },
+    getColor(index) {
+      const colorPairs = [
+        { start: '#FFD700', end: '#FFA500' },
+        { start: '#ADFF2F', end: '#32CD32' },
+        { start: '#87CEFA', end: '#1E90FF' },
+        { start: '#FFB6C1', end: '#FF69B4' },
+        { start: '#FF4500', end: '#FF6347' },
+        { start: '#BA55D3', end: '#9370DB' },
+      ];
+      return colorPairs[index % colorPairs.length];
+    },
     drawWheel(angle) {
       const ctx = this.ctx;
       const { canvasWidth, canvasHeight } = this.data;
@@ -174,18 +185,29 @@ Component({
       prizes.forEach((prize, index) => {
         const anglePerPrize = (prize.range / totalRange) * 2 * Math.PI;
 
+        // 创建渐变色
+        const colors = this.getColor(index);
+        const gradient = ctx.createLinearGradient(centerX, centerY - radius, centerX, centerY + radius);
+        gradient.addColorStop(0, colors.start);
+        gradient.addColorStop(1, colors.end);
+
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.arc(centerX, centerY, radius, startAngle, startAngle + anglePerPrize);
         ctx.closePath();
-        ctx.fillStyle = this.getColor(index);
+        ctx.fillStyle = gradient;
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        ctx.shadowBlur = 5;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
         ctx.fill();
+        ctx.shadowColor = 'transparent'; // 重置阴影
 
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(startAngle + anglePerPrize / 2);
 
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = '#fff';
         ctx.font = 'bold 18px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -214,6 +236,24 @@ Component({
 
       ctx.restore();
 
+      // 绘制外圈
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius + 10, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.restore();
+
+      // 绘制指针并添加闪烁效果
+      ctx.save();
+
+      if (!this.data.isSpinning) {
+        // 闲置状态下指针闪烁
+        const blinkOpacity = 0.7 + 0.3 * Math.abs(Math.sin(Date.now() / 500));
+        ctx.globalAlpha = blinkOpacity;
+      }
+
       if (this.pointerImage) {
         const pointerSize = 60;
         ctx.drawImage(
@@ -232,10 +272,8 @@ Component({
         ctx.fillStyle = '#FF0000';
         ctx.fill();
       }
-    },
-    getColor(index) {
-      const colors = ['#FFB6C1', '#FFD700', '#ADFF2F', '#87CEFA', '#FFA500', '#90EE90'];
-      return colors[index % colors.length];
+
+      ctx.restore();
     },
     startIdleAnimation() {
       const animate = () => {

@@ -10,6 +10,16 @@ Page({
     loading: false, // 是否正在加载
     progress: 0, // 当前解析进度
     totalImages: 0, // 总共需要解析的图片数
+    navBarHeight: 64 // default value
+  },
+
+  onLoad() {
+    const titleNav = this.selectComponent('#titleNav');
+    if (titleNav) {
+      this.setData({
+        navBarHeight: titleNav.data.navBarHeight + 66
+      });
+    }
   },
 
   // 选择图片并解析

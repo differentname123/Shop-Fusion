@@ -1,43 +1,48 @@
 <!-- pages/lottery/lottery.wxml -->
 <view class="container">
-  <view class="header">
+  <!-- 自定义导航栏 -->
+  <title-nav title="幸运大抽奖"></title-nav>
+
+  <!-- 将积分、能量条和转盘紧密排列，增加margin-top避免被导航栏遮挡 -->
+  <view class="content" style="margin-top: {{navBarHeight}}px;">
+    <!-- 积分和规则 -->
     <view class="user-info">
-      <text>积分：{{points}}</text>
-    </view>
-    <view class="menu">
+      <text class="points-text">积分：{{points}}</text>
       <text class="menu-item" bindtap="onShowRules">规则</text>
     </view>
-  </view>
 
-  <view class="energy-bar">
-    <text class="energy-text">幸运值：{{energyDisplay}}/100</text>
-    <view class="energy-bar-bg">
-      <view class="energy-bar-fill" style="{{'width:' + energyPercentage + '%;'}}"></view>
-      <!-- 激光效果 -->
-      <view class="energy-bar-glow" style="{{'left:' + energyPercentage + '%;'}}"></view>
-      <!-- 显示+X的动画，位置在能量条上方 -->
-      <view
-        wx:if="{{showEnergyIncrease}}"
-        class="energy-increase-text"
-        style="{{'left:' + energyPercentage + '%;'}}"
-      >
-        +{{energyIncrease}}
+    <!-- 能量条和 info-icon -->
+    <view class="energy-bar">
+      <text class="energy-text">幸运值：{{energyDisplay}}/100</text>
+      <view class="energy-bar-container">
+        <view class="energy-bar-bg">
+          <view class="energy-bar-fill" style="{{'width:' + energyPercentage + '%;'}}"></view>
+          <view class="energy-bar-glow" style="{{'left:' + energyPercentage + '%;'}}"></view>
+          <view
+            wx:if="{{showEnergyIncrease}}"
+            class="energy-increase-text"
+            style="{{'left:' + energyPercentage + '%;'}}"
+          >
+            +{{energyIncrease}}
+          </view>
+        </view>
+        <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
       </view>
     </view>
-    <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
-  </view>
 
-  <wheel
-    id="wheelComponent"
-    prizes="{{prizes}}"
-    points="{{points}}"
-    propCount="{{propCount}}"
-    bind:consumePoints="consumePoints"
-    bind:addPoints="addPoints"
-    bind:updateEnergy="updateEnergy"
-    bind:spinFinished="updateSpinCount"
-    bind:updateProp="updateProp"
-    bind:updatePrizes="updatePrizes"
-    bind:prizeConfirmed="onPrizeConfirmed"
-  />
+    <!-- 转盘组件 -->
+    <wheel
+      id="wheelComponent"
+      prizes="{{prizes}}"
+      points="{{points}}"
+      propCount="{{propCount}}"
+      bind:consumePoints="consumePoints"
+      bind:addPoints="addPoints"
+      bind:updateEnergy="updateEnergy"
+      bind:spinFinished="updateSpinCount"
+      bind:updateProp="updateProp"
+      bind:updatePrizes="updatePrizes"
+      bind:prizeConfirmed="onPrizeConfirmed"
+    />
+  </view>
 </view>

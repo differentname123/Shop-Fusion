@@ -12,9 +12,18 @@ Page({
     prizes: JSON.parse(JSON.stringify(initialPrizes)),
     spinCount: 0,
     propCount: 0,
+    navBarHeight: 0, // 新增：导航栏高度
   },
   onLoad() {
     this.getUserPoints();
+    // 获取导航栏高度
+    const systemInfo = wx.getSystemInfoSync();
+    const statusBarHeight = systemInfo.statusBarHeight;
+    const navHeight = 44;
+    const navBarHeight = statusBarHeight + navHeight;
+    this.setData({
+      navBarHeight,
+    });
   },
   getUserPoints() {
     this.setData({
@@ -34,30 +43,26 @@ Page({
   },
   updateEnergy() {
     const currentEnergy = this.data.energy;
-    const increase = (100 - currentEnergy) / 10; // 按现有规则计算的增加量
+    const increase = (100 - currentEnergy) / 10;
     const newEnergy = Math.min(100, currentEnergy + increase);
 
-    // 设置增加的幸运值，但不立即播放动画
     this.setData({
       energyIncrease: increase.toFixed(2),
-      showEnergyIncrease: false, // 隐藏+X动画
+      showEnergyIncrease: false,
     });
 
-    // 在用户触发后，开始播放+X动画和能量增长动画
     this.triggerEnergyIncreaseAnimation(newEnergy);
   },
   triggerEnergyIncreaseAnimation(targetEnergy) {
-    // 显示+X动画
     this.setData({ showEnergyIncrease: true });
     setTimeout(() => {
       this.setData({ showEnergyIncrease: false });
-    }, 3000); // 控制+X动画显示时间为3秒
+    }, 3000);
 
-    // 同时开始能量增长动画
     this.animateEnergyIncrease(targetEnergy);
   },
   animateEnergyIncrease(targetEnergy) {
-    const step = (targetEnergy - this.data.energy) / 30; // 延长动画效果
+    const step = (targetEnergy - this.data.energy) / 30;
     const increaseInterval = setInterval(() => {
       let newEnergy = this.data.energy + step;
       if (newEnergy >= targetEnergy) {
@@ -101,7 +106,7 @@ Page({
 2. 抽奖结果由后台返回
 3. 每次抽奖会增加幸运值
 4. 幸运值越高，中奖概率可能越大
-5. 每抽取5次，获得一个消除奖品的道具`;
+5. 每抽取5次，获得一个消除奖品道具`;
     wx.showModal({
       title: '抽奖规则',
       content: rules,
