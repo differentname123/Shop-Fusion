@@ -1,277 +1,89 @@
-我正在使用微信开发者工具开发一款小程序，现在有个抽奖的lottery页面，现在有下面几点需要修改:
-1.现在能量条的 +X 动画播放得太快了，而且会被涨上来的能量所覆盖。
-2.当前幸运值没有正常的显示，可能被覆盖了。能量条尾部需要 100 的标记。现在的不合适未能完全显示。
-相关代码如下,所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
-lottery.js代码如下:
-// pages/lottery/lottery.js
-const { prizes: initialPrizes } = require('config.js');
-
-Page({
-  data: {
-    points: 50,
-    energy: 0,
-    energyPercentage: 0,
-    energyIncrease: 0, // 显示本次增加的能量
-    showEnergyIncrease: false, // 控制+X的显示
-    prizes: JSON.parse(JSON.stringify(initialPrizes)),
-    spinCount: 0,
-    propCount: 0,
-  },
-  onLoad() {
-    this.getUserPoints();
-  },
-  getUserPoints() {
-    this.setData({
-      points: 50,
-    });
-  },
-  consumePoints({ detail: { points } }) {
-    this.updatePoints(-points);
-  },
-  addPoints({ detail: { points } }) {
-    this.updatePoints(points);
-  },
-  updatePoints(change) {
-    this.setData({
-      points: this.data.points + change,
-    });
-  },
-  updateEnergy() {
-    const currentEnergy = this.data.energy;
-    const increase = (100 - currentEnergy) / 10; // 按现有规则计算的增加量
-    const newEnergy = Math.min(100, currentEnergy + increase);
-
-    // 显示增加的幸运值，暂不触发动画
-    this.setData({
-      energyIncrease: increase.toFixed(2),
-      showEnergyIncrease: true,
-    });
-
-    // 用户点击“确定”后，开始增长动画
-    setTimeout(() => {
-      this.setData({ showEnergyIncrease: false });
-      this.animateEnergyIncrease(newEnergy);
-    }, 1000); // 延迟3秒后关闭 +X 动画
-  },
-  animateEnergyIncrease(targetEnergy) {
-    const step = (targetEnergy - this.data.energy) / 30; // 延长动画效果
-    const increaseInterval = setInterval(() => {
-      const newEnergy = this.data.energy + step;
-      if (newEnergy >= targetEnergy) {
-        clearInterval(increaseInterval);
-        this.setData({
-          energy: targetEnergy,
-          energyPercentage: targetEnergy.toFixed(2),
-        });
-      } else {
-        this.setData({
-          energy: newEnergy,
-          energyPercentage: newEnergy.toFixed(2),
-        });
+{
+  'order_list_get_response': {
+    'total_count': 1,
+    'order_list': [
+      {
+        'sep_market_fee': 0,
+        'goods_price': 2370,
+        'sep_duo_id': 0,
+        'promotion_rate': 126,
+        'type': 0,
+        'subsidy_duo_amount_level': 0,
+        'platform_discount': 0,
+        'order_status': 1,
+        'cat_ids': [
+          6398,
+          6469,
+          6471,
+          23511
+        ],
+        'order_create_time': 1730385122,
+        'is_direct': 1,
+        'order_group_success_time': 1730385124,
+        'mall_id': 825976301,
+        'order_amount': 1970,
+        'price_compare_status': 0,
+        'mall_name': '脆升升食品官方旗舰店',
+        'order_modify_at': 1730385144,
+        'auth_duo_id': 0,
+        'cpa_new': 0,
+        'goods_name': '脆升升香脆薯条200g(20g*10包)小袋办公零食休闲追剧小吃脆脆生生',
+        'batch_no': '',
+        'red_packet_type': 0,
+        'goods_quantity': 1,
+        'goods_id': 300851528169,
+        'sep_parameters': '',
+        'sep_rate': 0,
+        'subsidy_type': 0,
+        'share_rate': 0,
+        'custom_parameters': '',
+        'goods_thumbnail_url': 'https://img.pddpic.com/gaudit-image/2024-09-12/bcc7a1f41fcf8dbbe241dbfb57c0ba73.jpeg',
+        'promotion_amount': 248,
+        'order_pay_time': 1730385124,
+        'activity_tags': [
+          13447,
+          11335,
+          13134,
+          11025,
+          12242,
+          14227,
+          12756,
+          12436,
+          11030,
+          12247,
+          12824,
+          12123,
+          12638,
+          12832,
+          11041,
+          10851,
+          10792,
+          13482,
+          13034,
+          11818,
+          12842,
+          12779,
+          12523,
+          13360,
+          14321,
+          12282,
+          12346,
+          14269,
+          10943
+        ],
+        'group_id': 2756678051248321080,
+        'bandan_risk_consult': -1,
+        'sep_pid': '',
+        'order_status_desc': '已成团',
+        'share_amount': 0,
+        'order_id': 'mTLvQ08nVuQSmQxpkd6KXg==',
+        'goods_category_name': '零食/坚果/特产',
+        'goods_sign': 'E9T25GZo_31gMvVVwvfedCjIeW-kIdX0_JgIGLC155',
+        'order_sn': '241031-004278228481080',
+        'p_id': '41675195_296645239',
+        'zs_duo_id': 8970909
       }
-    }, 40);
-  },
-  updateSpinCount() {
-    const newSpinCount = this.data.spinCount + 1;
-    const newPropCount = newSpinCount % 5 === 0 ? this.data.propCount + 1 : this.data.propCount;
-
-    if (newPropCount > this.data.propCount) {
-      wx.showToast({
-        title: '获得一个消除奖品道具',
-        icon: 'none',
-      });
-    }
-
-    this.setData({
-      spinCount: newSpinCount,
-      propCount: newPropCount,
-    });
-  },
-  updateProp({ detail: { propChange } }) {
-    this.setData({
-      propCount: this.data.propCount + propChange,
-    });
-  },
-  updatePrizes({ detail: { prizes } }) {
-    this.setData({ prizes });
-  },
-  onShowRules() {
-    const rules = `
-1. 每次抽奖消耗10积分
-2. 抽奖结果由后台返回
-3. 每次抽奖会增加幸运值
-4. 幸运值越高，中奖概率可能越大
-5. 每抽取5次，获得一个消除奖品的道具`;
-    wx.showModal({
-      title: '抽奖规则',
-      content: rules,
-      showCancel: false,
-    });
-  },
-  showEnergyInfo() {
-    wx.showModal({
-      title: '幸运值说明',
-      content: '幸运值表示您当前的幸运程度，幸运值越高，获得大奖的概率越高。',
-      showCancel: false,
-    });
-  },
-});
-lottery.wxml代码如下:
-<!-- pages/lottery/lottery.wxml -->
-<view class="container">
-  <view class="header">
-    <view class="user-info">
-      <text>积分：{{points}}</text>
-    </view>
-    <view class="menu">
-      <text class="menu-item" bindtap="onShowRules">规则</text>
-    </view>
-  </view>
-
-  <view class="energy-bar">
-    <text class="energy-text">幸运值：{{energy.toFixed(2)}}</text>
-    <view class="energy-bar-bg">
-      <view class="energy-bar-fill" style="{{'width:' + energyPercentage + '%;'}}"></view>
-      <!-- 显示+X的动画，位置在能量条上方 -->
-      <view wx:if="{{showEnergyIncrease}}" class="energy-increase-text">
-        +{{energyIncrease}}
-      </view>
-      <!-- 激光效果 -->
-      <view class="energy-bar-glow" style="{{'left:' + energyPercentage + '%;'}}"></view>
-      <!-- 显示当前幸运值 -->
-      <view class="energy-current-value" style="{{'left:' + (energyPercentage - 5) + '%;'}}">
-        {{energy.toFixed(2)}}
-      </view>
-      <!-- 100标记 -->
-      <view class="energy-max-label">100</view>
-    </view>
-    <image class="info-icon" src="/assets/question_mark.png" bindtap="showEnergyInfo" />
-  </view>
-
-  <wheel
-    id="wheelComponent"
-    prizes="{{prizes}}"
-    points="{{points}}"
-    propCount="{{propCount}}"
-    bind:consumePoints="consumePoints"
-    bind:addPoints="addPoints"
-    bind:updateEnergy="updateEnergy"
-    bind:spinFinished="updateSpinCount"
-    bind:updateProp="updateProp"
-    bind:updatePrizes="updatePrizes"
-  />
-</view>
-lottery.wxss代码如下:
-/* pages/lottery/lottery.wxss */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #f2f2f2;
-  padding: 40rpx; /* 向下移动页面 */
-}
-
-.header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 20rpx;
-}
-
-.user-info {
-  font-size: 30rpx;
-  color: #333;
-}
-
-.menu-item {
-  color: #ff6600;
-  font-size: 30rpx;
-}
-
-.energy-bar {
-  width: 90%;
-  margin-top: 20rpx;
-  display: flex;
-  align-items: center;
-}
-
-.energy-bar-bg {
-  flex: 1;
-  height: 24rpx;
-  background: linear-gradient(90deg, #d1eaff, #66ccff);
-  border-radius: 12rpx;
-  overflow: hidden;
-  margin-left: 10rpx;
-  position: relative;
-}
-
-.energy-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #ffcc00, #ff6600);
-  transition: width 0.5s ease;
-}
-
-.energy-text {
-  font-size: 26rpx;
-  color: #555;
-}
-
-.info-icon {
-  width: 32rpx;
-  height: 32rpx;
-  margin-left: 12rpx;
-}
-
-/* 动态显示的幸运值增加文本 */
-.energy-increase-text {
-  position: absolute;
-  top: -40rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 24rpx;
-  color: #ff3333;
-  animation: fadeInOut 3s ease forwards; /* 延长3秒 */
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(10px); }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-10px); }
-}
-
-/* 能量条上的激光效果 */
-.energy-bar-glow {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 6rpx; /* 更显眼的宽度 */
-  background: linear-gradient(180deg, transparent, #ffdd55, #ff9900, transparent); /* 更亮的颜色 */
-  box-shadow: 0 0 14rpx rgba(255, 204, 0, 1);
-  animation: glowMove 1s infinite linear;
-}
-
-@keyframes glowMove {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
-}
-
-/* 当前能量值 */
-.energy-current-value {
-  position: absolute;
-  top: -30rpx;
-  font-size: 22rpx;
-  color: #333;
-  font-weight: bold;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-}
-
-/* 能量条的最大值标记 */
-.energy-max-label {
-  position: absolute;
-  right: -20rpx;
-  top: -8rpx;
-  font-size: 22rpx;
-  color: #333;
+    ],
+    'request_id': '17303859273887914'
+  }
 }

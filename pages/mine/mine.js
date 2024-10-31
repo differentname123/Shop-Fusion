@@ -179,9 +179,15 @@ Page({
         });
         break;
       case '多人拼团群':
-        wx.navigateTo({
-          url: '/pages/lottery/lottery',
-        });
+        wx.navigateToMiniProgram({
+          appId: 'wx32540bd863b27570',
+          path: 'package_a/welfare_coupon/welfare_coupon?goods_id=659889393221&pid=41675195_295492064&goods_sign=E9j2O8438NFgMvVVwvfedL1nU40ZTpI__Jx87zLDwU&zs_duo_id=25396535&cpsSign=CC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2&_oc_cps_sign=CC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&_oc_pid=41675195_295492064&_oc_mkt_domain=222&_oc_mkt_tr_sc=ddjb_goods_coupon&_oc_mkt_tr_token=iu7lo4mjrmvrt452dki52x3vymplgaiktphfzut3ar3ehn4pscwrwwunv3vxzc4pdp56c5gbnogp2',  // 替换为具体商品的路径和参数
+          extraData: {},
+          envVersion: 'release',
+          success(res) {
+            console.log("跳转成功");
+          }
+        });        
         break;
       case '幸运大抽奖':
         this.removeRedDotAndBounce('幸运大抽奖'); // 移除小红点和跳动效果
