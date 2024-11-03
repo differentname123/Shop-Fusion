@@ -169,19 +169,31 @@ Page({
     const item = e.currentTarget.dataset.item;
     switch (item) {
       case '分享小程序':
-        wx.showShareMenu({
-          withShareTicket: true
-        });
+        wx.navigateToMiniProgram({
+          appId: 'wx32540bd863b27570',
+          path: 'pages/web/web?_x_ddjb_id=41675195_295492064%7CCC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&specialUrl=1&src=https%3A%2F%2Fmobile.yangkeduo.com%2Fpincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26_pdd_tc%3Dffffff%26_pdd_sbs%3D1%26group_order_id%3D2759431473357121080%26refer_share_id%3Dk93yymaa3wr7pja939rbs977xkfd065c%26refer_share_channel%3Dmessage%26refer_share_uin%3DS4TXEOHRBOFZZFPGVQPWN4TNPQ_GEXDA&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&from_share=1',  // 替换为具体商品的路径和参数
+          extraData: {},
+          envVersion: 'release',
+          success(res) {
+            console.log("跳转成功");
+          }
+        }); 
         break;
       case '观看视频':
-        wx.navigateTo({
-          url: '/pages/video/video',
-        });
+        wx.navigateToMiniProgram({
+          appId: 'wx32540bd863b27570',
+          path: 'pages/web/web.html?_x_ddjb_id=41675195_295492064%7CCC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&specialUrl=1&src=https%3A%2F%2Fmobile.yangkeduo.com%2Fpincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26_pdd_tc%3Dffffff%26_pdd_sbs%3D1%26group_order_id%3D2759431473357121080%26refer_share_id%3Dk93yymaa3wr7pja939rbs977xkfd065c%26refer_share_channel%3Dmessage%26refer_share_uin%3DS4TXEOHRBOFZZFPGVQPWN4TNPQ_GEXDA&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&from_share=1',  // 替换为具体商品的路径和参数
+          extraData: {},
+          envVersion: 'release',
+          success(res) {
+            console.log("跳转成功");
+          }
+        }); 
         break;
       case '多人拼团群':
         wx.navigateToMiniProgram({
           appId: 'wx32540bd863b27570',
-          path: 'package_a/welfare_coupon/welfare_coupon?goods_id=659889393221&pid=41675195_295492064&goods_sign=E9j2O8438NFgMvVVwvfedL1nU40ZTpI__Jx87zLDwU&zs_duo_id=25396535&cpsSign=CC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2&_oc_cps_sign=CC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&_oc_pid=41675195_295492064&_oc_mkt_domain=222&_oc_mkt_tr_sc=ddjb_goods_coupon&_oc_mkt_tr_token=iu7lo4mjrmvrt452dki52x3vymplgaiktphfzut3ar3ehn4pscwrwwunv3vxzc4pdp56c5gbnogp2',  // 替换为具体商品的路径和参数
+          path: 'pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D2759431473357121080',  // 替换为具体商品的路径和参数
           extraData: {},
           envVersion: 'release',
           success(res) {
