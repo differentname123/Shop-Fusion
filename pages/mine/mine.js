@@ -169,31 +169,19 @@ Page({
     const item = e.currentTarget.dataset.item;
     switch (item) {
       case '分享小程序':
-        wx.navigateToMiniProgram({
-          appId: 'wx32540bd863b27570',
-          path: 'pages/web/web?_x_ddjb_id=41675195_295492064%7CCC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&specialUrl=1&src=https%3A%2F%2Fmobile.yangkeduo.com%2Fpincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26_pdd_tc%3Dffffff%26_pdd_sbs%3D1%26group_order_id%3D2759431473357121080%26refer_share_id%3Dk93yymaa3wr7pja939rbs977xkfd065c%26refer_share_channel%3Dmessage%26refer_share_uin%3DS4TXEOHRBOFZZFPGVQPWN4TNPQ_GEXDA&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&from_share=1',  // 替换为具体商品的路径和参数
-          extraData: {},
-          envVersion: 'release',
-          success(res) {
-            console.log("跳转成功");
-          }
-        }); 
+        wx.showShareMenu({
+          withShareTicket: true
+        });
         break;
       case '观看视频':
-        wx.navigateToMiniProgram({
-          appId: 'wx32540bd863b27570',
-          path: 'pages/web/web.html?_x_ddjb_id=41675195_295492064%7CCC_241101_41675195_295492064_104b06834be518e6c5584b61c1fa41f9&specialUrl=1&src=https%3A%2F%2Fmobile.yangkeduo.com%2Fpincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26_pdd_tc%3Dffffff%26_pdd_sbs%3D1%26group_order_id%3D2759431473357121080%26refer_share_id%3Dk93yymaa3wr7pja939rbs977xkfd065c%26refer_share_channel%3Dmessage%26refer_share_uin%3DS4TXEOHRBOFZZFPGVQPWN4TNPQ_GEXDA&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&from_share=1',  // 替换为具体商品的路径和参数
-          extraData: {},
-          envVersion: 'release',
-          success(res) {
-            console.log("跳转成功");
-          }
-        }); 
+        wx.navigateTo({
+          url: '/pages/video/video',
+        });
         break;
       case '多人拼团群':
         wx.navigateToMiniProgram({
           appId: 'wx32540bd863b27570',
-          path: 'pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D2759431473357121080',  // 替换为具体商品的路径和参数
+          path: 'pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D2756678051248321080',  // 替换为具体商品的路径和参数
           extraData: {},
           envVersion: 'release',
           success(res) {

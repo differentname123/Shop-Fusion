@@ -88,7 +88,7 @@
 
               <!-- 参与拼团按钮 -->
               <view class="action-item join-group-item">
-                <van-icon name="friends-o" bindtap="onJoinGroup" data-keycode="{{item.keyCode}}" size="24rpx" class="action-icon" />
+                <van-icon name="friends-o" bindtap="onJoinGroup" data-keycode="{{item.groupOrderId}}" size="24rpx" class="action-icon" />
                 <text class="action-text">参与拼团</text>
               </view>
             </view>

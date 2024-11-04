@@ -150,6 +150,7 @@ Page({
           groupStatus: item.groupStatus,
           groupUserNum: item.groupUserNum,
           customerNum: item.customerNum,
+          groupOrderId: item.groupOrderId,
           groupRemainCount: groupRemainCount,
           // 倒计时初始值
           countdown: '',
@@ -289,25 +290,18 @@ Page({
   // 参与拼团事件
   onJoinGroup(event) {
     const keyCode = event.currentTarget.dataset.keycode;
-    const url = `https://file-link.pinduoduo.com/${keyCode}`;
+    console.log(event.currentTarget.dataset);
+    const path = `pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D${keyCode}`;
 
-    wx.setClipboardData({
-      data: url,
-      success: () => {
-        wx.showToast({
-          title: '链接已复制',
-          icon: 'success',
-          duration: 2000
-        });
-      },
-      fail: () => {
-        wx.showToast({
-          title: '复制失败',
-          icon: 'none',
-          duration: 2000
-        });
+    wx.navigateToMiniProgram({
+      appId: 'wx32540bd863b27570',
+      path: path,  // 替换为具体商品的路径和参数
+      extraData: {},
+      envVersion: 'release',
+      success(res) {
+        console.log("跳转成功");
       }
-    });
+    });   
   },
 
   onShareClick(event) {
