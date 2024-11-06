@@ -1,17 +1,4 @@
 <!-- pages/tutorial/tutorial.wxml -->
 <view class="tutorial-page">
   <view class="tutorial-title">使用教程</view>
-  <view class="tutorial-content">
-    <text>1. 点击“上传图片”按钮，选择您要解析的二维码图片。</text>
-    <image src="/assets/step1.png" mode="widthFix"></image>
-
-    <text>2. 系统会自动解析二维码内容，并显示在图片下方。</text>
-    <image src="/assets/step2.png" mode="widthFix"></image>
-
-    <text>3. 点击“分享”按钮，将解析结果分享给好友。</text>
-    <image src="/assets/step3.png" mode="widthFix"></image>
-
-    <text>以下是操作演示：</text>
-    <image src="/assets/demo.gif" mode="widthFix"></image>
-  </view>
 </view>

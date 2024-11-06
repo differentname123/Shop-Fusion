@@ -8,18 +8,22 @@ exports.main = async (event, context) => {
   const db = cloud.database();
   const { key_code } = event;
 
+  // 调用 httpbin 服务获取云函数的 IP 地址
+  const response = await axios.get('https://httpbin.org/ip');
+
+  // 打印返回的 IP 地址
+  console.log('Cloud Function IP Address:', response.data.origin);
+
   // 构建初始请求 URL
   const baseUrl = `https://file-link.pinduoduo.com/${key_code}`;
 
   // 默认的请求头信息
   const defaultHeaders = {
-    'Connection': 'keep-alive',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-    'accept-encoding': 'gzip, deflate, br, zstd',
-    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-    'user-agent': 'Apifox/1.0.0 (https://apifox.com)',
-    'cookie': 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=5EEZYVALTALZ2XFZE3KCELJWKT3ZHT3MXUD3NEVHXKVBGJUAMF2A120570b;pdd_user_id=4365968471; Path=/; Expires=Sun, 19 Jan 2025 11:08:19 GMT, pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; Path=/; Expires=Sun, 19 Jan 2025 11:08:19 GMT, pdd_vds=gaLxNbPtIlIxOyNNiGyEPGmlOInsNIayNtmbOGNyIsnxnoONNwLNoOmbibEb; Expires=Fri, 18-Oct-24 11:08:19 GMT; Path=/;',
-  };
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-encoding": "gzip, deflate, br, zstd", "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+    "cookie": "rec_list_brand_amazing_price_group=rec_list_brand_amazing_price_group_x3JXk7; api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; jrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; njrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; dilx=Zg3Np6qOYb9i5y9tCHeyR; _nano_fp=Xpmxl0PoXp9JnqXJX9_Z6hpHEuw5OsST9Ira3Ed9; PDDAccessToken=N64NQMWS4JFV33SP5F4TB43KEOPR5KKQHSB7CJSP4L46E5YFBZ6Q120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaCscICNdoeoCouOswcELIlNxQNblnxEcyxEdtmsBICINoDLstdsdOuosIBw"
+};
 
   console.error(`开始执行 fetchData，key_code: ${key_code}`);
 
@@ -51,6 +55,8 @@ exports.main = async (event, context) => {
   // 定义执行请求的函数，传入 headers
   const performRequest = async (headers) => {
     try {
+      console.error('headers');
+      console.error(headers);
       // 第一步：发起初始请求，获取重定向的 URL
       let response = await axios.get(baseUrl, {
         headers: headers,

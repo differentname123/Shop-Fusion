@@ -18,12 +18,12 @@ pid = '41675195_295492064'  # 替换为查询结果中的有效 p_id
 
 # 构造 pdd.ddk.goods.search 请求参数
 params = {
-    'type': 'pdd.ddk.order.list.range.get',
+    'type': 'pdd.ddk.order.detail.get',
 
     'client_id': client_id,
     'timestamp': int(time.time()),  # 使用 Unix 时间戳
 
-    'start_time': "2024-10-30 00:00:00",  # 使用 Unix 时间戳
+    'order_sn': "241101-518216762952755",  # 使用 Unix 时间戳
     'end_time': "2024-11-01 00:00:00",  # 使用 Unix 时间戳
 
 }

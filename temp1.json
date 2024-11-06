@@ -1,4 +1,22 @@
-  还有下面几点需要修改，所涉及到修改的文件，你直接给我完整的修改后的代码，不用给出中间的过程，不修改的文件就不用提供给我了:
-  1.现在 积分 能量条 和 转盘 的位置分割得太开了，需要调整一下，让他们更加靠近一些，直接上下紧邻就行了。
-  2.取消 增加另一个能量条，表示用户抽取的次数，这个能量条不需要+X动画效果，而且在5 10 20次的位置上面有个宝箱，当用户抽取的次数达到这个数字的时候，宝箱会跳动，然后用户就可以点击打开，里面有积分奖励 这个功能。
-  3.抽奖按钮怎么是上下跳动，而不是原地放大缩小跳动的效果。
+fetch("https://jinbao.pinduoduo.com/network/api/common/goodsList", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+    "cookie": "terminalFinger=nCGFtFMtmTZikZ7zSKDgXm7gWyvTXPD7; rckk=GKW8IzbfsrXKLlqRJWlm1jMgF7QhpPsG; _bee=GKW8IzbfsrXKLlqRJWlm1jMgF7QhpPsG; ru1k=3711873d-e121-4d94-bbce-b674b8342c31; _f77=3711873d-e121-4d94-bbce-b674b8342c31; ru2k=ed8fd767-047c-49a2-ac80-acf20370863c; _a42=ed8fd767-047c-49a2-ac80-acf20370863c; api_uid=rBUUF2cCRJmX20rjOgO8Ag==; _nano_fp=Xpmxl0Pxlp98XpXJXC_K9YkdP2jW1MRDkmDzKLmK; jrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; njrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; dilx=u9BaHD82A0av~TXmxkdC_; DDJB_PASS_ID=dce7f8f9d28f25d0f6651222b3d4567b; DDJB_LOGIN_SCENE=0"
+    "content-type": "application/json;charset=UTF-8",
+    "priority": "u=1, i",
+    "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "verifyauthtoken": "VekMC-p26CjB6fBkSnbwWw8aa9f5f919649057c"
+  },
+  "referrer": "https://jinbao.pinduoduo.com/promotion/single-promotion?keyword=610001443539",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": "{\"sectionId\":10,\"sectionName\":\"610001443539\",\"inBigSale\":[],\"keyword\":\"610001443539\",\"pageNumber\":1,\"categoryId\":-1,\"pageSize\":60,\"business\":\"single_promotion\",\"pageSn\":24548,\"pageElSn\":777156}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});

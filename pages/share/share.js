@@ -13,6 +13,7 @@ Page({
     navBarHeight: 64 // default value
   },
 
+  
   onLoad() {
     const titleNav = this.selectComponent('#titleNav');
     if (titleNav) {

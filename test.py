@@ -38,7 +38,7 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
         # 1. 发起初始请求，获取重定向后的 URL
         response = requests.get(initial_url, headers=default_headers, allow_redirects=False)
         response.raise_for_status()
-        print(response.content)
+        # print(response.content)
 
         # 获取重定向的目标 URL
         if response.status_code in [301, 302, 307, 308]:
@@ -52,7 +52,7 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
         # 2. 访问重定向后的 URL
         response = requests.get(redirected_url, headers=default_headers, allow_redirects=False)
         response.raise_for_status()
-        print(response.content)
+        # print(response.content)
 
         # print("Request Information:")
         # print(f"Request URL: {response.request.url}")
@@ -114,5 +114,5 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
         return {'status': 'error', 'message': f"Error: {str(e)}"}
 
 # 调用示例
-raw_data = make_request("MS00BdJwQb")
-# print(raw_data)
+raw_data = make_request("nyX4hMT9Yr")
+print(raw_data)

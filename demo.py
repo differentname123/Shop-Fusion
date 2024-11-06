@@ -22,7 +22,7 @@ params = {
     'client_id': client_id,
     'timestamp': int(time.time()),  # 使用 Unix 时间戳
     'data_type': 'JSON',
-    "goods_id_list": f"[{664218787179}]",  # 商品 ID 列表，JSON 格式
+    "goods_sign": f"E9v2JRzishRgMvVRwuveDl7fPizfN8ah_JQP5CAY3h",  # 商品 ID 列表，JSON 格式
     'pid': pid,
     'custom_parameters': '{"source": "custom_value"}'  # 添加 custom_parameters，内容自定义
 

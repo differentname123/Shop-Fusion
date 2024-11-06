@@ -403,7 +403,7 @@ Component({
       return stopAngle;
     },
     startRotation(stopAngle) {
-      const duration = 50; // 动画持续时间500毫秒
+      const duration = 5000; // 动画持续时间500毫秒
       const startTime = Date.now();
       const initialAngle = this.spinningAngle;
 
