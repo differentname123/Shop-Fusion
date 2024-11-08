@@ -59,8 +59,22 @@ Page({
   },
 
   async onLoad() {
+    this.getGoodsInfo();
     await this.initNavigationBar();
     await this.getOpenIdAndUserInfo();
+  },
+
+  getGoodsInfo() {
+    const db = wx.cloud.database()
+    
+    db.collection('goodsInfoTable')
+      .get()
+      .then(res => {
+        console.log('Goods Info:', res.data)
+      })
+      .catch(err => {
+        console.error('Error:', err)
+      })
   },
 
   onShow() {

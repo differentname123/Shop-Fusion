@@ -1,7 +1,9 @@
 import requests
 import time
 import hashlib
-print(0.87 * 10 / 7)
+
+
+# https://jinbao.pinduoduo.com/open.html?response_type=code&client_id=f15639975cba4df6bc8afcde5151086a&redirect_uri=https://eolavyj7304gqsk.m.pipedream.net&state=your_state
 def generate_sign(params, client_secret):
     # 按照键排序
     sorted_params = sorted(params.items())
@@ -18,13 +20,13 @@ pid = '41675195_295492064'  # 替换为查询结果中的有效 p_id
 
 # 构造 pdd.ddk.goods.search 请求参数
 params = {
-    'type': 'pdd.ddk.goods.detail',
+    'type': 'pdd.pop.auth.token.create',
+
     'client_id': client_id,
     'timestamp': int(time.time()),  # 使用 Unix 时间戳
-    'data_type': 'JSON',
-    "goods_sign": f"E9v2JRzishRgMvVRwuveDl7fPizfN8ah_JQP5CAY3h",  # 商品 ID 列表，JSON 格式
-    'pid': pid,
-    'custom_parameters': '{"source": "custom_value"}'  # 添加 custom_parameters，内容自定义
+
+    'code': "bff4bd0b55a04f5f984d3b5727bd151a44d3ca90",  # 使用 Unix 时间戳
+    'end_time': "2024-11-01 00:00:00",  # 使用 Unix 时间戳
 
 }
 
