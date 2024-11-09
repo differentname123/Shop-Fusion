@@ -36,7 +36,7 @@ def pdd_goods_search(page, page_size, keyword):
 # 循环调用函数
 page = 1
 page_size = 60
-keyword = "充电宝"
+keyword = "数据线"
 result_list = []
 while True:
     result = pdd_goods_search(page, page_size, keyword)

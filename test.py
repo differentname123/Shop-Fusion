@@ -20,13 +20,9 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
     print(initial_url)
     # 默认的请求头信息
     default_headers =  {
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)',
-      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-      "accept-encoding": "gzip, deflate, br, zstd",
-      "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-      "cookie": 'rec_list_brand_amazing_price_group=rec_list_brand_amazing_price_group_x3JXk7; api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; jrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; njrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; dilx=Zg3Np6qOYb9i5y9tCHeyR; _nano_fp=Xpmxl0PoXp9JnqXJX9_Z6hpHEuw5OsST9Ira3Ed9; PDDAccessToken=N64NQMWS4JFV33SP5F4TB43KEOPR5KKQHSB7CJSP4L46E5YFBZ6Q120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaCscICNdoeoCouOswcELIlNxQNblnxEcyxEdtmsBICINoDLstdsdOuosIBw'
+      "cookie": "terminalFinger=nCGFtFMtmTZikZ7zSKDgXm7gWyvTXPD7; rckk=GKW8IzbfsrXKLlqRJWlm1jMgF7QhpPsG; _bee=GKW8IzbfsrXKLlqRJWlm1jMgF7QhpPsG; ru1k=3711873d-e121-4d94-bbce-b674b8342c31; _f77=3711873d-e121-4d94-bbce-b674b8342c31; ru2k=ed8fd767-047c-49a2-ac80-acf20370863c; _a42=ed8fd767-047c-49a2-ac80-acf20370863c; api_uid=rBUUF2cCRJmX20rjOgO8Ag==; jrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; njrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; dilx=u9BaHD82A0av~TXmxkdC_; _nano_fp=XpmqXp9jn0T8nqdonT_MOQjdfeT4ZrnuS3UZiMUe; webp=1; quick_entrance_click_record=20241108%2C479; request_id=8ee94dcdc9c144339a37d72ab5e1c7e2; PDDAccessToken=6YX7YRUMAGWZUPSSAUEB6I52WBPMRT3QNTUKW3QYIZT23CXXYVCQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaXLzyXIpicyWLrypOhapQvihQpLqLCLznTbvyXyXIfivaZyCbCoWnqGYQqP"
 
-      # "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=7PCZPZGXF32P7KV2JHZQQRM2WPE45UX4S6LSOYHHQ6VMZSJT2PFQ120e06b;'
+        # "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=7PCZPZGXF32P7KV2JHZQQRM2WPE45UX4S6LSOYHHQ6VMZSJT2PFQ120e06b;'
 
     }
 
@@ -114,5 +110,5 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
         return {'status': 'error', 'message': f"Error: {str(e)}"}
 
 # 调用示例
-raw_data = make_request("nyX4hMT9Yr")
+raw_data = make_request("gzdhylOain")
 print(raw_data)

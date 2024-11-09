@@ -1,1 +1,85 @@
-https://mobile.pinduoduo.com/pincard_ask.html?__rp_name=brand_amazing_price_group_channel&_pdd_fs=1&_pdd_tc=ffffff&_pdd_sbs=1&refer_page_el_sn=7567298&refer_page_name=login&refer_page_id=10169_1731085654382_id82tcezvn&refer_page_sn=10169
+{
+  'store': {
+    'errorRedirectUrl': '/',
+    'isServerRendered': True,
+    'isFinishInitLoading': True,
+    'banFetchRiskUser': True,
+    '$service': {
+      'reportMap': {
+        'serviceName': 'BrandAmazingPriceGroupTeam'
+      }
+    },
+    'listIdSuffix': 'rec_list_brand_amazing_price_group_team_1B2yqk',
+    'query': {
+      '__rp_name': 'brand_amazing_price_group_team',
+      'team_id': '4377'
+    },
+    'immersiveStore': {
+      'immersiveEnable': False,
+      'navHeight': 0,
+      'statusBarHeight': 0,
+      'isInitedOnClient': False
+    },
+    'subjectGroupEntryStore': {},
+    'mutiGroupSkuStore': {
+      'SOURCE_CHANNEL': 63
+    },
+    'userAgent': 'python-requests/2.31.0',
+    'isIOSSystem': False,
+    'isNativePlatform': False,
+    'commonGoodsInfo': {
+      'refreshKey': 'refreshId',
+      'goodsInfoMap': {}
+    },
+    'sharedDecimalFontSizeGray': False,
+    'isWeChatMiniProgram': False,
+    'isHarmonyNativePlatform': False,
+    'serverTime': 1731175901,
+    'userType': -3,
+    'showPopUp': False,
+    'groupOrderList': [],
+    'clickLock': False,
+    'groupingRadioButtonFlag': 0,
+    'groupTabList': [
+      {
+        'groupOrderList': [],
+        'groupingOrderList': [],
+        'hasMore': True,
+        'page': 0,
+        'bottomRemindText': '',
+        'noGroupingRemindText': ''
+      },
+      {
+        'groupOrderList': [],
+        'groupingOrderList': [],
+        'hasMore': True,
+        'page': 0,
+        'bottomRemindText': '',
+        'noGroupingRemindText': ''
+      }
+    ],
+    'showGroupRadio': False,
+    '$serverPmmPerfLogger': {
+      'apiAxiosPlugin': {}
+    },
+    '$subjectGroupEntryStore': {
+      'reportMap': {
+        'serviceName': 'SubjectGroupEntryService'
+      }
+    },
+    'userID': 4365968471,
+    'hostname': 'mobile.pinduoduo.com',
+    'webpEnable': True,
+    'canCancelWebpOnIOS': True,
+    'currentPlatform': 'unknown',
+    'isAndroidPlatform': False,
+    'isNativeAndroidPlatform': False,
+    'isIOSPlatform': False,
+    'isNativeIOSPlatform': False,
+    'isTinyNativePlatform': False,
+    'isAndroidWeChatPlatform': False,
+    'isPureWeChatPlatform': False,
+    'appVersion': '',
+    'isWeChatPlatform': False
+  }
+}

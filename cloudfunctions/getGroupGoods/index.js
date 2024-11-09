@@ -1,7 +1,3 @@
-帮我再调整一下下面的云函数，有下面几个方面需要调整：
-1.最后不用返回详细的数据，只用显示更新的情况，比如"总共 10条数据 5条插入 4条更新 1条失败"这样的信息
-2.最后保存时需要将combinedDataList逆序一下，因为我需要的是最新的数据，所以需要将最新的数据放在最前面
-下面是云函数的代码
 // cloudfunctions/getGroupGoods/index.js
 const cloud = require('wx-server-sdk');
 const axios = require('axios');
@@ -172,7 +168,7 @@ const processRawData = async (rawData, db) => {
  * 更新或插入数据库中的 goodsInfoTable
  * @param {object} db 数据库实例
  * @param {object} individualData 每条数据对象
- * @returns {void}
+ * @returns {object} 更新或插入的结果
  */
 const updateDatabase = async (db, individualData) => {
   try {
@@ -190,10 +186,13 @@ const updateDatabase = async (db, individualData) => {
         data: individualData,
       });
       console.log(`插入新的 goodsInfo 记录，记录 ID：${addRes._id}`);
+      return { status: 'inserted' };
+    } else {
+      return { status: 'updated' };
     }
   } catch (dbError) {
     console.error('数据库操作时发生错误：', dbError);
-    throw new Error('数据库操作时发生错误。');
+    return { status: 'failed', error: dbError.message };
   }
 };
 
@@ -263,15 +262,34 @@ exports.main = async (event, context) => {
             }
 
             // 处理 rawData
-            const combinedDataList = await processRawData(rawData, db);
+            let combinedDataList = await processRawData(rawData, db);
+
+            // 逆序排列数据
+            combinedDataList = combinedDataList.reverse();
+
+            // 计数器
+            let total = combinedDataList.length;
+            let inserted = 0;
+            let updated = 0;
+            let failed = 0;
 
             // 遍历并插入/更新每条数据
             for (let individualData of combinedDataList) {
-              await updateDatabase(db, individualData);
+              const result = await updateDatabase(db, individualData);
+              if (result.status === 'inserted') {
+                inserted++;
+              } else if (result.status === 'updated') {
+                updated++;
+              } else {
+                failed++;
+              }
             }
 
-            console.log('所有数据已成功处理。');
-            return { success: true, data: combinedDataList };
+            console.log('数据处理完成。');
+            return {
+              success: true,
+              message: `总共 ${total} 条数据，${inserted} 条插入，${updated} 条更新，${failed} 条失败。`,
+            };
           } else {
             throw new Error('在响应中未找到 rawData。');
           }
@@ -292,7 +310,7 @@ exports.main = async (event, context) => {
 
   // 返回最终结果
   if (finalResult.success) {
-    return { status: 'success', data: finalResult.data };
+    return { status: 'success', message: finalResult.message };
   } else {
     return { status: 'error', message: finalResult.message };
   }
