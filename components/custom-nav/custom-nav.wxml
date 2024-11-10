@@ -5,7 +5,7 @@
     <van-search
       placeholder="搜索商品"
       value="{{searchKeyword}}"
-      show-action="true" 
+      show-action="true"
       bind:search="onSearch"
       bind:cancel="onCancel"
       bind:input="onInput"

@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1729954661684, function(require, module, exports) {
+__DEFINE__(1731211820007, function(require, module, exports) {
 
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -101,8 +101,8 @@ var _default = function _default() {
 exports["default"] = _default;
 module.exports = exports.default;
 //# sourceMappingURL=index.js.map
-}, function(modId) {var map = {"./modules/resize":1729954661685,"./modules/resize2":1729954661686}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661685, function(require, module, exports) {
+}, function(modId) {var map = {"./modules/resize":1731211820008,"./modules/resize2":1731211820009}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1731211820008, function(require, module, exports) {
 
 
 // JavaScript Image Resizer (c) 2012 - Grant Galitz
@@ -510,7 +510,7 @@ Resize.prototype.generateUint8Buffer = function (bufferLength) {
 module.exports = Resize;
 //# sourceMappingURL=resize.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661686, function(require, module, exports) {
+__DEFINE__(1731211820009, function(require, module, exports) {
 
 
 /**
@@ -778,7 +778,7 @@ module.exports = {
 };
 //# sourceMappingURL=resize2.js.map
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1729954661684);
+return __REQUIRE__(1731211820007);
 })()
 //miniprogram-npm-outsideDeps=["@babel/runtime/helpers/interopRequireDefault","@jimp/utils"]
 //# sourceMappingURL=index.js.map

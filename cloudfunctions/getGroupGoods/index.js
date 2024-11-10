@@ -143,7 +143,7 @@ const processRawData = async (rawData, db) => {
         goodsId: String(item.goodsId),
         hdThumbUrl: item.hdUrl, // 适配字段名称：hdUrl → hdThumbUrl
         goodsName: item.goodsName,
-        originActivityPrice: item.originPrice,
+        originActivityPrice: item.activityPrice,
         priceReduce: priceReduce,
         customerNum: customerNum,
         groupOrderId: item.groupOrderId,
@@ -172,6 +172,7 @@ const processRawData = async (rawData, db) => {
  */
 const updateDatabase = async (db, individualData) => {
   try {
+    console.error('individualData:', individualData);
     console.log(`尝试更新数据库记录，goodsId: ${individualData.goodsId}, groupOrderId: ${individualData.groupOrderId}`);
     const res = await db.collection('goodsInfoTable').where({
       goodsId: individualData.goodsId,

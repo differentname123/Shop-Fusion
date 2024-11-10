@@ -151,6 +151,7 @@ Page({
           groupUserNum: item.groupUserNum,
           customerNum: item.customerNum,
           groupOrderId: item.groupOrderId,
+          goodsId: item.goodsId,
           groupRemainCount: groupRemainCount,
           // 倒计时初始值
           countdown: '',
@@ -289,19 +290,49 @@ Page({
 
   // 参与拼团事件
   onJoinGroup(event) {
-    const keyCode = event.currentTarget.dataset.keycode;
-    console.log(event.currentTarget.dataset);
-    const path = `pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D${keyCode}`;
-
+    const item = event.currentTarget.dataset.item; // 获取传入的完整 item 对象
+  
+    // 拼接 URL
+    const url = `https://mobile.yangkeduo.com/pincard_ask.html?__rp_name=brand_amazing_price_group&group_order_id=${item.groupOrderId}&goods_id=${item.goodsId}`;
+    
+    console.log('Generated URL:', url);
+  
+    const path = `pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D${item.groupOrderId}%26goods_id%3D${item.goodsId}`;
+    
+    // 先复制 URL 到剪贴板，无论跳转成功与否
+    wx.setClipboardData({
+      data: url,
+      success() {
+      }
+    });
+  
+    // 跳转至指定页面
     wx.navigateToMiniProgram({
       appId: 'wx32540bd863b27570',
-      path: path,  // 替换为具体商品的路径和参数
+      path: path,
       extraData: {},
       envVersion: 'release',
       success(res) {
         console.log("跳转成功");
+      },
+      fail(err) {
+        // 跳转失败，提示用户可以通过浏览器打开
+        console.error("跳转失败", err);
+  
+        // 提示用户跳转失败并可以通过浏览器打开
+        wx.showModal({
+          title: '提示',
+          content: '无法跳转到小程序，已复制链接。你可以粘贴到浏览器中打开。',
+          showCancel: false, // 不显示取消按钮
+          confirmText: '知道了',
+          success(res) {
+            if (res.confirm) {
+              console.log('用户知道了');
+            }
+          }
+        });
       }
-    });   
+    });
   },
 
   onShareClick(event) {

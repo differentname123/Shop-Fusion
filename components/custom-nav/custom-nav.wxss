@@ -1,23 +1,24 @@
 .nav-container {
   width: 100%;
   position: fixed;
-  top: 0;
+  top: 0;  /* 确保导航栏紧贴顶部 */
   left: 0;
   z-index: 1000;
 }
 
 .status-bar {
   width: 100%;
-  background-color: #fff;
+  background-color: #fff;  /* 设置背景颜色 */
 }
 
 .nav-bar {
   width: 100%;
-  background-color: #fff;
+  background-color: #fff;  /* 设置背景颜色 */
   display: flex;
   align-items: center;
   padding: 0 10rpx;
   box-sizing: border-box;
+  color: #000;  /* 设置文字颜色为黑色 */
 }
 
 /* 调整 van-search 的宽度 */

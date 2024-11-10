@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1729954661807, function(require, module, exports) {
+__DEFINE__(1731211820130, function(require, module, exports) {
 /**
  * @author shaozilee
  *
@@ -21,8 +21,8 @@ module.exports = {
   decode: decode
 };
 
-}, function(modId) {var map = {"./lib/encoder":1729954661808,"./lib/decoder":1729954661809}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661808, function(require, module, exports) {
+}, function(modId) {var map = {"./lib/encoder":1731211820131,"./lib/decoder":1731211820132}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1731211820131, function(require, module, exports) {
 /**
  * @author shaozilee
  *
@@ -106,7 +106,7 @@ module.exports = function(imgData, quality) {
 };
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661809, function(require, module, exports) {
+__DEFINE__(1731211820132, function(require, module, exports) {
 /**
  * @author shaozilee
  *
@@ -594,7 +594,7 @@ module.exports = function(bmpData) {
 };
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1729954661807);
+return __REQUIRE__(1731211820130);
 })()
 //miniprogram-npm-outsideDeps=[]
 //# sourceMappingURL=index.js.map

@@ -4,13 +4,13 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1729954661980, function(require, module, exports) {
+__DEFINE__(1731211820303, function(require, module, exports) {
 var Document = require('./document.js');
 
 module.exports = new Document();
 
-}, function(modId) {var map = {"./document.js":1729954661981}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661981, function(require, module, exports) {
+}, function(modId) {var map = {"./document.js":1731211820304}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1731211820304, function(require, module, exports) {
 var domWalk = require("dom-walk")
 
 var Comment = require("./dom-comment.js")
@@ -84,8 +84,8 @@ proto.removeEventListener = removeEventListener
 proto.addEventListener = addEventListener
 proto.dispatchEvent = dispatchEvent
 
-}, function(modId) { var map = {"./dom-comment.js":1729954661982,"./dom-text.js":1729954661983,"./dom-element.js":1729954661984,"./dom-fragment.js":1729954661989,"./event.js":1729954661990,"./event/dispatch-event.js":1729954661985,"./event/add-event-listener.js":1729954661986,"./event/remove-event-listener.js":1729954661987}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661982, function(require, module, exports) {
+}, function(modId) { var map = {"./dom-comment.js":1731211820305,"./dom-text.js":1731211820306,"./dom-element.js":1731211820307,"./dom-fragment.js":1731211820312,"./event.js":1731211820313,"./event/dispatch-event.js":1731211820308,"./event/add-event-listener.js":1731211820309,"./event/remove-event-listener.js":1731211820310}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1731211820305, function(require, module, exports) {
 module.exports = Comment
 
 function Comment(data, owner) {
@@ -107,7 +107,7 @@ Comment.prototype.toString = function _Comment_toString() {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661983, function(require, module, exports) {
+__DEFINE__(1731211820306, function(require, module, exports) {
 module.exports = DOMText
 
 function DOMText(value, owner) {
@@ -137,7 +137,7 @@ DOMText.prototype.replaceData = function replaceData(index, length, value) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661984, function(require, module, exports) {
+__DEFINE__(1731211820307, function(require, module, exports) {
 var domWalk = require("dom-walk")
 var dispatchEvent = require("./event/dispatch-event.js")
 var addEventListener = require("./event/add-event-listener.js")
@@ -348,8 +348,8 @@ DOMElement.prototype.contains = function _Element_contains(element) {
     }) || false
 }
 
-}, function(modId) { var map = {"./event/dispatch-event.js":1729954661985,"./event/add-event-listener.js":1729954661986,"./event/remove-event-listener.js":1729954661987,"./serialize.js":1729954661988}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661985, function(require, module, exports) {
+}, function(modId) { var map = {"./event/dispatch-event.js":1731211820308,"./event/add-event-listener.js":1731211820309,"./event/remove-event-listener.js":1731211820310,"./serialize.js":1731211820311}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1731211820308, function(require, module, exports) {
 module.exports = dispatchEvent
 
 function dispatchEvent(ev) {
@@ -383,7 +383,7 @@ function dispatchEvent(ev) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661986, function(require, module, exports) {
+__DEFINE__(1731211820309, function(require, module, exports) {
 module.exports = addEventListener
 
 function addEventListener(type, listener) {
@@ -403,7 +403,7 @@ function addEventListener(type, listener) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661987, function(require, module, exports) {
+__DEFINE__(1731211820310, function(require, module, exports) {
 module.exports = removeEventListener
 
 function removeEventListener(type, listener) {
@@ -425,7 +425,7 @@ function removeEventListener(type, listener) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661988, function(require, module, exports) {
+__DEFINE__(1731211820311, function(require, module, exports) {
 module.exports = serializeNode
 
 var voidElements = ["area","base","br","col","embed","hr","img","input","keygen","link","menuitem","meta","param","source","track","wbr"];
@@ -567,7 +567,7 @@ function escapeAttributeValue(str) {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661989, function(require, module, exports) {
+__DEFINE__(1731211820312, function(require, module, exports) {
 var DOMElement = require("./dom-element.js")
 
 module.exports = DocumentFragment
@@ -597,8 +597,8 @@ DocumentFragment.prototype.toString =
         }).join("")
     }
 
-}, function(modId) { var map = {"./dom-element.js":1729954661984}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954661990, function(require, module, exports) {
+}, function(modId) { var map = {"./dom-element.js":1731211820307}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1731211820313, function(require, module, exports) {
 module.exports = Event
 
 function Event(family) {}
@@ -614,7 +614,7 @@ Event.prototype.preventDefault = function _Event_preventDefault() {
 }
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1729954661980);
+return __REQUIRE__(1731211820303);
 })()
 //miniprogram-npm-outsideDeps=["dom-walk"]
 //# sourceMappingURL=index.js.map

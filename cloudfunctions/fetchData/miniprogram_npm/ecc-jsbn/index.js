@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1729954660796, function(require, module, exports) {
+__DEFINE__(1731211818573, function(require, module, exports) {
 var crypto = require("crypto");
 var BigInteger = require("jsbn").BigInteger;
 var ECPointFp = require("./lib/ec.js").ECPointFp;
@@ -64,8 +64,8 @@ exports.ECKey = function(curve, key, isPublic)
 }
 
 
-}, function(modId) {var map = {"./lib/ec.js":1729954660797,"./lib/sec.js":1729954660798}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954660797, function(require, module, exports) {
+}, function(modId) {var map = {"./lib/ec.js":1731211818574,"./lib/sec.js":1731211818575}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1731211818574, function(require, module, exports) {
 // Basic Javascript Elliptic Curve implementation
 // Ported loosely from BouncyCastle's Java EC code
 // Only Fp curves implemented for now
@@ -629,7 +629,7 @@ var exports = {
 module.exports = exports
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1729954660798, function(require, module, exports) {
+__DEFINE__(1731211818575, function(require, module, exports) {
 // Named EC curves
 
 // Requires ec.js, jsbn.js, and jsbn2.js
@@ -801,8 +801,8 @@ module.exports = {
   "secp256r1":secp256r1
 }
 
-}, function(modId) { var map = {"./ec.js":1729954660797}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1729954660796);
+}, function(modId) { var map = {"./ec.js":1731211818574}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1731211818573);
 })()
 //miniprogram-npm-outsideDeps=["crypto","jsbn","safer-buffer"]
 //# sourceMappingURL=index.js.map

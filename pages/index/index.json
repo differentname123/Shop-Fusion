@@ -7,5 +7,7 @@
     "van-tag": "@vant/weapp/tag/index",
     "van-icon": "@vant/weapp/icon/index"
   },
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black" 
+
 }

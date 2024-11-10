@@ -39,10 +39,11 @@
     >
       <view class="product-list">
         <block wx:for="{{filteredProductList}}" wx:key="id">
+          <!-- 整个商品卡片点击触发 onJoinGroup -->
           <van-card
             thumb="{{item.imageUrl}}"
             title="{{item.title}}"
-            bind:click="onProductClick"
+            bindtap="onJoinGroup"
             data-item="{{item}}"
           >
             <!-- 价格部分 -->
@@ -67,18 +68,17 @@
 
             <!-- 底部操作按钮 -->
             <view slot="footer" class="product-footer">
+
               <!-- 分享按钮 -->
-              <view class="action-item">
-                <van-icon name="share-o" bindtap="onShareClick" data-id="{{item.id}}" size="24rpx" class="action-icon" />
+              <view class="action-item" catchtap="onShareClick" data-id="{{item.id}}">
+                <van-icon name="share-o" size="24rpx" class="action-icon" />
                 <text class="action-text">分享</text>
               </view>
 
               <!-- 订阅按钮 -->
-              <view class="action-item">
+              <view class="action-item" catchtap="onSubscribeClick" data-id="{{item.id}}">
                 <van-icon
                   name="{{item.mySubscription ? 'star' : 'star-o'}}"
-                  bindtap="onSubscribeClick"
-                  data-id="{{item.id}}"
                   size="24rpx"
                   class="action-icon"
                   color="{{item.mySubscription ? 'yellow' : 'gray'}}"
@@ -87,10 +87,11 @@
               </view>
 
               <!-- 参与拼团按钮 -->
-              <view class="action-item join-group-item">
-                <van-icon name="friends-o" bindtap="onJoinGroup" data-keycode="{{item.groupOrderId}}" size="24rpx" class="action-icon" />
+              <view class="action-item join-group-item" catchtap="onJoinGroup" data-item="{{item}}">
+                <van-icon name="friends-o" size="24rpx" class="action-icon" />
                 <text class="action-text">参与拼团</text>
               </view>
+
             </view>
           </van-card>
         </block>
