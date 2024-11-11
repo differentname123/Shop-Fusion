@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 
+
 def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=None):
     """
     发起请求并获取最终页面内容，包含重定向处理和异常捕获。
@@ -19,10 +20,10 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
     initial_url = f"{base_url}/{key_code}"
     print(initial_url)
     # 默认的请求头信息
-    default_headers =  {
-      "cookie": "terminalFinger=nCGFtFMtmTZikZ7zSKDgXm7gWyvTXPD7; rckk=GKW8IzbfsrXKLlqRJWlm1jMgF7QhpPsG; _bee=GKW8IzbfsrXKLlqRJWlm1jMgF7QhpPsG; ru1k=3711873d-e121-4d94-bbce-b674b8342c31; _f77=3711873d-e121-4d94-bbce-b674b8342c31; ru2k=ed8fd767-047c-49a2-ac80-acf20370863c; _a42=ed8fd767-047c-49a2-ac80-acf20370863c; api_uid=rBUUF2cCRJmX20rjOgO8Ag==; jrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; njrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; dilx=u9BaHD82A0av~TXmxkdC_; _nano_fp=XpmqXp9jn0T8nqdonT_MOQjdfeT4ZrnuS3UZiMUe; webp=1; quick_entrance_click_record=20241108%2C479; request_id=8ee94dcdc9c144339a37d72ab5e1c7e2; PDDAccessToken=6YX7YRUMAGWZUPSSAUEB6I52WBPMRT3QNTUKW3QYIZT23CXXYVCQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaXLzyXIpicyWLrypOhapQvihQpLqLCLznTbvyXyXIfivaZyCbCoWnqGYQqP"
+    default_headers = {
 
-        # "cookie": 'api_uid=CkjpJmcCQXoqewBVtILWAg==; webp=1; PDDAccessToken=7PCZPZGXF32P7KV2JHZQQRM2WPE45UX4S6LSOYHHQ6VMZSJT2PFQ120e06b;'
+        "Cookie": "rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_3DxuCh; ETag=EABif1aQ; install_token=d6623dc4-7144-4df0-934c-87f6e82d4f4d; api_uid=Ck5cemVp3dSu2ABwHLrMAg; _nano_fp=XpmoXpTqn5CJl0Pbn9_lnZpJNbT45Po2ZE0B0DLl; dilx=c6Azs67TFfCM3HgUxg~0Z; jrpl=ZkYkeD8fwYrIvCIksZguN6L21SaLl4t3; njrpl=ZkYkeD8fwYrIvCIksZguN6L21SaLl4t3; pdd_user_id=4104180073528; pdd_user_uin=S4TXEOHRBOFZZFPGVQPWN4TNPQ_GEXDA; webp=1; X-CART-QUERIES=width%3D412%26height%3D915; tubetoken=uCJ%252FWaWGB9cgV752DzA96xckw8m19KXVmuhCTck6FjlRzMRXFqmzGaT0Gfp11wKZ2gv57cy0%252Brk0gfo7qM8hrIaMUvXdjOT%252Fdubjb0AxFnA107Oq0uJJXcFo9IEb686CgZp3kIw2Qd9um34VePbN5n0J3NdtvSlof0F0cWxic2kLS02qkWiKSYdIvWXs02L1%252B%252Fb158RGh0VdYUMegomLB1E%252B3O2awX%252BpTEJdAuKl%252FJ2m6ZYIUIt%252FBgF8wcJDPnGu; PDDAccessToken=D2ESPEEAKE34FHM3SVVEWTELQ3AIY4BTWCULVCSHAQDAEHO7W5WA12038c5; pdd_vds=gaLLNyLIQattEbbPooLiiQitiLGGLIiNGmLiLtbmILOOmNamiiiotLaNONLa"
+
 
     }
 
@@ -76,15 +77,14 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
             if not final_url:
                 return {'status': 'error', 'message': "Final URL not found in JavaScript."}
         else:
-            return {'status': 'error', 'message': f"Unexpected status code when accessing group7.html: {response.status_code}"}
+            return {'status': 'error',
+                    'message': f"Unexpected status code when accessing group7.html: {response.status_code}"}
 
         # 4. 访问最终的 `pincard_ask.html` 页面
         print(final_url)
         response = requests.get(final_url, headers=default_headers)
         # print(response.content)
         response.raise_for_status()
-
-
 
         # 5. 提取 window.rawData 数据
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -109,6 +109,7 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
     except ValueError as e:
         return {'status': 'error', 'message': f"Error: {str(e)}"}
 
+
 # 调用示例
-raw_data = make_request("gzdhylOain")
+raw_data = make_request("cZBTUfhVm5")
 print(raw_data)
