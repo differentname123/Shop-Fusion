@@ -17,26 +17,33 @@ def get_group_good_by_page():
         at = ctx.call('antigain')
         # 构造请求体数据
         data = {
-            "page_index": page_number,
-            "team_id": '1883',
+            "page_index": 1,
+            "team_id": 1876,
             "page_size": 20,
-            "anti_content": at
+            "grouping_radio_button_flag": 0,
+            "isPostRisk": True,
+            "anti_content": at,
         }
 
-        url = "https://mobile.pinduoduo.com/proxy/api/api/brand-group/team/group_order_list?pdduid=4365968471"
+        url = "https://mobile.pinduoduo.com/proxy/api/api/brand-group/team/group_order_list?pdduid=4365968471&is_back=1"
         headers = {
-            "p-uno-context": "{\"immerse\":1,\"nh\":80.28571319580078,\"sh\":34.28571319580078,\"ls\":0,\"is-low-end\":0,\"ipv6-only\":0}",
-            "X-PDD-QUERIES": "width=1080&height=2268&net=1&brand=Redmi&model=23013RK75C&osv=14&appv=7.33.0&pl=2",
-            "ab-garden-home-js-split": "true",
-            "User-Agent": "android Mozilla/5.0 (Linux; Android 14; 23013RK75C Build/UKQ1.230804.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36 MecoCore/502.8.1 MecoSDK/7  phh_android_version/7.33.0 phh_android_build/0ac80561d6fc247d5852c49907d3ae716bf1e519 phh_android_channel/xm pversion/0",
-            "p-mode": "1",
-            "ab-enable-split-require": "1",
-            "fruit-spine-permanent-test": "true",
-            "multi-set": "0,1,",
-            "Host": "m.pinduoduo.net",
-            "Connection": "Keep-Alive",
-            "Accept-Encoding": "gzip",
-            "Cookie": "rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_3DxuCh; ETag=EABif1aQ; install_token=d6623dc4-7144-4df0-934c-87f6e82d4f4d; api_uid=Ck5cemVp3dSu2ABwHLrMAg; _nano_fp=XpmoXpTqn5CJl0Pbn9_lnZpJNbT45Po2ZE0B0DLl; dilx=c6Azs67TFfCM3HgUxg~0Z; jrpl=ZkYkeD8fwYrIvCIksZguN6L21SaLl4t3; njrpl=ZkYkeD8fwYrIvCIksZguN6L21SaLl4t3; pdd_user_id=4104180073528; pdd_user_uin=S4TXEOHRBOFZZFPGVQPWN4TNPQ_GEXDA; webp=1; X-CART-QUERIES=width%3D412%26height%3D915; tubetoken=uCJ%252FWaWGB9cgV752DzA96xckw8m19KXVmuhCTck6FjlRzMRXFqmzGaT0Gfp11wKZ2gv57cy0%252Brk0gfo7qM8hrIaMUvXdjOT%252Fdubjb0AxFnA107Oq0uJJXcFo9IEb686CgZp3kIw2Qd9um34VePbN5n0J3NdtvSlof0F0cWxic2kLS02qkWiKSYdIvWXs02L1%252B%252Fb158RGh0VdYUMegomLB1E%252B3O2awX%252BpTEJdAuKl%252FJ2m6ZYIUIt%252FBgF8wcJDPnGu; PDDAccessToken=D2ESPEEAKE34FHM3SVVEWTELQ3AIY4BTWCULVCSHAQDAEHO7W5WA12038c5; pdd_vds=gaLLNyLIQattEbbPooLiiQitiLGGLIiNGmLiLtbmILOOmNamiiiotLaNONLa"
+            "Host": "mobile.pinduoduo.com",
+            "Connection": "keep-alive",
+            "Content-Length": "991",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*",
+            "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
+            "Content-Type": "application/json;charset=UTF-8",
+            "sec-ch-ua-mobile": "?0",
+            "Origin": "https://mobile.pinduoduo.com",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Dest": "empty",
+            "Referer": "https://mobile.pinduoduo.com/pincard_ask.html?__rp_name=brand_amazing_price_group_team&_pdd_fs=1&team_id=1876&refer_page_name=brand_amazing_price_group_channel&refer_page_id=128073_1731332928287_cnrd6oz2a8&refer_page_sn=128073&page_id=129166_1731341759581_ipbc35q9sx&is_back=1",
+            "Accept-Encoding": "gzip, deflate, br, zstd",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Cookie": "rec_list_brand_amazing_price_group_team=rec_list_brand_amazing_price_group_team_Qi2upd; rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_T13Us4; api_uid=Ck8IcWcyKZwsYwCeYnSiAg==; webp=1; jrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; njrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; dilx=9PMbaWaOsJCWTdnKxEoew; _nano_fp=XpmqXpXYX0moX5doXT_ct1IYCpvBeLhwXM9Y5uwm; PDDAccessToken=76XWD5BYUNIL3H6T26QKGLOOKGIFQGWS6R7XR6CVX3UHNSWZE2QA123576d; pdd_user_id=1279248863063; pdd_user_uin=ALCIJPHVL3KKOXFF4EG37L6YIQ_GEXDA; pdd_vds=gaLeNNLwPwPLLONILdQNOxGOixmmoILnmxamOwLNaGNsmxodomabbbOyPsbI"
         }
 
         # 发送 POST 请求
@@ -44,6 +51,7 @@ def get_group_good_by_page():
 
         if response.status_code == 200:
             origin_result = response.json()
+            print(origin_result)
             result = origin_result.get('result', {}) or {}
             group_order_list = result.get('group_order_list', [])
             if not group_order_list:

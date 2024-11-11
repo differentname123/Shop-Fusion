@@ -3,6 +3,13 @@ from bs4 import BeautifulSoup
 import json
 import re
 
+"""
+最少使用cookie就能够启动
+ {
+
+        "Cookie": "rec_list_brand_amazing_price_group_team=rec_list_brand_amazing_price_group_team_Qi2upd; rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_T13Us4; api_uid=Ck8IcWcyKZwsYwCeYnSiAg==; webp=1; jrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; njrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; dilx=9PMbaWaOsJCWTdnKxEoew; _nano_fp=XpmqXpXYX0moX5doXT_ct1IYCpvBeLhwXM9Y5uwm; PDDAccessToken=76XWD5BYUNIL3H6T26QKGLOOKGIFQGWS6R7XR6CVX3UHNSWZE2QA123576d; pdd_user_id=1279248863063; pdd_user_uin=ALCIJPHVL3KKOXFF4EG37L6YIQ_GEXDA; pdd_vds=gaLeNNLwPwPLLONILdQNOxGOixmmoILnmxamOwLNaGNsmxodomabbbOyPsbI"
+    }
+"""
 
 def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=None):
     """
@@ -22,9 +29,7 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
     # 默认的请求头信息
     default_headers = {
 
-        "Cookie": "rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_3DxuCh; ETag=EABif1aQ; install_token=d6623dc4-7144-4df0-934c-87f6e82d4f4d; api_uid=Ck5cemVp3dSu2ABwHLrMAg; _nano_fp=XpmoXpTqn5CJl0Pbn9_lnZpJNbT45Po2ZE0B0DLl; dilx=c6Azs67TFfCM3HgUxg~0Z; jrpl=ZkYkeD8fwYrIvCIksZguN6L21SaLl4t3; njrpl=ZkYkeD8fwYrIvCIksZguN6L21SaLl4t3; pdd_user_id=4104180073528; pdd_user_uin=S4TXEOHRBOFZZFPGVQPWN4TNPQ_GEXDA; webp=1; X-CART-QUERIES=width%3D412%26height%3D915; tubetoken=uCJ%252FWaWGB9cgV752DzA96xckw8m19KXVmuhCTck6FjlRzMRXFqmzGaT0Gfp11wKZ2gv57cy0%252Brk0gfo7qM8hrIaMUvXdjOT%252Fdubjb0AxFnA107Oq0uJJXcFo9IEb686CgZp3kIw2Qd9um34VePbN5n0J3NdtvSlof0F0cWxic2kLS02qkWiKSYdIvWXs02L1%252B%252Fb158RGh0VdYUMegomLB1E%252B3O2awX%252BpTEJdAuKl%252FJ2m6ZYIUIt%252FBgF8wcJDPnGu; PDDAccessToken=D2ESPEEAKE34FHM3SVVEWTELQ3AIY4BTWCULVCSHAQDAEHO7W5WA12038c5; pdd_vds=gaLLNyLIQattEbbPooLiiQitiLGGLIiNGmLiLtbmILOOmNamiiiotLaNONLa"
-
-
+        "Cookie": "rec_list_brand_amazing_price_group_team=rec_list_brand_amazing_price_group_team_Qi2upd; rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_T13Us4; api_uid=Ck8IcWcyKZwsYwCeYnSiAg==; webp=1; jrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; njrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; dilx=9PMbaWaOsJCWTdnKxEoew; _nano_fp=XpmqXpXYX0moX5doXT_ct1IYCpvBeLhwXM9Y5uwm; PDDAccessToken=76XWD5BYUNIL3H6T26QKGLOOKGIFQGWS6R7XR6CVX3UHNSWZE2QA123576d; pdd_user_id=1279248863063; pdd_user_uin=ALCIJPHVL3KKOXFF4EG37L6YIQ_GEXDA; pdd_vds=gaLeNNLwPwPLLONILdQNOxGOixmmoILnmxamOwLNaGNsmxodomabbbOyPsbI"
     }
 
     # 合并自定义 headers
