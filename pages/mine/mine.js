@@ -59,7 +59,7 @@ Page({
   },
 
   async onLoad() {
-    this.getGoodsInfo();
+    // this.getGoodsInfo();
     await this.initNavigationBar();
     await this.getOpenIdAndUserInfo();
   },
@@ -188,8 +188,18 @@ Page({
         });
         break;
       case '观看视频':
-        wx.navigateTo({
-          url: '/pages/video/video',
+        wx.cloud.callFunction({
+          name: 'getGroupGoods'
+        }).then(res => {
+          console.log(res);  // 这里 res 是函数的返回结果
+          wx.showModal({
+            title: '调用成功',
+            content: JSON.stringify(res.result),  // 将返回结果转换为字符串显示
+            showCancel: false, // 不显示取消按钮
+            confirmText: '确定'
+          });
+        }).catch(error => {
+          console.error("调用云函数失败：", error);
         });
         break;
       case '多人拼团群':

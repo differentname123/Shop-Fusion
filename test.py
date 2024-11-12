@@ -29,7 +29,9 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
     # 默认的请求头信息
     default_headers = {
 
-        "Cookie": "rec_list_brand_amazing_price_group_team=rec_list_brand_amazing_price_group_team_Qi2upd; rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_T13Us4; api_uid=Ck8IcWcyKZwsYwCeYnSiAg==; webp=1; jrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; njrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; dilx=9PMbaWaOsJCWTdnKxEoew; _nano_fp=XpmqXpXYX0moX5doXT_ct1IYCpvBeLhwXM9Y5uwm; PDDAccessToken=76XWD5BYUNIL3H6T26QKGLOOKGIFQGWS6R7XR6CVX3UHNSWZE2QA123576d; pdd_user_id=1279248863063; pdd_user_uin=ALCIJPHVL3KKOXFF4EG37L6YIQ_GEXDA; pdd_vds=gaLeNNLwPwPLLONILdQNOxGOixmmoILnmxamOwLNaGNsmxodomabbbOyPsbI"
+        "Cookie": "rec_list_brand_amazing_price_group_team=rec_list_brand_amazing_price_group_team_cHqKrw; jrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; njrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; dilx=u9BaHD82A0av~TXmxkdC_; api_uid=CiD86mczhjSJwgCx3OSOAg==; PDDAccessToken=E7U7OD2BWINOGCANPK4TVBWLSPQ6YG7HUYWDP57RWGNZ2I6FKGHQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaMxXnMbHmqsqbvxXshwHyqlYbDnfxXGqNftWxpsDtZOvbZlXmqIpGMmzxhO; webp=1; _nano_fp=XpmqXpTxlpU8XpEalT_Sl5vpkbteZdBVyYcpr7YS"
+
+
     }
 
     # 合并自定义 headers

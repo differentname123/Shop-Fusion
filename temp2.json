@@ -1,17 +1,2 @@
-GET https://mobile.yangkeduo.com/pincard_ask.html?__rp_name=brand_amazing_price_group_team&_pdd_fs=1&team_id=4404&xcx_trace_id=18193330316813740&xcx_version=v8.3.96&refer_page_name=brand_amazing_price_group_channel&refer_page_id=128073_1731340702385_qqvh45rzq4&refer_page_sn=128073 HTTP/1.1
-Host: mobile.yangkeduo.com
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090c11)XWEB/11477
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: https://mobile.yangkeduo.com/pincard_ask.html?__rp_name=brand_amazing_price_group_channel&_pdd_fs=1&_pdd_tc=ffffff&_pdd_sbs=1&refer_page_el_sn=7567298&refer_page_sn=10002&refer_idx=2&xcx_trace_id=18193330316813740&refer_page_name=index&_m_uin=ALCIJPHVL3KKOXFF4EG37L6YIQ_GEXDA&xcx_version=v8.3.96
-Accept-Encoding: gzip, deflate, br
-Accept-Language: zh-CN,zh;q=0.9
-Cookie: rec_list_brand_amazing_price_group_channel=rec_list_brand_amazing_price_group_channel_Jqy7xT; api_uid=Ck8IcWcyKZwsYwCeYnSiAg==; webp=1; PDDAccessToken=OHOOQSXFINEZML762KGIWNIUEBFSBQG3DK3CWA2MME4IMCT2KRRA123576d; pdd_user_id=1279248863063; pdd_user_uin=ALCIJPHVL3KKOXFF4EG37L6YIQ_GEXDA; pdd_vds=gaxLlyxIoGwNtbnQGbGtINwEIomtoawtNLlGGimElybtsOwoOINNyLLObLnm; jrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; njrpl=N0jPqgWvX5swTdy8lsFQnd1dpcaKXsqt; dilx=9PMbaWaOsJCWTdnKxEoew; _nano_fp=XpmqXpXYX0moX5doXT_ct1IYCpvBeLhwXM9Y5uwm
-
-
-
+而且我希望它返回的结果是一个字典， 而且它还应该识别这是什么东西，比如这是一个手机，所以我希望它返回的结果是:
+{'type': '手机', 'brand': 'Apple', 'model': 'iPhone 11', 'color': '黑色', 'storage': '128GB', 'price': '5499'}
