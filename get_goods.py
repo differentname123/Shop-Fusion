@@ -2,6 +2,10 @@ import requests
 import time
 import hashlib
 
+"""
+通过api，不用调整代码
+"""
+
 def pdd_goods_search(page, page_size, keyword):
     def generate_sign(params, client_secret):
         sorted_params = sorted(params.items())
@@ -13,10 +17,10 @@ def pdd_goods_search(page, page_size, keyword):
     pid = '41675195_295492064'
 
     params = {
-        'type': 'pdd.ddk.goods.search',
+        'type': 'pdd.ddk.goods.detail',
         'client_id': client_id,
         'timestamp': int(time.time()),
-        'access_token': '7544753c21444e7886d8ed449ee4ba1bbe7de9c4',
+        'goods_sign': keyword,
         'page': page,
         'page_size': page_size,
         'keyword': keyword,
@@ -36,7 +40,7 @@ def pdd_goods_search(page, page_size, keyword):
 # 循环调用函数
 page = 1
 page_size = 60
-keyword = "数据线"
+keyword = "E9z2MUALZRBgMvVRwuveBx4wM6IKDegu_JQE3HsdLSx"
 result_list = []
 while True:
     result = pdd_goods_search(page, page_size, keyword)
