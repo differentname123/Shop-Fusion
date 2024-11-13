@@ -1,3 +1,5 @@
+import json
+
 import requests
 import time
 import hashlib
@@ -17,7 +19,7 @@ def pdd_goods_search(page, page_size, keyword):
     pid = '41675195_295492064'
 
     params = {
-        'type': 'pdd.ddk.goods.detail',
+        'type': 'pdd.ddk.goods.search',
         'client_id': client_id,
         'timestamp': int(time.time()),
         'goods_sign': keyword,
@@ -40,7 +42,7 @@ def pdd_goods_search(page, page_size, keyword):
 # 循环调用函数
 page = 1
 page_size = 60
-keyword = "E9z2MUALZRBgMvVRwuveBx4wM6IKDegu_JQE3HsdLSx"
+keyword = "开心果"
 result_list = []
 while True:
     result = pdd_goods_search(page, page_size, keyword)
@@ -50,6 +52,10 @@ while True:
         break
 
     goods_list = result.get('goods_search_response', {}).get('goods_list', [])
+    # 将 goods_list 保存到 temp.json 文件中
+    with open('temp.json', 'w', encoding='utf-8') as f:
+        json.dump(goods_list, f, ensure_ascii=False, indent=4)
+
     print(f"Page {page}: goods_list size = {len(goods_list)}")
 
     if not goods_list:

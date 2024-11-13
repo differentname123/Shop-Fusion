@@ -32,7 +32,7 @@ data = {
     "sectionId": 7,
     "sectionName": "数据线",
     "inBigSale": [],
-    "keyword": "632069397380",
+    "keyword": "开心果",
     "pageNumber": 1,
     "categoryId": -1,
     "pageSize": 60,
