@@ -82,6 +82,8 @@ def generate_bio(product_description):
                 **model_inputs,
                 max_new_tokens=150,      # Maximum number of tokens to generate
                 do_sample=False,         # Use greedy decoding (no sampling)
+                top_k=0,                 # Top-k sampling can still be used with greedy decoding
+                top_p=0,               # Top-p sampling can still be used with greedy decoding
             )
 
         # Extract generated content, removing input part
