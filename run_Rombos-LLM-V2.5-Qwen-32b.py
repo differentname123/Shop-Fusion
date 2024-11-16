@@ -21,7 +21,6 @@ quantization_config = BitsAndBytesConfig(
     bnb_4bit_quant_type="nf4"
 )
 
-
 # 加载模型，使用 4-bit 量化
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
@@ -33,8 +32,24 @@ model = AutoModelForCausalLM.from_pretrained(
 # 将模型设置为评估模式
 model.eval()
 
-# 定义 system message
-system_message = "You are Qwen, a highly knowledgeable and helpful assistant created by Alibaba Cloud. Please respond in a professional and detailed manner."
+# 精细化 system message
+system_message = """
+You are a knowledgeable assistant. Please extract the key information from product descriptions and label them with BIO format. 
+Use the following entity types: 
+- Brand (brand name), 
+- Category (product type), 
+- Flavor (product flavor), 
+- Specification (size, weight, volume, etc.), 
+- Quantity (number of items), 
+- Packaging (packaging type), 
+- Promotion (promotional information), 
+- Usage (intended use), 
+- ProductionDate (production date), 
+- Features (product features).
+Please ensure that numerical values with units (e.g., 250ml, 500g) are kept together as a single entity. Your response must be in the following format:
+
+For each word in the product description, provide the word followed by its BIO label, separated by a space. Each word-label pair should be on a new line.
+"""
 
 # 对话循环
 while True:
@@ -49,7 +64,7 @@ while True:
     # 构建消息列表
     messages = [
         {"role": "system", "content": system_message},
-        {"role": "user", "content": user_input}
+        {"role": "user", "content": f"商品描述: {user_input}\n请将上面的商品描述转化为BIO格式并注明每个词的标签。"}
     ]
 
     # 使用聊天模板生成 prompt 文本
@@ -62,12 +77,12 @@ while True:
     # 将生成的文本编码为模型输入
     model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
 
-    # 生成回复
+    # 生成回复，关闭采样以增加稳定性
     with torch.no_grad():
         outputs = model.generate(
             **model_inputs,
-            max_new_tokens=100,  # 生成的最大 token 数
-            do_sample=True,      # 启用采样
+            max_new_tokens=150,  # 增加生成的最大 token 数
+            do_sample=False,     # 禁用采样，使用贪婪解码
             temperature=0.7,     # 控制生成的多样性
             top_k=50,            # 限制前 k 个概率最高的词汇
             top_p=0.9            # 使用 nucleus 采样
@@ -82,4 +97,6 @@ while True:
     response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
 
     # 输出模型回复
-    print(f"AI: {response}")
+    print("\nBIO标注结果:")
+    print(response)
+    print("\n")
