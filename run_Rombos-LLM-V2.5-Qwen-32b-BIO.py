@@ -1,7 +1,8 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-import os
 from datetime import datetime  # Import datetime module for current time
+
+import os
 
 # Set proxy (if needed), remove these lines if no proxy is required
 os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
@@ -144,6 +145,6 @@ def save_bio_results(output_file, bio_results):
         print(f"Error saving results to file: {str(e)}")
 
 # Call the function to process the input file and save BIO results
-input_file = 'temp.txt'
+input_file = 'temp1.txt'
 output_file = 'temp_bio.txt'
 process_and_save_bio(input_file, output_file)

@@ -1,0 +1,926 @@
+[
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "食品",
+        "opt_id": 1
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "母婴",
+        "opt_id": 4
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "海淘",
+        "opt_id": 12
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "水果",
+        "opt_id": 13
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "女装",
+        "opt_id": 14
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "百货",
+        "opt_id": 15
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "美妆",
+        "opt_id": 16
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电器",
+        "opt_id": 18
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "充值",
+        "opt_id": 590
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "男装",
+        "opt_id": 743
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家纺",
+        "opt_id": 818
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "鞋包",
+        "opt_id": 1281
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "内衣",
+        "opt_id": 1282
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "运动",
+        "opt_id": 1451
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "手机",
+        "opt_id": 1543
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家装",
+        "opt_id": 1917
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "车品",
+        "opt_id": 2048
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电脑",
+        "opt_id": 2478
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "生活个护",
+        "opt_id": 2946
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "大家电",
+        "opt_id": 2964
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家具",
+        "opt_id": 2974
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "手机",
+        "opt_id": 3132
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电脑",
+        "opt_id": 3149
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "数码",
+        "opt_id": 3162
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "文化",
+        "opt_id": 3175
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "医药",
+        "opt_id": 3279
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "办公",
+        "opt_id": 3526
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "厨房电器",
+        "opt_id": 5127
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "精选",
+        "opt_id": 8569
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "女装",
+        "opt_id": 8572
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "男装",
+        "opt_id": 8581
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "食品",
+        "opt_id": 8584
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "母婴",
+        "opt_id": 8587
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "百货",
+        "opt_id": 8590
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "美妆",
+        "opt_id": 8593
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "运动",
+        "opt_id": 8596
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "内衣",
+        "opt_id": 8599
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家纺",
+        "opt_id": 8602
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "鞋包",
+        "opt_id": 8605
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家装",
+        "opt_id": 8608
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家具",
+        "opt_id": 8611
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "手机",
+        "opt_id": 9016
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电器",
+        "opt_id": 9019
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "生鲜",
+        "opt_id": 9419
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "女装",
+        "opt_id": 9490
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "内衣",
+        "opt_id": 9527
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "手机",
+        "opt_id": 9563
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电器",
+        "opt_id": 9583
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家纺",
+        "opt_id": 9646
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "数码",
+        "opt_id": 9689
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家装",
+        "opt_id": 9739
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "男装",
+        "opt_id": 9805
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "百货",
+        "opt_id": 9831
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "母婴",
+        "opt_id": 9907
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "食品",
+        "opt_id": 9975
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "美妆",
+        "opt_id": 10053
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "洗护",
+        "opt_id": 10110
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "充值",
+        "opt_id": 10141
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "健康",
+        "opt_id": 10223
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "车品",
+        "opt_id": 10301
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "鞋包",
+        "opt_id": 10364
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "运动",
+        "opt_id": 10649
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "海淘",
+        "opt_id": 10696
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "智能设备",
+        "opt_id": 11112
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "女装",
+        "opt_id": 11116
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "咖啡/麦片/冲饮",
+        "opt_id": 11120
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "酒类",
+        "opt_id": 11121
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "运动",
+        "opt_id": 11124
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "床上用品",
+        "opt_id": 11132
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "居家布艺",
+        "opt_id": 11172
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "洗护清洁剂/卫生巾/纸/香薰",
+        "opt_id": 11187
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "餐饮具",
+        "opt_id": 11190
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "母婴",
+        "opt_id": 11203
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家居饰品",
+        "opt_id": 11218
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "居家日用",
+        "opt_id": 11254
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "宠物/宠物食品及用品",
+        "opt_id": 11263
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "厨房/烹饪用具",
+        "opt_id": 11295
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家庭/个人清洁工具",
+        "opt_id": 11309
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "烟品/打火机/瑞士军刀",
+        "opt_id": 11340
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "保健食品/膳食营养补充食品",
+        "opt_id": 11358
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "珠宝首饰",
+        "opt_id": 11359
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "乐器/吉他/钢琴/配件",
+        "opt_id": 11363
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "影音电器",
+        "opt_id": 11368
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "文化用品",
+        "opt_id": 11392
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "饰品/流行首饰/时尚饰品",
+        "opt_id": 11403
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "彩妆/香水/美妆工具",
+        "opt_id": 11446
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "古董/邮币/字画/收藏",
+        "opt_id": 11458
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "收纳整理",
+        "opt_id": 11463
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "节庆用品/礼品",
+        "opt_id": 11536
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "粮油米面/南北干货/调味品",
+        "opt_id": 11542
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "摩托车/装备/配件",
+        "opt_id": 11556
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "网络设备",
+        "opt_id": 11558
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电子/电工",
+        "opt_id": 11575
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "相机",
+        "opt_id": 11607
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "基础建材",
+        "opt_id": 11610
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "美容美体仪器",
+        "opt_id": 11614
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家装灯饰光源",
+        "opt_id": 11630
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "汽车/用品/配件/改装",
+        "opt_id": 11632
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "美发护发/假发",
+        "opt_id": 11635
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家装主材",
+        "opt_id": 11643
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "商业/办公家具",
+        "opt_id": 11667
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "五金工具",
+        "opt_id": 11677
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "手机",
+        "opt_id": 11682
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "美容护肤/美体/精油",
+        "opt_id": 11689
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "住宅家具",
+        "opt_id": 11704
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "书籍/杂志/报纸",
+        "opt_id": 11716
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "生活电器",
+        "opt_id": 11781
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "个人护理保健",
+        "opt_id": 11822
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "男装",
+        "opt_id": 11841
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "鲜花速递/花卉仿真/绿植园艺",
+        "opt_id": 11842
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "零食/坚果/特产",
+        "opt_id": 11876
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "茶",
+        "opt_id": 11906
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "内衣裤袜",
+        "opt_id": 11927
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "OTC药品/医疗器械/计生用品",
+        "opt_id": 11998
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "鞋包配饰",
+        "opt_id": 12003
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "器械保健",
+        "opt_id": 12007
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电脑",
+        "opt_id": 12020
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "隐形眼镜",
+        "opt_id": 12022
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "大家电",
+        "opt_id": 12074
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "厨房电器",
+        "opt_id": 12138
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "3C数码配件",
+        "opt_id": 12162
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "办公用品",
+        "opt_id": 12177
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "传统滋补品",
+        "opt_id": 12385
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "水果生鲜",
+        "opt_id": 12402
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "女装",
+        "opt_id": 13616
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "女装",
+        "opt_id": 17370
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "男装",
+        "opt_id": 20492
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "内衣",
+        "opt_id": 20493
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "女装",
+        "opt_id": 20494
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "配饰",
+        "opt_id": 20495
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "箱包",
+        "opt_id": 20496
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "鞋靴",
+        "opt_id": 20497
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "运动户外",
+        "opt_id": 20498
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "百货",
+        "opt_id": 20527
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "洗护",
+        "opt_id": 20787
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "车品",
+        "opt_id": 20996
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "电器",
+        "opt_id": 21006
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "家装",
+        "opt_id": 21230
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "数码",
+        "opt_id": 21244
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "精制中药材",
+        "opt_id": 21501
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "图书",
+        "opt_id": 21888
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "美妆",
+        "opt_id": 22109
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "医药",
+        "opt_id": 22294
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "农用物资",
+        "opt_id": 22815
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "保健",
+        "opt_id": 22841
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "生鲜",
+        "opt_id": 22879
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "食品",
+        "opt_id": 22926
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "母婴",
+        "opt_id": 23010
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "服务充值",
+        "opt_id": 23154
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "医药",
+        "opt_id": 23265
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "图书",
+        "opt_id": 23905
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "饰品",
+        "opt_id": 24149
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "玩乐",
+        "opt_id": 24288
+    },
+    {
+        "parent_opt_id": 0,
+        "level": 1,
+        "opt_name": "音像",
+        "opt_id": 25697
+    }
+]
