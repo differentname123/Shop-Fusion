@@ -42,7 +42,7 @@ def pdd_goods_search(page, page_size, keyword):
 # 循环调用函数
 page = 1
 page_size = 60
-keyword = "开心果"
+keyword = "平板电脑"
 result_list = []
 while True:
     result = pdd_goods_search(page, page_size, keyword)
@@ -64,8 +64,12 @@ while True:
     # 将 goods_list 转换为字符串
     goods_list_str = str(goods_list)
     for item in goods_list:
-        if 12546 in item['activity_tags'] and keyword in item['goods_desc']:
+        if keyword in item['goods_desc']:
             result_list.append(item)
 
     page += 1
 print(result_list)
+
+# 将 result_list 保存到 result.json 文件中
+with open('result.json', 'w', encoding='utf-8') as f:
+    json.dump(result_list, f, ensure_ascii=False, indent=4)

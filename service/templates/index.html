@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奶龙</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            background-color: #fff;
+            width: 90%;
+            max-width: 500px;
+            height: 90%;
+            max-height: 700px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+            resize: none;
+            height: 50px;
+        }
+
+        #sendButton {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message.assistant {
+            text-align: left;
+        }
+
+        .message-content {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+
+        .message.user .message-content {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .message.assistant .message-content {
+            background-color: #f1f1f1;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                width: 100%;
+                height: 100%;
+                max-width: none;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>奶龙</h1>
+        </div>
+        <div class="chat-body" id="responseArea">
+        </div>
+        <div class="chat-input">
+            <textarea id="userInput" placeholder="Type your message"></textarea>
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const responseArea = document.getElementById('responseArea');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        async function sendMessage() {
+            const userMessage = userInput.value.trim();
+            if (!userMessage) {
+                alert("Please enter a message");
+                return;
+            }
+
+            const userMessageElement = document.createElement('div');
+            userMessageElement.classList.add('message', 'user');
+            userMessageElement.innerHTML = `<div class="message-content">${userMessage.replace(/\n/g, '<br>')}</div>`;
+            responseArea.appendChild(userMessageElement);
+            responseArea.scrollTop = responseArea.scrollHeight;
+
+            userInput.value = '';
+
+            const loadingSpinner = document.createElement('div');
+            loadingSpinner.classList.add('loading-spinner');
+            responseArea.appendChild(loadingSpinner);
+            responseArea.scrollTop = responseArea.scrollHeight;
+
+            try {
+                const response = await fetch('https://a5ef-171-212-82-54.ngrok-free.app/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userMessage })
+                });
+                const data = await response.json();
+
+                loadingSpinner.remove();
+
+                const assistantMessage = document.createElement('div');
+                assistantMessage.classList.add('message', 'assistant');
+                assistantMessage.innerHTML = `<div class="message-content">${formatResponse(data.response || data.error)}</div>`;
+                responseArea.appendChild(assistantMessage);
+                responseArea.scrollTop = responseArea.scrollHeight;
+            } catch (error) {
+                console.error('Error:', error);
+
+                loadingSpinner.remove();
+
+                const errorMessage = document.createElement('div');
+                errorMessage.classList.add('message', 'assistant');
+                errorMessage.innerHTML = `<div class="message-content">Error: Failed to fetch response</div>`;
+                responseArea.appendChild(errorMessage);
+                responseArea.scrollTop = responseArea.scrollHeight;
+            }
+        }
+
+        function formatResponse(response) {
+            return response.replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
+</html>
