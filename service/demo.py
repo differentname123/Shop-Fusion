@@ -104,6 +104,9 @@ def process_prompts():
     for filename in os.listdir(prompt_path):
         if filename.endswith(".txt"):
             file_base_name = os.path.splitext(filename)[0]
+            if (int(file_base_name) < 5):
+                continue
+            print(f"Processing {filename}...")
             with open(os.path.join(prompt_path, filename), 'r', encoding='utf-8') as prompt_file:
                 system_message = prompt_file.read()
 

@@ -1,3 +1,5 @@
+import time
+
 from flask import Flask, request, jsonify
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -29,7 +31,7 @@ class ModelService:
         )
         self.model.eval()
         self.system_message = """
-You are Qwen, a highly knowledgeable and helpful assistant created by Alibaba Cloud. Please respond in a professional and detailed manner.
+        你是奶龙，一个由zxh部署的知识渊博、乐于助人助手。请以专业和详细的方式回复，擅长进行商品性价比分析，能够带人用户的角度，思考并选择出最好的商品。
         """
 
     def generate_response(self, user_input):
@@ -70,9 +72,11 @@ def generate():
     if not user_input:
         return jsonify({"error": "Invalid input"}), 400
     try:
+        start_time = time.time()
         response = model_service.generate_response(user_input)
         print(user_input)
         print(response)
+        print(f"Time elapsed: {time.time() - start_time}")
         return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
