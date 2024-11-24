@@ -1,108 +1,24 @@
-### 小米平板7 3.2K 144Hz超清原色屏
-- 最低价格: 2264.0
-- 平均价格: (2264.0 + 2289.0) / 2 = 2276.5
-- 折扣: (2276.5 - 2264.0) / 2276.5 * 100% ≈ 0.6%
-
-### 小米/RedmiPad Pro 12.1英寸2.5K高清大屏
-- 最低价格: 1137.0
-- 平均价格: (1137.0 + 1139.0 + 1139.0) / 3 = 1138.7
-- 折扣: (1138.7 - 1137.0) / 1138.7 * 100% ≈ 0.1%
-
-### RedmiPad Pro 12.1英寸2.5K高清大屏第二代骁龙7S
-- 最低价格: 1399.0
-- 平均价格: 1399.0（只有一个）
-- 折扣: 0%
-
-### Xiaomi Pad 6S Pro 12.4英寸平板电脑
-- 最低价格: 2999.0
-- 平均价格: 2999.0（只有一个）
-- 折扣: 0%
-
-### 小米平板6Xiaomi 6pro
-- 最低价格: 1318.0
-- 平均价格: 1318.0（只有一个）
-- 折扣: 0%
-
-### 小米平板7Pro 3.2K 144Hz超清原色屏
-- 最低价格: 2789.0
-- 平均价格: 2789.0（只有一个）
-- 折扣: 0%
-
-### RedmiPad Pro 5G版本
-- 最低价格: 1779.0
-- 平均价格: 1779.0（只有一个）
-- 折扣: 0%
-
-
-
-### 小米平板6系列
-- **性价比最高**: `现货当天发MIUI/小米 小米平板6 11英寸 骁龙870 144Hz高刷护眼`，价格: **1968.0**
-- **平均价格**: **2392.6**
-- **折扣**: **约 17.4%**
-
-### 小米平板6 Pro系列
-- **性价比最高**: `MIUI/小米 小米平板6 Pro高清高刷全面屏游戏办公追剧学生平板`，价格: **2397.0**
-- **平均价格**: **2568.2**
-- **折扣**: **约 7.4%**
-
-### 小米平板7系列
-- **性价比最高**: `MIUI/小米 Xiaomi Pad 711.2英寸超清护眼屏144Hz高刷小米平板7`，价格: **1908.0**
-- **平均价格**: **2349.0**
-- **折扣**: **约 18.8%**
-
-### 小米平板7 Pro系列
-- **性价比最高**: `MIUI/小米 Xiaomi Pad 7 Pro11.2英寸超清办公娱乐平板电脑7Pro`，价格: **2178.0**
-- **平均价格**: **2438.3**
-- **折扣**: **约 10.7%**
-
-### Redmi Pad SE系列
-- **性价比最高**: `MIUI/小米 Redmi Pad SE红米平板高刷高清全面屏学习办公游戏平板`，价格: **808.0**
-- **平均价格**: **1052.8**
-- **折扣**: **约 23.2%**
-
-### Redmi Pad Pro系列
-- **性价比最高**: `【自营】xiaomi/Redmi Pad Pro 12.1英寸 2.5K 120Hz 高清护眼屏 平板电脑 红米平板 2024新款`，价格: **1899.0**
-- **平均价格**: **1923.6**
-- **折扣**: **约 1.3%**
-
-
-
-### 小米平板7 Pro (8+128G)
-- **价格**: 2299.0元
-- **平均价格**: 2299.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
-
-### 小米平板6 Pro
-- **价格**: 3399.0元
-- **平均价格**: 3399.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
-
-### 小米平板7 (8+128G)
-- **价格**: 1999.0元
-- **平均价格**: 1999.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
-
-### Redmi Pad SE
-- **价格**: 899.0元
-- **平均价格**: 899.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
-
-### Redmi Pad Pro
-- **价格**: 1499.0元
-- **平均价格**: 1499.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
-
-### 小米平板6S Pro
-- **价格**: 3999.0元
-- **平均价格**: 3999.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
-
-### 小米平板6/6 Pro二手
-- **价格**: 1768.0元
-- **平均价格**: 1768.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
-
-### 小米平板5/5Pro 二手
-- **价格**: 1389.0元
-- **平均价格**: 1389.0元 (只有这一款)
-- **折扣**: N/A (只有一款)
+{
+  'goods_promotion_url_generate_response': {
+    'goods_promotion_url_list': [
+      {
+        'mobile_url': 'https://mobile.yangkeduo.com/duo_coupon_landing.html?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2&launch_pdd=1&campaign=ddjb&cid=launch_dl_force_',
+        'we_app_info': {
+          'we_app_icon_url': 'http://xcxcdn.yangkeduo.com/pdd_logo.png',
+          'user_name': 'gh_a6611aee87d6',
+          'page_path': 'package_a/welfare_coupon/welfare_coupon?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2&_oc_cps_sign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_oc_pid=41675195_295492064&_oc_mkt_domain=222&_oc_mkt_tr_sc=ddjb_goods_coupon&_oc_mkt_tr_token=cjwlgjquuniaslyfdz55hostuk4oqtz6ye7jw25wrmvivllwootaggctwqodzc47qtcnnpbtrcypc',
+          'source_display_name': '拼多多福利券',
+          'title': 'gb好孩子口水巾新生婴儿毛巾纯棉软宝宝纱布巾儿童洗脸小方巾',
+          'app_id': 'wxa918198f16869201',
+          'desc': '拼多多，多实惠，多乐趣。'
+        },
+        'mobile_short_url': 'https://p.pinduoduo.com/rEKd32lH',
+        'we_app_web_view_url': 'https://mobile.yangkeduo.com/duo_coupon_landing.html?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2',
+        'url': 'https://mobile.yangkeduo.com/duo_coupon_landing.html?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2',
+        'short_url': 'https://p.pinduoduo.com/OM3dRLRX',
+        'we_app_web_view_short_url': 'https://p.pinduoduo.com/OM3dRLRX'
+      }
+    ],
+    'request_id': '17324587398060063'
+  }
+}

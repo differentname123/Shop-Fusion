@@ -205,7 +205,7 @@ Page({
       case '多人拼团群':
         wx.navigateToMiniProgram({
           appId: 'wx32540bd863b27570',
-          path: 'pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D2756678051248321080',  // 替换为具体商品的路径和参数
+          path: 'package_a/welfare_coupon/welfare_coupon?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2&_oc_cps_sign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_oc_pid=41675195_295492064&_oc_mkt_domain=222&_oc_mkt_tr_sc=ddjb_goods_coupon&_oc_mkt_tr_token=cjwlgjquuniaslyfdz55hostuk4oqtz6ye7jw25wrmvivllwootaggctwqodzc47qtcnnpbtrcypc',  // 替换为具体商品的路径和参数
           extraData: {},
           envVersion: 'release',
           success(res) {

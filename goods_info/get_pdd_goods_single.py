@@ -8,21 +8,22 @@ import hashlib
 通过api，不用调整代码
 """
 
+
+def generate_sign(params, client_secret):
+    sorted_params = sorted(params.items())
+    sign_str = client_secret + ''.join(f'{k}{v}' for k, v in sorted_params) + client_secret
+    return hashlib.md5(sign_str.encode('utf-8')).hexdigest().upper()
+
+client_id = 'f15639975cba4df6bc8afcde5151086a'
+client_secret = '2b32a01a4d9ca5327595cf97eed3f798631c87f3'
+pid = '41675195_295492064'
+
 def pdd_goods_search(page, page_size, keyword):
-    def generate_sign(params, client_secret):
-        sorted_params = sorted(params.items())
-        sign_str = client_secret + ''.join(f'{k}{v}' for k, v in sorted_params) + client_secret
-        return hashlib.md5(sign_str.encode('utf-8')).hexdigest().upper()
-
-    client_id = 'f15639975cba4df6bc8afcde5151086a'
-    client_secret = '2b32a01a4d9ca5327595cf97eed3f798631c87f3'
-    pid = '41675195_295492064'
-
     params = {
         'type': 'pdd.ddk.goods.search',
         'client_id': client_id,
         'timestamp': int(time.time()),
-        'goods_sign': keyword,
+
         'page': page,
         'page_size': page_size,
         'keyword': keyword,
@@ -42,7 +43,7 @@ def pdd_goods_search(page, page_size, keyword):
 # 循环调用函数
 page = 1
 page_size = 60
-keyword = "平板电脑"
+keyword = "开心果"
 result_list = []
 while True:
     result = pdd_goods_search(page, page_size, keyword)
@@ -68,7 +69,7 @@ while True:
             result_list.append(item)
 
     page += 1
-print(result_list)
+# print(result_list)
 
 # 将 result_list 保存到 result.json 文件中
 with open('result.json', 'w', encoding='utf-8') as f:
