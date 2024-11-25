@@ -1,24 +1,24 @@
-{
-  'goods_promotion_url_generate_response': {
-    'goods_promotion_url_list': [
-      {
-        'mobile_url': 'https://mobile.yangkeduo.com/duo_coupon_landing.html?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2&launch_pdd=1&campaign=ddjb&cid=launch_dl_force_',
-        'we_app_info': {
-          'we_app_icon_url': 'http://xcxcdn.yangkeduo.com/pdd_logo.png',
-          'user_name': 'gh_a6611aee87d6',
-          'page_path': 'package_a/welfare_coupon/welfare_coupon?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2&_oc_cps_sign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_oc_pid=41675195_295492064&_oc_mkt_domain=222&_oc_mkt_tr_sc=ddjb_goods_coupon&_oc_mkt_tr_token=cjwlgjquuniaslyfdz55hostuk4oqtz6ye7jw25wrmvivllwootaggctwqodzc47qtcnnpbtrcypc',
-          'source_display_name': '拼多多福利券',
-          'title': 'gb好孩子口水巾新生婴儿毛巾纯棉软宝宝纱布巾儿童洗脸小方巾',
-          'app_id': 'wxa918198f16869201',
-          'desc': '拼多多，多实惠，多乐趣。'
-        },
-        'mobile_short_url': 'https://p.pinduoduo.com/rEKd32lH',
-        'we_app_web_view_url': 'https://mobile.yangkeduo.com/duo_coupon_landing.html?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2',
-        'url': 'https://mobile.yangkeduo.com/duo_coupon_landing.html?goods_id=560298678865&pid=41675195_295492064&display_mod=101&goods_sign=E9H2IB4ppMVgMvVVwvfeHMbPGfAjED5K_JQmgAEnLVx&customParameters=%7B%22source%22%3A+%22custom_value%22%7D&cpsSign=CC_241124_41675195_295492064_8aa1c4a3acdd37d78faa0cb687051d35&_x_ddjb_act=%7B%22st%22%3A%221%22%7D&duoduo_type=2',
-        'short_url': 'https://p.pinduoduo.com/OM3dRLRX',
-        'we_app_web_view_short_url': 'https://p.pinduoduo.com/OM3dRLRX'
-      }
-    ],
-    'request_id': '17324587398060063'
-  }
-}
+    可口可乐1L*12瓶可乐/雪碧/芬达汽水碳酸饮料大瓶整箱装包邮
+    无硫原色大颗粒开心果500克袋装无漂白盐焗味休闲零食坚果48g
+    上面的每一行都是一个商品描述，帮我生成相应的BIO格式数据，Use the following entity types:
+
+    Brand (brand name),
+    Category (product type),
+    Flavor (product flavor),
+    Specification (size, weight, volume, etc.),
+    Quantity (number of items),
+    Packaging (packaging type),
+    Promotion (promotional information),
+    Usage (intended use),
+    ProductionDate (production date),
+    Features (product features),
+    Unit (the unit of measurement).
+
+    Please follow the exact BIO format, where:
+
+    "B-<EntityType>" means the beginning of an entity.
+    "I-<EntityType>" means the inside of an entity.
+    "O" means the word is not part of any entity.
+    Each word should be followed by its BIO label, separated by a space. Each word-label pair should be on a new line, and the BIO tags should strictly follow the format "B-<EntityType>" or "I-<EntityType>".
+
+    给我完整的BIO数据，不要省略，回答内容只能包含BIO格式数据，不要包含其他任何内容。
