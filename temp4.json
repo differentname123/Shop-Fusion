@@ -1,146 +1,987 @@
 {
-  "category_name": "电脑",
-  "coupon_remain_quantity": 852,
-  "promotion_rate": 6,
-  "subsidy_goods_type": 0,
-  "service_tags": [
-    1000001,
-    20,
-    36,
-    3,
-    1,
-    2,
-    13,
-    15
-  ],
-  "mall_id": 433069423,
-  "mall_name": "品牌好货",
-  "mall_coupon_end_time": 0,
-  "lgst_txt": "高",
-  "goods_name": "新品上市小米平板7 3.2K 144Hz超清原色屏 游戏平板电脑娱乐办公",
-  "has_material": false,
-  "goods_id": 665046849828,
-  "brand_name": "Xiaomi/小米",
-  "predict_promotion_rate": 9,
-  "goods_desc": "新品上市小米平板7 3.2K 144Hz超清原色屏 游戏平板电脑娱乐办公",
-  "opt_name": "电脑",
-  "share_rate": 0,
-  "opt_ids": [
-    25920,
-    25921,
-    10696,
-    12,
-    10701,
-    3149,
-    3152,
-    21265,
-    24851,
-    24852,
-    24853,
-    3158,
-    24854,
-    21271,
-    24856,
-    9689,
-    9690,
-    221,
-    9700,
-    10728,
-    2478,
-    24371,
-    12020,
-    245,
-    24373,
-    12023,
-    9016,
-    9017,
-    9018,
-    21244,
-    24829,
-    12031,
-    25919
-  ],
-  "goods_image_url": "https://img.pddpic.com/mms-material-img/2024-10-30/382f8954-2d16-4104-b0fa-c0f1bfaa3e58.jpeg",
-  "has_mall_coupon": false,
-  "unified_tags": [
-    "31元福利券",
-    "正品发票",
-    "正品险",
-    null,
-    null,
-    "入选八核平板电脑畅销榜"
-  ],
-  "coupon_start_time": 1731945600,
-  "min_group_price": 229500,
-  "coupon_discount": 3100,
-  "coupon_end_time": 1763481599,
-  "zs_duo_id": 0,
-  "mall_coupon_remain_quantity": 0,
-  "plan_type": 1,
-  "cat_ids": [
-    5851,
-    5854,
-    5855
-  ],
-  "coupon_min_order_amount": 3100,
-  "category_id": 2478,
-  "mall_coupon_discount_pct": 0,
-  "activity_type": 34,
-  "coupon_total_quantity": 1000,
-  "mall_coupon_min_order_amount": 0,
-  "merchant_type": 4,
-  "sales_tip": "301",
-  "is_multi_group": false,
-  "only_scene_auth": true,
-  "desc_txt": "高",
-  "mall_coupon_id": 0,
-  "goods_thumbnail_url": "https://img.pddpic.com/gaudit-image/2024-10-30/913fcd21009aac480a791e2d2afd9fba.jpeg",
-  "opt_id": 2478,
-  "search_id": "ed0214ae473461362727ebcea4d911d7",
-  "activity_tags": [
-    14489,
-    13564,
-    14481,
-    13344,
-    13886,
-    13972,
-    13963,
-    14458,
-    11041,
-    7,
-    13610,
-    11600,
-    14570,
-    13612,
-    13955,
-    13957,
-    14122,
-    14052,
-    14420,
-    14078,
-    14069,
-    14344,
-    14410,
-    14160,
-    14591,
-    13451,
-    31,
-    14421,
-    14443,
-    14291,
-    12756,
-    14563,
-    14151,
-    12485,
-    14571,
-    14659
-  ],
-  "has_coupon": true,
-  "min_normal_price": 499900,
-  "mall_coupon_start_time": 0,
-  "serv_txt": "高",
-  "mall_coupon_total_quantity": 0,
-  "mall_coupon_max_discount_amount": 0,
-  "mall_cps": 1,
-  "goods_sign": "E9D2OL2vZ7BgMvVRwfDeAU5qIgVzRPsq2w_JQHukLR4tc"
+  "data": {
+    "list": [
+      {
+        "product_id": "3709756596004454867",
+        "promotion_id": "3709759994170872616",
+        "name": "【30包仅需3.9】紫薯仔水晶紫薯干地瓜干软糯香甜休闲办公零食小吃",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/UGrWUueS_m_768c61971d82dab8ffcd79ae92039470_sx_220899_www800-800",
+        "price": 390,
+        "commission": {
+          "cos_ratio": 31,
+          "commission_type": 8
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3709756596004454867&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": null,
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "182693860",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 0
+        }
+      },
+      {
+        "product_id": "3698658134114566474",
+        "promotion_id": "3711652099516430450",
+        "name": "可口可乐碳酸饮料汽水330ml*24罐易拉罐听装胖罐整箱团购批发包邮",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/ozkTCLHs_m_e763563b882f251b02c8c064fbe8ea7c_sx_382611_www800-800",
+        "price": 4650,
+        "commission": {
+          "cos_ratio": 1,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3698658134114566474&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": null,
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "20181342",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 0
+        }
+      },
+      {
+        "product_id": "3622649074056064005",
+        "promotion_id": "3622649370534629224",
+        "name": "【100包送50包】独立包装小麻花香酥可口休闲解馋零食多口味混合",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/NfLRvZBe_m_fe0d676131d3eacfbe3291c7b48ce740_sx_524197_www800-800",
+        "price": 999,
+        "commission": {
+          "cos_ratio": 30,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3622649074056064005&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "64274487",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 0
+        }
+      },
+      {
+        "product_id": "3717212882543444001",
+        "promotion_id": "3718950073401519548",
+        "name": "【开业大特惠】卫龙魔芋爽素毛肚装香辣酸辣辣条50g加量30g包",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/qSxKkkdZ_m_c8548ad561cd2cb2a18f7d8bd488c6c1_sx_469206_www634-634",
+        "price": 699,
+        "commission": {
+          "cos_ratio": 5,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220310&x-signature=WxIFIh0vlHHzKGbV%2Fvf9vmOkZTY%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3717212882543444001&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "195001172",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3646856481137149751",
+        "promotion_id": "3646857299345148232",
+        "name": "亲零嘴手撕风干烤脖氮气解馋黑鸭味办公室宿舍网红小零食休闲食品",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/xKRXrQzK_m_3f4f0e122d7d926aec7e53ca4738adbe_sx_610402_www800-800",
+        "price": 1990,
+        "commission": {
+          "cos_ratio": 8,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220310&x-signature=WxIFIh0vlHHzKGbV%2Fvf9vmOkZTY%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3646856481137149751&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "7424880",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3712215554992505038",
+        "promotion_id": "3712217613389183767",
+        "name": "鲨鱼菲特黑咖啡西梅咖啡美式0脂0蔗糖能量冷热速溶醇香浓官方正品",
+        "cover": "https://p9-aio.ecombdimg.com/obj/ecom-shop-material/uZZdHOeS_m_aed40e4dc79b01ba4764c9c6228cedc7_sx_412189_www800-800",
+        "price": 990,
+        "commission": {
+          "cos_ratio": 30,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": null,
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3712215554992505038&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "185371396",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 1
+        }
+      },
+      {
+        "product_id": "3674130117170430386",
+        "promotion_id": "3674139617310993694",
+        "name": "【20袋】小滑头辣条麻辣豆皮大辣面片筋零食小吃的休闲食品",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/sBCoqUeS_m_7636ba23a9bc615070bcc780de2e5dbc_sx_488945_www800-800",
+        "price": 1490,
+        "commission": {
+          "cos_ratio": 50,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": null,
+        "promotion_coupon": [
+          {
+            "name": "券",
+            "title": "5.1折券",
+            "begin_time": 1,
+            "end_time": 1
+          }
+        ],
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3674130117170430386&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "142028736",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 0
+        }
+      },
+      {
+        "product_id": "3584023623897345925",
+        "promotion_id": "3584368140437605628",
+        "name": "汉小二贵州特产断桥柴火糊辣椒面特辣冬日火锅蘸水油泼辣子辣椒粉",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/JWLBnaKx_m_7992d18f61080811d84b3419f6037f95_sx_1026386_www800-800",
+        "price": 1490,
+        "commission": {
+          "cos_ratio": 25,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3584023623897345925&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "59442712",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3625046858054943603",
+        "promotion_id": "3670441598736554199",
+        "name": "花椒锅巴淘米熊椒香麻辣零食办公室休闲手工食品好吃的整箱",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/ZAoUDaEy_m_bedb66859a415393fc218022b1b33a91_sx_378592_www800-800",
+        "price": 990,
+        "commission": {
+          "cos_ratio": 13,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": null,
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3625046858054943603&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "85247219",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3708146253792673927",
+        "promotion_id": "3708269235005438630",
+        "name": "【抢20枚】蝴蝶酥独立包装休闲零食小吃下午茶饼干传统糕点心小零食",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/eODauEkH_m_137623960401ee26d8a28de6cf6f0638_sx_319877_www800-800",
+        "price": 990,
+        "commission": {
+          "cos_ratio": 10,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": null,
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3708146253792673927&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "109561033",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 0
+        }
+      },
+      {
+        "product_id": "3624450973998650368",
+        "promotion_id": "3624451064134253487",
+        "name": "川娃子乐山风味钵钵鸡冷串串麻辣藤椒调料包家用180g 内蒙古可发",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/BVEtHMK_m_8b000339f7daad1fa8fab2edd553ad78_sx_409776_www800-800",
+        "price": 890,
+        "commission": {
+          "cos_ratio": 10,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": null,
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3624450973998650368&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "2098141",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 1
+        }
+      },
+      {
+        "product_id": "3703494209332969829",
+        "promotion_id": "3718228010235739131",
+        "name": "【拍2件发100】三角酥巧克力夹心休闲网红零食威化饼干膨化牛奶味",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/cDqeHGDU_m_6a2d195bcc93c279f83dd687bd1222e7_sx_737966_www800-800",
+        "price": 660,
+        "commission": {
+          "cos_ratio": 40,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220310&x-signature=WxIFIh0vlHHzKGbV%2Fvf9vmOkZTY%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3703494209332969829&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "89762924",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 1
+        }
+      },
+      {
+        "product_id": "3664908261146162112",
+        "promotion_id": "3709812749153506448",
+        "name": "【20支装 可试吃1支】香铭手撕风干真空鸡脖卤味小吃休闲香辣零食",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/qIjsXthu_m_570112cdfb1a0b63b97162a14af2fb79_sx_493791_www1080-1080",
+        "price": 3380,
+        "commission": {
+          "cos_ratio": 8,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": null,
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3664908261146162112&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "139664021",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 1
+        }
+      },
+      {
+        "product_id": "3705157811286704243",
+        "promotion_id": "3705893937618279876",
+        "name": "娃哈哈ad钙奶220ml娃哈哈饮品早餐奶儿童乳酸菌含乳饮料批发",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/tDwzXsIk_m_ab859f067ca78f5d4ff5b2e9d90b2737_sx_365076_www800-800",
+        "price": 736,
+        "commission": {
+          "cos_ratio": 5,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220310&x-signature=WxIFIh0vlHHzKGbV%2Fvf9vmOkZTY%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3705157811286704243&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "57463336",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3662870593335853920",
+        "promotion_id": "3662872425131059588",
+        "name": "【纳雍本味麻辣辣椒面】贵州特产本味麻辣辣椒面烙锅烧烤辣椒面250g",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/rwAGgjZY_m_166d2a1ba6cc08571ab6fad625aca619_sx_1532918_www3024-3024",
+        "price": 2290,
+        "commission": {
+          "cos_ratio": 22,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": null,
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3662870593335853920&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "16807334",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 1
+        }
+      },
+      {
+        "product_id": "3633906922333310745",
+        "promotion_id": "3633907319651367531",
+        "name": "友臣肉松饼500g-1250g经典工艺糕点古早味咸香营养早餐整箱烘烤",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/TashjJdq_m_dea5169a54eb35885642f32127283b98_sx_345648_www800-800",
+        "price": 1780,
+        "commission": {
+          "cos_ratio": 15,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3633906922333310745&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "13292703",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 1
+        }
+      },
+      {
+        "product_id": "3510182425647035516",
+        "promotion_id": "3510677669928904313",
+        "name": "小鱼小虾下饭菜开盖即食香辣开味湖南特产小鱼仔拌饭拌面瓶装280g",
+        "cover": "https://p3-aio.ecombdimg.com/obj/temai/a7918d06bdf672005b43a336ecc54d394b70b394www800-800",
+        "price": 1045,
+        "commission": {
+          "cos_ratio": 10,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3510182425647035516&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "26582194",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3654337253376965331",
+        "promotion_id": "3654337680726195997",
+        "name": "【达人专属】LC今麦郎安徽板面桶方便面香辣速食非油炸面皮桶装美味",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/yRqEJUaL_m_8cf3e1d4fdaad8b17ff8a5c105b586f7_sx_574681_www800-800",
+        "price": 2990,
+        "commission": {
+          "cos_ratio": 8,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3654337253376965331&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "80698613",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3694785244067659792",
+        "promotion_id": "3704590900266143690",
+        "name": "RPE瑞皮儿茶多酚抑菌祛味超薄卫生巾瞬吸防侧漏姨妈巾日夜组合",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/CgCZawNE_m_707f7b853be80dd96d5b171833084362_sx_1258557_www1667-1667",
+        "price": 3990,
+        "commission": {
+          "cos_ratio": 10,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220523&x-signature=jgGhtWjZeBN0EXvFlr3HCDS6U0E%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3694785244067659792&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "8439942",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      },
+      {
+        "product_id": "3552453545666205744",
+        "promotion_id": "3552470225247200163",
+        "name": "脱骨侠无骨鸡爪柠檬酸辣蒜香去骨凤爪爆款网红开袋即食休闲零食 ",
+        "cover": "https://p3-aio.ecombdimg.com/obj/ecom-shop-material/euGJmYrj_m_2beaa47259adcbae028028a8479c0de8_sx_777458_www800-800",
+        "price": 2990,
+        "commission": {
+          "cos_ratio": 18,
+          "commission_type": 3
+        },
+        "gmv": 0,
+        "pv_exposure_rate": 0,
+        "recommend_words": "",
+        "tiered_cos": null,
+        "brand_icon": "",
+        "activity": {
+          "icon": "https://lf3-cm-sign.ecombdstatic.com/cmp-ecom-alliance/ab_280832d2078d81d19b5d9ad77d4df597?lk3s=67faffd8&x-expires=1735220310&x-signature=WxIFIh0vlHHzKGbV%2Fvf9vmOkZTY%3D",
+          "type": 1,
+          "width": 57,
+          "height": 16
+        },
+        "promotion_coupon": null,
+        "captain_coupon": null,
+        "shop_label": null,
+        "logistics_tag_info": null,
+        "hide_status": 2,
+        "detail_url": "https://haohuo.jinritemai.com/ecommerce/trade/detail/index.html?id=3552453545666205744&origin_type=2631",
+        "exclusive_activity_type": 0,
+        "filter_desc": null,
+        "tag_list": [
+          {
+            "type": 6,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/fa6ad6520fb7febb6b269125c283ce40.png",
+            "width": 56,
+            "height": 16
+          },
+          {
+            "type": 7,
+            "icon": "http://p3-buyin-anchor.byteimg.com/tos-cn-i-xl9a4xxhj9/low_price_tag_pc.png",
+            "width": 56,
+            "height": 16
+          }
+        ],
+        "is_kol_exclusive_channel_product": false,
+        "shop_info_data": {
+          "shop_base_info": {
+            "shop_id": "27311964",
+            "shop_name": ""
+          }
+        },
+        "price_info": {
+          "price_feature": 3
+        }
+      }
+    ],
+    "total": 194,
+    "has_more": true
+  },
+  "st": 0,
+  "code": 0,
+  "msg": "",
+  "extra": {
+    "now": 1732628670000,
+    "log_id": "20241126214430250A0C25FB921B755922"
+  }
 }

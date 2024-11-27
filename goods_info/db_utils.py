@@ -2,11 +2,12 @@ import requests
 import json
 from datetime import datetime
 
+from goods_info.common_utils import get_config
 
 # ===================== 用户需要填写的参数 =====================
-APP_ID = 'wx86b334b9c84d4b21'  # 替换为你的小程序 AppID
-APP_SECRET = '2dfff8989f9d561434b18ee6260eca75'  # 替换为你的小程序 AppSecret
-ENV_ID = 'demo-8g342rg41cedb115'  # 替换为你的云开发环境 ID
+APP_ID = get_config("APP_ID")  # 替换为你的小程序 AppID
+APP_SECRET = get_config("APP_SECRET")  # 替换为你的小程序 AppSecret
+ENV_ID = get_config("ENV_ID")  # 替换为你的云开发环境 ID
 COLLECTION_NAME = 'goodsInfo'  # 替换为你的数据库集合名称
 
 
