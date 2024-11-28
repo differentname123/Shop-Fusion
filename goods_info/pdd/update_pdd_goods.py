@@ -12,8 +12,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-
-
 def convert_to_goods_schema(batch, goods_schema, goods_Type="pdd"):
     """
     将 batch 数据转换为符合 goods_schema 的数据格式。
@@ -72,9 +70,17 @@ def convert_to_goods_schema(batch, goods_schema, goods_Type="pdd"):
     return converted_list
 
 
-def process_batch(batch, batch_index, client_id, client_secret, pid, goods_schema, cloud):
+def process_batch(batch, batch_index, client_id, client_secret, pid, goods_schema):
     """
-    处理单个批次的商品数据。
+    处理单个批次的商品数据，返回转换后的数据，供后续统一存储。
+
+    :param batch: List[Dict]，包含原始商品数据的列表
+    :param batch_index: int，当前批次索引
+    :param client_id: str，拼多多客户端 ID
+    :param client_secret: str，拼多多客户端密钥
+    :param pid: str，推广位 ID
+    :param goods_schema: Dict，商品字段的 schema 描述
+    :return: List[Dict]，符合 goods_schema 的数据
     """
     try:
         logger.info(f"开始处理第 {batch_index} 批次，包含 {len(batch)} 个商品")
@@ -88,7 +94,7 @@ def process_batch(batch, batch_index, client_id, client_secret, pid, goods_schem
         temp_list = response.get('goods_promotion_url_generate_response', {}).get('goods_promotion_url_list', [])
 
         if len(temp_list) != len(goods_sign_list):
-            logger.warning(
+            logger.error(
                 f"第 {batch_index} 批次有 {len(goods_sign_list)} 个商品，但仅返回 {len(temp_list)} 个推广链接"
             )
         else:
@@ -98,17 +104,18 @@ def process_batch(batch, batch_index, client_id, client_secret, pid, goods_schem
 
             # 转换为符合 schema 的数据
             db_batch = convert_to_goods_schema(batch, goods_schema)
-            start = time.time()
-            db_response = cloud.add(db_batch)
 
-            logger.info(f"第 {batch_index} 批次处理完成，成功插入 {len(db_batch)} 条数据 {db_response} 耗时 {time.time() - start:.2f} 秒 \n")
+            logger.info(f"第 {batch_index} 批次处理完成，待存储数据条数：{len(db_batch)}")
+            return db_batch
+
     except Exception as e:
         logger.error(f"第 {batch_index} 批次处理失败: {e}", exc_info=True)
+        return []
 
 
 if __name__ == "__main__":
     # 搜索关键字
-    keyword = "开心果"
+    keyword = ""
 
     # 配置信息
     client_id = get_config('client_id')
@@ -143,7 +150,7 @@ if __name__ == "__main__":
     cloud = Cloud(env=ENV_ID, collection_name=COLLECTION_NAME, schema=goods_schema, unique_fields=unique_fields)
 
     # 调用函数获取搜索结果
-    result = search_goods_by_keyword(keyword, client_id, client_secret, pid, page_limit=1)
+    result = search_goods_by_keyword(keyword, client_id, client_secret, pid, page_limit=0)
 
     # 按每 10 个划分为一个批次
     batch_size = 10
@@ -151,8 +158,16 @@ if __name__ == "__main__":
 
     logger.info(f"共分为 {len(batches)} 个批次，每批次包含最多 {batch_size} 条数据")
 
-    # 遍历每个批次
+    # 收集所有批次的待存储数据
+    all_data = []
     for batch_index, batch in enumerate(batches, start=1):
-        process_batch(batch, batch_index, client_id, client_secret, pid, goods_schema, cloud)
+        processed_data = process_batch(batch, batch_index, client_id, client_secret, pid, goods_schema)
+        all_data.extend(processed_data)
 
-    logger.info("所有批次处理完成")
+    # 最终统一存储到数据库
+    if all_data:
+        start = time.time()
+        db_response = cloud.add(all_data)
+        logger.info(f"所有批次处理完成，成功插入 {len(all_data)} 条数据 {db_response} 耗时 {time.time() - start:.2f} 秒")
+    else:
+        logger.warning("没有需要存储的数据")

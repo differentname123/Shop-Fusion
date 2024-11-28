@@ -71,6 +71,23 @@ def pdd_goods_search(page, page_size, keyword, client_id, client_secret, pid):
         logger.error(f"请求发生异常: {e}", exc_info=True)
         return {"error": str(e)}
 
+def deduplicate_goods(result_list):
+    """
+    根据 goods_id 对 result_list 进行去重, 保留 goods_id 相同商品的第一个。
+
+    :param result_list: 包含商品的列表，每个商品是一个字典，需包含 'goods_id' 字段
+    :return: 去重后的商品列表
+    """
+    seen_goods_ids = set()  # 用于存储已处理的 goods_id
+    deduplicated_list = []  # 用于存储去重后的结果
+
+    for item in result_list:
+        goods_id = item.get("goods_id")
+        if goods_id not in seen_goods_ids:
+            seen_goods_ids.add(goods_id)
+            deduplicated_list.append(item)  # 只有没见过的 goods_id 才加入结果列表
+
+    return deduplicated_list
 
 def search_goods_by_keyword(keyword, client_id, client_secret, pid, page_size=60, page_limit=0):
     """
@@ -117,13 +134,20 @@ def search_goods_by_keyword(keyword, client_id, client_secret, pid, page_size=60
 
         # 筛选符合条件的商品并添加到结果列表
         for item in goods_list:
-            if keyword in item.get('goods_desc', ''):
-                result_list.append(item)
+            result_list.append(item)
+            # if keyword in item.get('goods_desc', ''):
+            #     result_list.append(item)
 
         # 下一页
         page += 1
 
+    # 对result_list进行去重，goods_id相同的商品只保留一个
+    result_list = deduplicate_goods(result_list)
+    # 将result_list保存到文件temp.json
+    with open('temp.json', 'w', encoding='utf-8') as f:
+        json.dump(result_list, f, ensure_ascii=False, indent=4)
     logger.info(f"搜索完成，共找到 {len(result_list)} 个符合条件的商品\n")
+
     return result_list
 
 
@@ -134,14 +158,14 @@ if __name__ == "__main__":
     pid = get_config('pid')
 
     # 搜索关键字
-    keyword = "开心果"
+    keyword = ""
 
     # 调用函数获取搜索结果
     logger.info(f"开始搜索关键字: {keyword}")
     result = search_goods_by_keyword(keyword, client_id, client_secret, pid, page_limit=5)
 
     # 保存最终结果
-    output_file = 'result.json'
+    output_file = 'keyword_goods.json'
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(result, f, ensure_ascii=False, indent=4)
     logger.info(f"搜索结果已保存到文件: {output_file}")

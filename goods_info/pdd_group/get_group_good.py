@@ -29,7 +29,7 @@ def get_group_good():
     default_params = {
         "__rp_name": "brand_amazing_price_group_team",
         "_pdd_fs": "1",
-        "team_id": "4421",
+        "team_id": "1798",
         "refer_page_name": "login",
         "refer_page_id": "10169_1731429930807_ju235qo4wm",
         "refer_page_sn": "10169"
@@ -48,10 +48,11 @@ def get_group_good():
         "Sec-Fetch-User": "?1",
         "Upgrade-Insecure-Requests": "1",
         "Referer": "https://mobile.pinduoduo.com/pincard_ask.html",
-        "Cookie": "rec_list_brand_amazing_price_group_team=rec_list_brand_amazing_price_group_team_cHqKrw; jrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; njrpl=Zbe3yb5aP1SWnqEUoWFwP4tAoZbOw6yp; dilx=u9BaHD82A0av~TXmxkdC_; api_uid=CiD86mczhjSJwgCx3OSOAg==; PDDAccessToken=E7U7OD2BWINOGCANPK4TVBWLSPQ6YG7HUYWDP57RWGNZ2I6FKGHQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaMxXnMbHmqsqbvxXshwHyqlYbDnfxXGqNftWxpsDtZOvbZlXmqIpGMmzxhO; webp=1; _nano_fp=XpmqXpTxlpU8XpEalT_Sl5vpkbteZdBVyYcpr7YS"
+        "Cookie": "rec_list_brand_amazing_price_group=rec_list_brand_amazing_price_group_zegvsb; api_uid=CiTat2czkFhnmABXY9EyAg==; _nano_fp=XpmqXpTqX5dqnqEynC_nKWFwAQcz6bwPwodwgsMz; webp=1; jrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; njrpl=CALqopS1ixhpEb4GNdCDGcMTHkzskqOm; dilx=Zg3Np6qOYb9i5y9tCHeyR; PDDAccessToken=Z6UQQO3UUKMOMI2TWMQX6ZJ7QN7MKFJLXJGTSZR4BRB6HVUZQXJQ120570b; pdd_user_id=4365968471; pdd_user_uin=X4SHUDVGMG7HGQBVER6XRAMGHI_GEXDA; pdd_vds=gaLLNyLamiLiIIPQOyaNOabLbGnLyyyoLaOIaQbImnoLtNaQGENmooEbinmQ"
+
     }
     # 把headers变成字典并打印
-    print(dict(headers))
+    # print(dict(headers))
 
     # 拼接参数为查询字符串
     response = requests.get(base_url, params=default_params, headers=headers)

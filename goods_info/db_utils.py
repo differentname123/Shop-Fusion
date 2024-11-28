@@ -3,6 +3,12 @@ import json
 from datetime import datetime
 
 from goods_info.common_utils import get_config
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
+
+# 日志配置
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 # ===================== 用户需要填写的参数 =====================
 APP_ID = get_config("APP_ID")  # 替换为你的小程序 AppID
@@ -124,21 +130,25 @@ class Cloud:
         result = self.query(search_param)
         return result.get("pager", {}).get("Total", 0) > 0, result
 
-    def add(self, new_data):
+    def add(self, new_data, max_workers=10):
         """
-        添加记录到数据库
+        使用多线程添加记录到数据库以提升性能。
         :param new_data: 新增数据 (列表形式，每个元素为字典)
+        :param max_workers: 最大线程数，默认为 5
         :return: 操作结果日志 (字典)
         """
         if not isinstance(new_data, list):
             raise ValueError("新增数据必须是列表形式")
-
+        logger.info(f"开始添加 {len(new_data)} 条记录到数据库")
         success_count = 0
         update_count = 0
         failed_count = 0
         detailed_logs = []
 
-        for item in new_data:
+        def process_item(item):
+            """
+            单条数据处理逻辑，格式化并插入/更新数据。
+            """
             try:
                 # 校验和格式化
                 formatted_data = self._validate_and_format(item)
@@ -149,13 +159,9 @@ class Cloud:
                     search_param = {field: formatted_data[field] for field in self.unique_fields}
                     update_result = self.update(search_param, formatted_data)
                     if update_result.get("errcode") == 0:
-                        update_count += 1
-                        detailed_logs.append({"status": "updated"})
+                        return "updated", None  # 表示更新成功
                     else:
-                        failed_count += 1
-                        detailed_logs.append({"status": "failed", "reason": update_result.json()})
-                    continue
-
+                        return "failed", update_result.json()  # 更新失败
                 # 如果不重复，则插入数据
                 query = f"db.collection('{self.collection_name}').add({{'data': [{json.dumps(formatted_data)}]}})"
                 post_data = {
@@ -164,20 +170,38 @@ class Cloud:
                 }
                 response = requests.post(self.add_url, data=json.dumps(post_data))
                 if response.json().get("errcode") == 0:
-                    success_count += 1
-                    detailed_logs.append({"status": "success"})
+                    return "success", None  # 表示插入成功
                 else:
-                    failed_count += 1
-                    detailed_logs.append({"status": "failed", "reason": response.json()})
+                    return "failed", response.json()  # 插入失败
             except Exception as e:
-                failed_count += 1
-                detailed_logs.append({"status": "failed", "reason": str(e)})
+                return "failed", str(e)  # 捕获异常
+
+        # 使用线程池并发处理
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(process_item, item): item for item in new_data}
+
+            for future in as_completed(futures):
+                try:
+                    status, reason = future.result()
+                    if status == "success":
+                        success_count += 1
+                        detailed_logs.append({"status": "success"})
+                    elif status == "updated":
+                        update_count += 1
+                        detailed_logs.append({"status": "updated"})
+                    else:  # failed
+                        failed_count += 1
+                        detailed_logs.append({"status": "failed", "reason": reason})
+                except Exception as e:
+                    failed_count += 1
+                    detailed_logs.append({"status": "failed", "reason": str(e)})
+
         return {
             "total": len(new_data),
             "success": success_count,
             "updated": update_count,
             "failed": failed_count,
-            # "details": detailed_logs
+            # "details": detailed_logs  # 可选：启用详细日志
         }
 
 
