@@ -1,5 +1,3 @@
-/* pages/share/share.wxss */
-
 .page-container {
   padding: 20rpx;
 }
@@ -43,8 +41,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .image-preview {
@@ -57,14 +59,8 @@
   margin-right: 10rpx;
 }
 
-.preview-image {
-  width: 200rpx;
-  height: 200rpx;
-  object-fit: cover;
-}
-
 .parse-result {
-  width: 200rpx;
+  width: 300rpx;
   word-wrap: break-word;
   text-align: center;
   font-size: 24rpx;
@@ -81,4 +77,5 @@
   color: #fff;
   padding: 10rpx 20rpx;
   border-radius: 5rpx;
+  margin: 0 10rpx;
 }

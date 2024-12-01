@@ -1,241 +1,450 @@
-import requests
-import json
-from datetime import datetime
+下面是我的微信小程序的代码，你帮我分析一下二维码解析的部分，有没有更好的解析方式，同样一张带二维码的图片，微信上的二维码识别就能够提取出链接，但是下面这个代码久提取不出来,你帮我把它改成使用wx.scanCode的方式，给我优化后的完整代码，我希望复制粘贴就能使用:
+// pages/share/share.js
+
+import jsQR from 'jsqr'; // jsQR 可以直接在微信小程序中使用
+
+Page({
+  data: {
+    images: [], // 存储图片路径和解析结果的数组
+    canvasWidth: 300, // 初始 Canvas 的宽度
+    canvasHeight: 300, // 初始 Canvas 的高度
+    loading: false, // 是否正在加载
+    progress: 0, // 当前解析进度
+    totalImages: 0, // 总共需要解析的图片数
+    navBarHeight: 64 // default value
+  },
 
 
-# ===================== 用户需要填写的参数 =====================
-APP_ID = 'wx86b334b9c84d4b21'  # 替换为你的小程序 AppID
-APP_SECRET = '2dfff8989f9d561434b18ee6260eca75'  # 替换为你的小程序 AppSecret
-ENV_ID = 'demo-8g342rg41cedb115'  # 替换为你的云开发环境 ID
-COLLECTION_NAME = 'goodsInfo'  # 替换为你的数据库集合名称
+  onLoad() {
+    const titleNav = this.selectComponent('#titleNav');
+    if (titleNav) {
+      this.setData({
+        navBarHeight: titleNav.data.navBarHeight + 66
+      });
+    }
+  },
 
+  // 选择图片并解析
+  chooseImage() {
+    const that = this;
+    wx.chooseImage({
+      count: 9, // 最多可选9张
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album'],
+      success(res) {
+        const tempFilePaths = res.tempFilePaths;
+        that.setData({
+          loading: true,
+          progress: 0,
+          totalImages: tempFilePaths.length,
+          images: [], // 清空之前的结果
+        });
+        that.processImagesSequentially(tempFilePaths);
+      },
+    });
+  },
 
-# ===========================================================
+  // 顺序处理图片
+  processImagesSequentially(filePaths) {
+    const that = this;
+    if (filePaths.length === 0) {
+      that.setData({
+        loading: false,
+      });
+      return;
+    }
+    const filePath = filePaths.shift();
+    that.parseImage(filePath, () => {
+      // 更新进度
+      const newProgress = that.data.progress + 1;
+      that.setData({
+        progress: newProgress,
+      });
+      // 处理下一张图片
+      that.processImagesSequentially(filePaths);
+    });
+  },
 
+  // 解析图片中的二维码
+  parseImage(filePath, callback) {
+    const that = this;
+    const ctx = wx.createCanvasContext('qrCanvas', this);
 
-def get_access_token():
-    """
-    获取小程序的 access_token
-    """
-    url = f"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={APP_ID}&secret={APP_SECRET}"
-    response = requests.get(url)
-    result = response.json()
-    if "access_token" in result:
-        return result["access_token"]
-    else:
-        raise Exception(f"获取 access_token 失败: {result}")
+    // 获取图片信息
+    wx.getImageInfo({
+      src: filePath,
+      success(imgInfo) {
+        const imgWidth = imgInfo.width;
+        const imgHeight = imgInfo.height;
 
+        // 输出图片尺寸
+        console.log(`Image dimensions: ${imgWidth}x${imgHeight}`);
 
-class Cloud:
-    def __init__(self, env, collection_name, schema, unique_fields):
-        """
-        初始化
-        :param env: 云开发环境 ID
-        :param collection_name: 数据库集合名称
-        :param schema: 数据模式 (Schema)，定义表字段格式
-        :param unique_fields: 用于唯一性校验的字段列表
-        """
-        self.env = env
-        self.collection_name = collection_name
-        self.access_token = get_access_token()
-        self.schema = schema  # 数据模式
-        self.unique_fields = unique_fields  # 唯一性校验字段
+        // 限制 Canvas 的最大尺寸，避免超过小程序的限制
+        const maxCanvasSize = 600; // 可根据需要调整
+        let canvasWidth = imgWidth;
+        let canvasHeight = imgHeight;
 
-        # 云开发 API URL
-        self.query_url = f"https://api.weixin.qq.com/tcb/databasequery?access_token={self.access_token}"
-        self.add_url = f"https://api.weixin.qq.com/tcb/databaseadd?access_token={self.access_token}"
-        self.update_url = f"https://api.weixin.qq.com/tcb/databaseupdate?access_token={self.access_token}"
-
-    def query(self, search_param):
-        """
-        查询数据库
-        :param search_param: 查询条件 (字典形式)
-        :return: 查询结果 (JSON 格式)
-        """
-        query = f"db.collection('{self.collection_name}').where({json.dumps(search_param)}).get()"
-        post_data = {
-            "env": self.env,
-            "query": query
+        if (imgWidth > maxCanvasSize || imgHeight > maxCanvasSize) {
+          const scale = Math.min(maxCanvasSize / imgWidth, maxCanvasSize / imgHeight);
+          canvasWidth = Math.floor(imgWidth * scale);
+          canvasHeight = Math.floor(imgHeight * scale);
         }
-        response = requests.post(self.query_url, data=json.dumps(post_data))
-        return response.json()
 
-    def update(self, search_param, update_data):
-        """
-        更新数据库记录
-        :param search_param: 查询条件 (字典形式)
-        :param update_data: 更新内容 (字典形式)
-        :return: 操作结果 (JSON 格式)
-        """
-        query = f"db.collection('{self.collection_name}').where({json.dumps(search_param)}).update({{'data': {json.dumps(update_data)}}})"
-        post_data = {
-            "env": self.env,
-            "query": query
-        }
-        response = requests.post(self.update_url, data=json.dumps(post_data))
-        return response.json()
+        // 设置 Canvas 的尺寸
+        that.setData({
+          canvasWidth: canvasWidth,
+          canvasHeight: canvasHeight,
+        });
 
-    def _validate_and_format(self, data):
-        """
-        校验和格式化数据
-        :param data: 待校验的数据 (字典形式)
-        :return: 格式化后的数据
-        """
-        formatted_data = {}
-        for field, rules in self.schema.items():
-            # 检查必填字段
-            if rules.get("required", False) and field not in data:
-                raise ValueError(f"字段 '{field}' 是必填项，但未提供")
+        // 清理 Canvas
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-            # 检查字段类型
-            value = data.get(field)
-            if value is not None:  # 允许非必填项为空
-                expected_type = rules.get("type")
-                if not isinstance(value, expected_type):
-                    # 尝试进行类型转换
-                    try:
-                        value = expected_type(value)
-                    except (ValueError, TypeError):
-                        raise ValueError(f"字段 '{field}' 的值必须是 {expected_type.__name__} 类型，当前值: {value}")
+        // 绘制原图到 Canvas
+        ctx.drawImage(filePath, 0, 0, canvasWidth, canvasHeight);
+        ctx.draw(false, () => {
+          // 获取像素数据
+          wx.canvasGetImageData({
+            canvasId: 'qrCanvas',
+            x: 0,
+            y: 0,
+            width: canvasWidth,
+            height: canvasHeight,
+            success(res) {
+              console.log(`canvasGetImageData success: width=${res.width}, height=${res.height}, data length=${res.data.length}`);
 
-            # 默认值处理
-            if value is None and "default" in rules:
-                value = rules["default"]
+              const imageData = {
+                data: new Uint8ClampedArray(res.data),
+                width: res.width,
+                height: res.height,
+              };
 
-            # 格式化后的字段
-            formatted_data[field] = value
-
-        # 自动添加创建时间和修改时间
-        now = datetime.now().isoformat()
-        formatted_data["updateTime"] = now
-        if "createTime" not in data:
-            formatted_data["createTime"] = now
-
-        return formatted_data
-
-    def _is_duplicate(self, data):
-        """
-        判断数据是否重复
-        :param data: 待校验的数据 (字典形式)
-        :return: 是否重复 (True/False)，以及重复数据的查询结果
-        """
-        search_param = {field: data[field] for field in self.unique_fields if field in data}
-        result = self.query(search_param)
-        return result.get("pager", {}).get("Total", 0) > 0, result
-
-    def add(self, new_data):
-        """
-        添加记录到数据库
-        :param new_data: 新增数据 (列表形式，每个元素为字典)
-        :return: 操作结果日志 (字典)
-        """
-        if not isinstance(new_data, list):
-            raise ValueError("新增数据必须是列表形式")
-
-        success_count = 0
-        update_count = 0
-        failed_count = 0
-        detailed_logs = []
-
-        for item in new_data:
-            try:
-                # 校验和格式化
-                formatted_data = self._validate_and_format(item)
-                # 检查是否重复
-                is_duplicate, duplicate_result = self._is_duplicate(formatted_data)
-                if is_duplicate:
-                    # 如果重复则进行更新操作
-                    search_param = {field: formatted_data[field] for field in self.unique_fields}
-                    update_result = self.update(search_param, formatted_data)
-                    if update_result.get("errcode") == 0:
-                        update_count += 1
-                        detailed_logs.append({"status": "updated"})
-                    else:
-                        failed_count += 1
-                        detailed_logs.append({"status": "failed", "reason": update_result.json()})
-                    continue
-
-                # 如果不重复，则插入数据
-                query = f"db.collection('{self.collection_name}').add({{'data': [{json.dumps(formatted_data)}]}})"
-                post_data = {
-                    "env": self.env,
-                    "query": query
+              try {
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                if (code) {
+                  that.handleQRCodeResult(code.data, filePath, callback);
+                } else {
+                  console.log(`First attempt to decode QR code failed, trying cropped image. width=${imageData.width} ${imageData.height} ${code}`);
+                  // 初次识别失败，尝试裁剪后再次识别
+                  that.cropAndRetry(filePath, imgWidth, imgHeight, callback);
                 }
-                response = requests.post(self.add_url, data=json.dumps(post_data))
-                if response.json().get("errcode") == 0:
-                    success_count += 1
-                    detailed_logs.append({"status": "success"})
-                else:
-                    failed_count += 1
-                    detailed_logs.append({"status": "failed", "reason": response.json()})
-            except Exception as e:
-                failed_count += 1
-                detailed_logs.append({"status": "failed", "reason": str(e)})
-        return {
-            "total": len(new_data),
-            "success": success_count,
-            "updated": update_count,
-            "failed": failed_count,
-            # "details": detailed_logs
-        }
+              } catch (error) {
+                console.error('jsQR error:', error);
+                // 初次识别异常，尝试裁剪后再次识别
+                that.cropAndRetry(filePath, imgWidth, imgHeight, callback);
+              }
+            },
+            fail(err) {
+              console.error('获取像素数据失败', err);
+              that.handleDecodeFailure(filePath, callback);
+            },
+          });
+        });
+      },
+      fail(err) {
+        console.error('获取图片信息失败', err);
+        that.handleDecodeFailure(filePath, callback);
+      },
+    });
+  },
 
+  // 裁剪图片并再次尝试识别
+  cropAndRetry(filePath, imgWidth, imgHeight, callback) {
+    const that = this;
+    const ctx = wx.createCanvasContext('qrCanvas', this);
 
-if __name__ == "__main__":
-    # 定义 goodsInfo 的数据模式 (Schema)
-    goods_schema = {
-        "goodsId": {"type": str, "required": True},  # 唯一标识
-        "goodsSign": {"type": str, "required": True},  # 唯一标识
-        "hdThumbUrl": {"type": str, "required": True},
-        "goodsName": {"type": str, "required": True},
-        "originActivityPrice": {"type": int, "required": True},
-        "priceReduce": {"type": int, "required": False, "default": 0},
-        "goodsType": {"type": str, "required": True},
-        "promotionRate": {"type": int, "required": False, "default": 0},
-        "promotionUrl": {"type": str, "required": False},
-        "promotionPath": {"type": str, "required": False},
-        "mallName": {"type": str, "required": True},
-        "brand": {"type": str, "required": True},
-        "category_name": {"type": str, "required": True},
-        "salesTip": {"type": str, "required": False}
+    // 计算裁剪区域
+    const cropLeft = Math.floor(imgWidth * 0.75); // 左侧裁剪掉 3/4
+    const cropTop = Math.floor(imgHeight * 0.5); // 上部裁剪掉 1/2
+    const cropRight = imgWidth; // 右侧不裁剪
+    const cropBottom = Math.floor(imgHeight * 0.75); // 下部裁剪掉 1/4
+
+    const cropWidth = cropRight - cropLeft;
+    const cropHeight = cropBottom - cropTop;
+
+    // 确保裁剪后的宽高为正数
+    if (cropWidth <= 0 || cropHeight <= 0) {
+      console.error('裁剪区域计算错误');
+      that.handleDecodeFailure(filePath, callback);
+      return;
     }
 
-    # 唯一性校验字段
-    unique_fields = ["goodsId", "goodsSign"]
+    // 输出裁剪区域信息
+    console.log(`Crop area: left=${cropLeft}, top=${cropTop}, width=${cropWidth}, height=${cropHeight}`);
 
-    # 初始化 Cloud 类
-    cloud = Cloud(env=ENV_ID, collection_name=COLLECTION_NAME, schema=goods_schema, unique_fields=unique_fields)
+    // 限制 Canvas 的最大尺寸
+    const maxCanvasSize = 600; // 可根据需要调整
+    let canvasWidth = cropWidth;
+    let canvasHeight = cropHeight;
 
-    # 测试新增数据
-    new_data = [
-        {
-            "goodsId": "649553632705",
-            "goodsSign": "E932M8VSLoRgMvVRwfDeGT4d_Or5M1DWbQ_J5ggeXyuN",
-            "hdThumbUrl": "https://img.pddpic.com/mms-material-img/2024-09-12/ca0b09f6-d581-442a-acfd-9b5d28589ffd.jpeg",
-            "goodsName": "德芙草莓香米巧克力清新盒装莓你不可礼盒休闲送女友网红盒装正品",
-            "originActivityPrice": 1820,
-            "goodsType": "pdd",
-            "brand": "德芙",
-            "category_name": "食品",
-            "mallName": "洽洽坚果官方旗舰店"
+    if (cropWidth > maxCanvasSize || cropHeight > maxCanvasSize) {
+      const scale = Math.min(maxCanvasSize / cropWidth, maxCanvasSize / cropHeight);
+      canvasWidth = Math.floor(cropWidth * scale);
+      canvasHeight = Math.floor(cropHeight * scale);
+    }
+
+    // 更新 Canvas 的尺寸为裁剪区域的尺寸
+    that.setData({
+      canvasWidth: canvasWidth,
+      canvasHeight: canvasHeight,
+    });
+
+    // 清理 Canvas
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    // 绘制裁剪后的图片到 Canvas
+    ctx.drawImage(
+      filePath,
+      cropLeft,
+      cropTop,
+      cropWidth,
+      cropHeight,
+      0,
+      0,
+      canvasWidth,
+      canvasHeight
+    );
+    ctx.draw(false, () => {
+      // 获取裁剪后图片的像素数据
+      wx.canvasGetImageData({
+        canvasId: 'qrCanvas',
+        x: 0,
+        y: 0,
+        width: canvasWidth,
+        height: canvasHeight,
+        success(res) {
+          console.log(`Cropped canvasGetImageData success: width=${res.width}, height=${res.height}, data length=${res.data.length}`);
+
+          const imageData = {
+            data: new Uint8ClampedArray(res.data),
+            width: res.width,
+            height: res.height,
+          };
+
+          try {
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            if (code) {
+              that.handleQRCodeResult(code.data, filePath, callback);
+            } else {
+              console.log('Second attempt to decode QR code failed.');
+              // 识别失败，调用处理函数
+              that.handleDecodeFailure(filePath, callback);
+            }
+          } catch (error) {
+            console.error('jsQR error after cropping:', error);
+            that.handleDecodeFailure(filePath, callback);
+          }
         },
-        {
-            "goodsId": "649553632705",
-            "goodsSign": "E932M8VSLoRgMvVRwfDeGT4d_Or5M1DWbQ_J5ggeXyuN",
-            "hdThumbUrl": "https://img.pddpic.com/mms-material-img/2024-09-12/ca0b09f6-d581-442a-acfd-9b5d28589ffd.jpeg",
-            "goodsName": "德芙草莓香米巧克力清新盒装莓你不可礼盒休闲送女友网红盒装正品",
-            "originActivityPrice": 1820,
-            "priceReduce": 470,
-            "goodsType": "pdd",
-            "promotionRate": 0,
-            "promotionUrl": "https://mobile.yangkeduo.com/goods.html?goods_id=649553632705",
-            "promotionPath": "https://mobile.yangkeduo.com/goods.html?goods_id=649553632705",
-            "originUrl": "https://mobile.yangkeduo.com/goods.html?goods_id=649553632705",
-            "mallName": "洽洽坚果官方旗舰店",
-            "brand": "德芙",
-            "category_name": "食品",
-            "sales_tip": "5.33万"
-        }
-    ]
+        fail(err) {
+          console.error('获取裁剪后像素数据失败', err);
+          that.handleDecodeFailure(filePath, callback);
+        },
+      });
+    });
+  },
 
-    result = cloud.add(new_data)
-    print("新增结果:", json.dumps(result, indent=4, ensure_ascii=False))
+  // 处理二维码解析结果
+  handleQRCodeResult(resultText, filePath, callback) {
+    const that = this;
+    console.log('resultText:', resultText);
+
+    // 检查 resultText 是否是指定的 URL
+    if (resultText.startsWith('https://file-link.pinduoduo.com/')) {
+      const key_code = resultText.split('/').pop(); // 提取 key_code
+      console.log(`Extracted key_code: ${key_code}`);
+      // 调用云函数 fetchData
+      that.fetchDataFromCloudFunction(key_code, filePath, callback);
+    } else {
+      // 如果不是指定的 URL，直接显示结果
+      that.setData({
+        images: that.data.images.concat({
+          path: filePath,
+          result: resultText,
+          shortResult: that.truncateText(resultText, 20),
+        }),
+      }, () => {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      });
+    }
+  },
+
+  fetchDataFromCloudFunction(key_code, filePath, callback) {
+    const that = this;
+    console.log(`Starting fetchDataFromCloudFunction with key_code: ${key_code}`);
+
+    wx.cloud.callFunction({
+      name: 'fetchData',
+      data: {
+        key_code: key_code,
+      },
+      success: (res) => {
+        console.log('Cloud function response:', res);
+        if (res.result.status === 'success') {
+          const currentGoods = res.result.data;
+          if (currentGoods) {
+            const goodsName = currentGoods.goodsName || '商品名称未知';
+            const hdThumbUrl = currentGoods.hdThumbUrl || '';
+
+            console.log(`Found goodsName: ${goodsName}, hdThumbUrl: ${hdThumbUrl}`);
+
+            // 下载图片
+            if (hdThumbUrl) {
+              wx.downloadFile({
+                url: hdThumbUrl,
+                success: (downloadRes) => {
+                  if (downloadRes.statusCode === 200) {
+                    const imagePath = downloadRes.tempFilePath;
+
+                    // 更新页面数据
+                    that.setData({
+                      images: that.data.images.concat({
+                        path: imagePath,
+                        result: goodsName,
+                        shortResult: that.truncateText(goodsName, 20),
+                      }),
+                    }, () => {
+                      if (typeof callback === 'function') {
+                        callback();
+                      }
+                    });
+                  } else {
+                    console.error('Image download failed', downloadRes);
+                    that.setData({
+                      images: that.data.images.concat({
+                        path: filePath,
+                        result: goodsName,
+                        shortResult: that.truncateText(goodsName, 20),
+                      }),
+                    }, () => {
+                      if (typeof callback === 'function') {
+                        callback();
+                      }
+                    });
+                  }
+                },
+                fail: (err) => {
+                  console.error('Image download failed', err);
+                  that.setData({
+                    images: that.data.images.concat({
+                      path: filePath,
+                      result: goodsName,
+                      shortResult: that.truncateText(goodsName, 20),
+                    }),
+                  }, () => {
+                    if (typeof callback === 'function') {
+                      callback();
+                    }
+                  });
+                },
+              });
+            } else {
+              // 如果没有 hdThumbUrl，直接更新 goodsName
+              that.setData({
+                images: that.data.images.concat({
+                  path: filePath,
+                  result: goodsName,
+                  shortResult: that.truncateText(goodsName, 20),
+                }),
+              }, () => {
+                if (typeof callback === 'function') {
+                  callback();
+                }
+              });
+            }
+          } else {
+            console.error('currentGoods not found in the response');
+            that.setData({
+              images: that.data.images.concat({
+                path: filePath,
+                result: 'currentGoods 未找到',
+                shortResult: 'currentGoods 未找到',
+              }),
+            }, () => {
+              if (typeof callback === 'function') {
+                callback();
+              }
+            });
+          }
+        } else {
+          console.error('Error:', res.result.message);
+          that.setData({
+            images: that.data.images.concat({
+              path: filePath,
+              result: '解析失败',
+              shortResult: '解析失败',
+            }),
+          }, () => {
+            if (typeof callback === 'function') {
+              callback();
+            }
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('Cloud function call failed:', err);
+        that.setData({
+          images: that.data.images.concat({
+            path: filePath,
+            result: '解析失败',
+            shortResult: '解析失败',
+          }),
+        }, () => {
+          if (typeof callback === 'function') {
+            callback();
+          }
+        });
+      },
+    });
+  },
+
+  // 处理解析失败的情况
+  handleDecodeFailure(filePath, callback) {
+    const that = this;
+    console.error('解析失败');
+    that.setData({
+      images: that.data.images.concat({
+        path: filePath,
+        result: '无法解析该图片',
+        shortResult: '无法解析该图片',
+      }),
+    }, () => {
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
+  },
+
+  // 截取文字，展示一部分
+  truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    } else {
+      return text;
+    }
+  },
+
+  // 分享结果
+  shareResults() {
+    // 调用微信的分享功能
+    wx.showShareMenu({
+      withShareTicket: true,
+    });
+  },
+
+  // 设置分享内容
+  onShareAppMessage() {
+    return {
+      title: '分享我的图片解析结果',
+      path: '/pages/share/share',
+    };
+  },
+
+  // 跳转到教程页面
+  goToTutorial() {
+    wx.navigateTo({
+      url: '/pages/tutorial/tutorial',
+    });
+  },
+});

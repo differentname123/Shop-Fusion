@@ -129,5 +129,5 @@ def make_request(key_code, base_url="https://file-link.pinduoduo.com", headers=N
 
 
 # 调用示例
-raw_data = make_request("nyX4hMT9Yr")
+raw_data = make_request("0nhSKPGrnf")
 print(raw_data)

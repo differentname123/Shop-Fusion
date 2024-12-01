@@ -1,4 +1,3 @@
-<!-- pages/share/share.wxml -->
 <view class="page-container">
   <!-- 页面标题 -->
   <title-nav id="titleNav" title="分享我的团"></title-nav>
@@ -8,22 +7,22 @@
     <!-- 教程按钮 -->
     <button class="tutorial-button" bindtap="goToTutorial">查看教程</button>
 
-    <!-- 图片上传区域 -->
+    <!-- 二维码扫描按钮 -->
     <view class="upload-section">
-      <button class="upload-button" bindtap="chooseImage">上传图片</button>
+      <button class="upload-button" bindtap="scanQRCode">扫描二维码</button>
     </view>
 
-    <!-- 加载动画或解析进度 -->
+    <!-- 加载动画 -->
     <view wx:if="{{loading}}" class="loading-section">
-      <text>正在解析图片 {{progress}} / {{totalImages}}</text>
+      <text>正在解析二维码...</text>
       <view class="loading-spinner"></view>
     </view>
 
-    <!-- 图片预览和解析结果 -->
+    <!-- 显示二维码解析结果 -->
     <scroll-view scroll-x="true" class="image-preview">
       <block wx:for="{{images}}" wx:key="index">
         <view class="image-item">
-          <image src="{{item.path}}" class="preview-image"></image>
+          <image wx:if="{{item.path}}" src="{{item.path}}" class="preview-image"></image>
           <text class="parse-result">
             {{item.shortResult}}
           </text>
@@ -36,11 +35,4 @@
       <button bindtap="shareResults">分享</button>
     </view>
   </view>
-
-  <!-- 隐藏的 Canvas，用于图像处理 -->
-  <canvas
-    canvas-id="qrCanvas"
-    style="width: {{canvasWidth}}px; height: {{canvasHeight}}px; position: absolute; top: -1000px; left: -1000px;"
-    disable-scroll="true"
-  ></canvas>
 </view>
