@@ -358,7 +358,7 @@ Page({
   showPinHelp() {
     wx.showModal({
       title: '置顶功能说明',
-      content: '置顶功能可以将当前分享置顶，便于快速查看，加快成团概率。',
+      content: '置顶功能可以将当前分享置顶，增加曝光量，加快成团概率。',
       showCancel: false, // 仅显示确定按钮
       confirmText: '知道了'
     });
