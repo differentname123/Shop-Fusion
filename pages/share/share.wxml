@@ -38,7 +38,7 @@
       <view class="switch-group">
         <view class="switch-item">
           <view class="switch-label-container">
-            <text class="switch-label">置顶(20积分)</text>
+            <text class="switch-label">置顶团(20积分)</text>
             <image src="/assets/question_mark.png" class="help-icon" bindtap="showPinHelp"></image>
           </view>
           <switch class="custom-switch" checked="{{isPinned}}" bindchange="togglePin"></switch>

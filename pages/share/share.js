@@ -312,6 +312,7 @@ Page({
   // 分享结果
   shareResults() {
     const { isPinned, isAccelerated } = this.data;
+    let points = 0;
     // 实现分享功能，这里简单演示
     wx.showToast({
       title: '分享成功',
@@ -357,7 +358,7 @@ Page({
   showPinHelp() {
     wx.showModal({
       title: '置顶功能说明',
-      content: '置顶功能可以将当前分享置顶，便于快速查看。',
+      content: '置顶功能可以将当前分享置顶，便于快速查看，加快成团概率。',
       showCancel: false, // 仅显示确定按钮
       confirmText: '知道了'
     });
@@ -366,7 +367,7 @@ Page({
   showAccelerateHelp() {
     wx.showModal({
       title: '加速拼功能说明',
-      content: '加速拼功能可以提高拼团速度，快速达成拼团目标。',
+      content: '加速拼功能可以提高拼团速度，快速达成拼团目标，成团率为98.3%。',
       showCancel: false,
       confirmText: '知道了'
     });
