@@ -1,312 +1,7 @@
 我正在使用微信开发者工具开发一个小程序，下面是我的一个分享页面的代码，有下面几点需要调整:
-1.如果失败二维码并且获取到解析的数据之后，如果用户没有点击分享按钮就返回或者再次扫描二维码，那么应该弹窗提示用户刚刚的数据并未分享。
+1.现在的布局样式太丑了，你能不能帮我优化得简洁但高级。
+2.能不能弄一个很有苹果风格的页面，让用户感觉很高级。
 给我相应的修改后的完整代码，不要进行省略:
-share.js代码如下:
-Page({
-  data: {
-    images: [], // 存储二维码解析结果的数组
-    loading: false, // 是否正在加载
-    navBarHeight: 64, // 导航栏高度
-    userInfo: null, // 用户信息
-  },
-
-  async onLoad() {
-    this.initNavBarHeight();
-    await this.initializeUserInfo();
-  },
-
-  // 初始化导航栏高度
-  initNavBarHeight() {
-    const titleNav = this.selectComponent('#titleNav');
-    if (titleNav) {
-      this.setData({
-        navBarHeight: titleNav.data.navBarHeight + 66,
-      });
-    }
-  },
-
-  // 初始化用户信息
-  async initializeUserInfo() {
-    try {
-      const openid = await this.getCachedOpenId();
-      const userInfo = await this.fetchUserInfo(openid);
-      this.setData({ userInfo });
-    } catch (error) {
-      console.error('初始化用户信息失败:', error);
-      this.setData({ userInfo: this.initDefaultUserInfo() });
-    }
-  },
-
-  // 获取或缓存 OpenID
-  async getCachedOpenId() {
-    let openid = wx.getStorageSync('openid');
-    if (!openid) {
-      const res = await wx.cloud.callFunction({ name: 'getOpenId' });
-      openid = res.result.openid;
-      wx.setStorageSync('openid', openid);
-    }
-    return openid;
-  },
-
-  // 获取用户信息
-  async fetchUserInfo(openid) {
-    try {
-      const res = await wx.cloud.callFunction({
-        name: 'userDb',
-        data: { openid, order: 'query' },
-      });
-
-      if (res.result && res.result.status === 'success') {
-        return res.result.data;
-      }
-
-      // 返回默认用户信息并插入数据库
-      const defaultUserInfo = this.initDefaultUserInfo(openid);
-      await this.upsertUserInfo(defaultUserInfo);
-      return defaultUserInfo;
-    } catch (error) {
-      console.error('获取用户信息失败:', error);
-      const defaultUserInfo = this.initDefaultUserInfo(openid);
-      await this.upsertUserInfo(defaultUserInfo);
-      return defaultUserInfo;
-    }
-  },
-
-  // 初始化默认用户信息
-  initDefaultUserInfo(openid = '') {
-    return {
-      openid,
-      nickName: '',
-      points: 50,
-      shareCount: 0,
-      lastShareDate: '',
-    };
-  },
-
-  // 更新或插入用户信息
-  async upsertUserInfo(userInfo) {
-    try {
-      const res = await wx.cloud.callFunction({
-        name: 'userDb',
-        data: {
-          openid: userInfo.openid,
-          order: 'upsert',
-          updateData: userInfo,
-        },
-      });
-
-      if (res.result && res.result.status === 'success') {
-        console.log('用户信息更新或新增成功:', res.result.message);
-      } else {
-        console.error('用户信息更新或新增失败:', res.result.message);
-      }
-    } catch (error) {
-      console.error('用户信息更新或新增失败:', error);
-    }
-  },
-
-  // 扫描二维码
-  async scanQRCode(imagePath) {
-    this.toggleLoading(true);
-
-    try {
-      const res = await wx.scanCode({
-        onlyFromCamera: false,
-        scanType: ['qrCode', 'barCode'],
-      });
-
-      if (res.result) {
-        await this.checkAndFetchData(res.result, imagePath);
-      } else {
-        wx.showToast({ title: '二维码解析失败', icon: 'none' });
-      }
-    } catch (error) {
-      console.error('二维码扫描失败:', error);
-      wx.showToast({ title: '二维码扫描失败', icon: 'none' });
-    } finally {
-      this.toggleLoading(false);
-    }
-  },
-
-// 处理付费调用逻辑
-async handlePaidCall(url, imagePath, userInfo) {
-  try {
-    // 弹窗提示用户是否使用积分
-    const modalRes = await this.showModalAsync({
-      title: '提示',
-      content: '您今日的免费调用次数已用完，是否使用10积分继续？',
-    });
-
-    if (modalRes.confirm) {
-      // 判断用户积分是否足够
-      if (userInfo.points >= 10) {
-        // 扣除积分并更新用户信息
-        await this.updateUserPoints(-10);
-        await this.fetchDataFromCloudFunction(url, imagePath);
-      } else {
-        // 积分不足提示
-        wx.showToast({ title: '积分不足，请充值', icon: 'none' });
-      }
-    }
-  } catch (error) {
-    console.error('处理付费调用失败:', error);
-    wx.showToast({ title: '操作失败，请重试', icon: 'none' });
-  }
-},
-
-  // 检查链接并解析数据
-  async checkAndFetchData(url, imagePath) {
-    this.toggleLoading(true);
-
-    try {
-      const userInfo = await this.ensureUserInfo();
-      const today = this.getTodayDate();
-
-      // 重置分享次数
-      if (userInfo.lastShareDate !== today) {
-        userInfo.lastShareDate = today;
-        userInfo.shareCount = 0;
-        await this.upsertUserInfo(userInfo);
-      }
-
-      // 链接校验
-      const groupOrderId = this.extractParameter(url, 'group_order_id');
-      if (!groupOrderId && !url.startsWith('https://file-link.pinduoduo.com/')) {
-        this.addImageResult(imagePath, url);
-        wx.showToast({ title: '解析成功', icon: 'success' });
-        return;
-      }
-
-      // 判断免费调用次数
-      if (userInfo.shareCount < 3) {
-        await this.fetchDataFromCloudFunction(url, imagePath);
-      } else {
-        await this.handlePaidCall(url, imagePath, userInfo);
-      }
-    } catch (error) {
-      console.error('处理链接失败:', error);
-      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
-    } finally {
-      this.toggleLoading(false);
-    }
-  },
-
-  // 添加图片解析结果
-  addImageResult(imagePath, result) {
-    this.setData({
-      images: [
-        {
-          path: imagePath,
-          result,
-          shortResult: this.truncateText(result, 30),
-        },
-      ], // 覆盖数组，仅保留最新结果
-    });
-  },
-
-  // 确保用户信息已加载
-  async ensureUserInfo() {
-    if (!this.data.userInfo) {
-      await this.initializeUserInfo();
-    }
-    return this.data.userInfo;
-  },
-
-  // 调用云函数获取数据
-  async fetchDataFromCloudFunction(url, imagePath) {
-    try {
-      const res = await wx.cloud.callFunction({
-        name: 'fetchData',
-        data: { origin_url: url, openid: this.data.userInfo.openid },
-      });
-
-      if (res.result.status === 'success') {
-        this.processFetchResult(res.result.data, imagePath);
-      }
-    } catch (error) {
-      console.error('调用云函数 fetchData 失败:', error);
-    }
-  },
-
-  // 处理 fetchData 云函数的结果
-  async processFetchResult(data, imagePath) {
-    const goodsName = data.goodsName || '商品名称未知';
-    const hdThumbUrl = data.hdThumbUrl || '';
-
-    if (hdThumbUrl) {
-      try {
-        const downloadRes = await this.downloadFileAsync(hdThumbUrl);
-        this.addImageResult(downloadRes.tempFilePath, goodsName);
-      } catch (error) {
-        console.error('图片下载失败:', error);
-        this.addImageResult(imagePath, goodsName);
-      }
-    } else {
-      this.addImageResult(imagePath, goodsName);
-    }
-
-    // 更新用户分享次数
-    const userInfo = this.data.userInfo;
-    userInfo.shareCount += 1;
-    userInfo.lastShareDate = this.getTodayDate();
-    await this.upsertUserInfo(userInfo);
-  },
-
-  // 下载文件封装为 Promise
-  downloadFileAsync(url) {
-    return new Promise((resolve, reject) => {
-      wx.downloadFile({
-        url,
-        success: resolve,
-        fail: reject,
-      });
-    });
-  },
-
-  // 更新用户积分
-  async updateUserPoints(pointsChange) {
-    const userInfo = this.data.userInfo;
-    userInfo.points += pointsChange;
-    await this.upsertUserInfo(userInfo);
-  },
-
-  // 获取当天日期
-  getTodayDate() {
-    const now = new Date();
-    return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now
-      .getDate()
-      .toString()
-      .padStart(2, '0')}`;
-  },
-
-  // 提取链接参数
-  extractParameter(url, parameterName) {
-    const regExp = new RegExp(`[?&]${parameterName}=([^&#]*)`, 'i');
-    const match = url.match(regExp);
-    return match ? decodeURIComponent(match[1]) : null;
-  },
-
-  // 截断文本
-  truncateText(text, maxLength) {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-  },
-
-  // 切换加载状态
-  toggleLoading(loading) {
-    this.setData({ loading });
-  },
-
-  // 封装 wx.showModal 为 Promise
-  showModalAsync(options) {
-    return new Promise((resolve) => {
-      wx.showModal({
-        ...options,
-        success: resolve,
-        fail: (err) => resolve({ confirm: false, cancel: true, error: err }),
-      });
-    });
-  },
-});
 share.wxml代码如下:
 <view class="page-container">
   <!-- 页面标题 -->
@@ -340,9 +35,22 @@ share.wxml代码如下:
       </block>
     </scroll-view>
 
-    <!-- 分享按钮 -->
-    <view class="action-buttons" wx:if="{{images.length > 0}}">
+    <!-- 分享按钮及滑动开关 -->
+    <view class="action-buttons" wx:if="{{hasUnsharedData}}">
+      <!-- 分享按钮 -->
       <button bindtap="shareResults">分享</button>
+
+      <!-- 滑动按钮：是否置顶 -->
+      <view class="switch-container">
+        <text class="switch-label">置顶</text>
+        <switch checked="{{isPinned}}" bindchange="togglePin"></switch>
+      </view>
+
+      <!-- 滑动按钮：是否加速拼 -->
+      <view class="switch-container">
+        <text class="switch-label">加速拼</text>
+        <switch checked="{{isAccelerated}}" bindchange="toggleAccelerate"></switch>
+      </view>
     </view>
   </view>
 </view>
@@ -427,4 +135,16 @@ share.wxss代码如下:
   padding: 10rpx 20rpx;
   border-radius: 5rpx;
   margin: 0 10rpx;
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+
+.switch-label {
+  font-size: 28rpx;
+  margin-right: 10rpx;
+  color: #333;
 }

@@ -2,37 +2,55 @@
   <!-- 页面标题 -->
   <title-nav id="titleNav" title="分享我的团"></title-nav>
 
-  <!-- 添加顶部填充以避免被导航栏遮挡 -->
-  <view class="content" style="margin-top: {{navBarHeight}}rpx;">
+  <!-- 内容部分 -->
+  <view class="content" style="padding-top: {{navBarHeight}}rpx;">
     <!-- 教程按钮 -->
-    <button class="tutorial-button" bindtap="goToTutorial">查看教程</button>
+    <view class="button-container">
+      <button class="primary-button" bindtap="goToTutorial">查看教程</button>
+    </view>
 
     <!-- 二维码扫描按钮 -->
-    <view class="upload-section">
-      <button class="upload-button" bindtap="scanQRCode">扫描二维码</button>
+    <view class="button-container">
+      <button class="primary-button" bindtap="scanQRCode">扫描二维码</button>
     </view>
 
     <!-- 加载动画 -->
     <view wx:if="{{loading}}" class="loading-section">
-      <text>正在解析二维码...</text>
+      <text class="loading-text">正在解析二维码...</text>
       <view class="loading-spinner"></view>
     </view>
 
     <!-- 显示二维码解析结果 -->
-    <scroll-view scroll-x="true" class="image-preview">
+    <view class="cards-container">
       <block wx:for="{{images}}" wx:key="index">
-        <view class="image-item">
-          <image wx:if="{{item.path}}" src="{{item.path}}" class="preview-image"></image>
-          <text class="parse-result">
-            {{item.shortResult}}
-          </text>
+        <view class="card">
+          <image wx:if="{{item.path}}" src="{{item.path}}" class="card-image"></image>
+          <text class="card-text">{{item.shortResult}}</text>
         </view>
       </block>
-    </scroll-view>
+    </view>
 
-    <!-- 分享按钮 -->
-    <view class="action-buttons" wx:if="{{hasUnsharedData}}">
-      <button bindtap="shareResults">分享</button>
+    <!-- 分享按钮及开关 -->
+    <view class="action-section" wx:if="{{hasUnsharedData}}">
+      <view class="button-container">
+        <button class="primary-button share-button" bindtap="shareResults">分享</button>
+      </view>
+      <view class="switch-group">
+        <view class="switch-item">
+          <view class="switch-label-container">
+            <text class="switch-label">置顶(20积分)</text>
+            <image src="/assets/question_mark.png" class="help-icon" bindtap="showPinHelp"></image>
+          </view>
+          <switch class="custom-switch" checked="{{isPinned}}" bindchange="togglePin"></switch>
+        </view>
+        <view class="switch-item">
+          <view class="switch-label-container">
+            <text class="switch-label">加速拼(50积分)</text>
+            <image src="/assets/question_mark.png" class="help-icon" bindtap="showAccelerateHelp"></image>
+          </view>
+          <switch class="custom-switch" checked="{{isAccelerated}}" bindchange="toggleAccelerate"></switch>
+        </view>
+      </view>
     </view>
   </view>
 </view>

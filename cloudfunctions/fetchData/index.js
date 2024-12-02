@@ -117,7 +117,7 @@ const updateDatabase = async (db, combinedData) => {
     // 查询是否存在符合条件的数据 (goodsId 相同，并且 groupStatus 为 0，display 为 1)
     const existingRecords = await db.collection('groupGoodsInfo').where({
       goodsId: combinedData.goodsId,
-      groupStatus: 0,
+      groupStatus: 1,
       display: 1,
     }).get();
 
@@ -141,6 +141,7 @@ const updateDatabase = async (db, combinedData) => {
           status: 'success',
           message: '存在相同的拼团信息，不必再次分享。',
           data: combinedData,
+          points:0,
         };
       } else {
         console.log(`找到相同的 goodsId=${combinedData.goodsId}，但 groupOrderId 不同，插入新记录`);
@@ -149,8 +150,9 @@ const updateDatabase = async (db, combinedData) => {
         console.log(`插入新记录成功，记录 ID：${addRes._id}`);
         return {
           status: 'success',
-          message: '存在相同的商品信息，消耗积分进行分享。',
+          message: '存在相同的商品的拼团数据，建议参与已有的团，你也可以消耗积分进行强行分享。',
           data: combinedData,
+          points:10,
         };
       }
     }
@@ -175,8 +177,9 @@ const updateDatabase = async (db, combinedData) => {
       console.log(`插入新记录成功，记录 ID：${addRes._id}`);
       return {
         status: 'success',
-        message: '数据已成功插入数据库。',
+        message: '已经成功分享',
         data: combinedData,
+        points:0,
       };
     }
 

@@ -1,41 +1,75 @@
+/* 页面容器 */
 .page-container {
-  padding: 20rpx;
+  background-color: #f5f5f7;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.page-title {
-  font-size: 36rpx;
-  font-weight: bold;
+/* 内容区域 */
+.content {
+  padding: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* 按钮容器 */
+.button-container {
+  width: 100%;
+  margin-bottom: 30rpx;
+}
+
+/* 主按钮样式 */
+.primary-button {
+  width: 100%;
+  background: linear-gradient(90deg, #6dc1ff 0%, #007aff 100%); /* 高级渐变色 */
+  color: #ffffff;
+  font-size: 32rpx;
+  padding: 20rpx 0;
+  border-radius: 50rpx;
   text-align: center;
-  margin-bottom: 20rpx;
+  font-weight: 500;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.1); /* 按钮阴影增加立体感 */
+  transition: all 0.3s ease;
 }
 
-.tutorial-button {
-  margin-bottom: 20rpx;
+.primary-button:active {
+  background-color: #005ecb;
 }
 
-.upload-section {
-  margin-bottom: 20rpx;
-  text-align: center;
+/* 分享按钮放大缩小动画 */
+@keyframes scaleBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
-.upload-button {
-  background-color: #1AAD19;
-  color: #fff;
-  padding: 10rpx 20rpx;
-  border-radius: 5rpx;
+.share-button {
+  animation: scaleBounce 1.5s infinite;
 }
 
+/* 加载动画样式 */
 .loading-section {
+  margin-top: 20rpx;
   text-align: center;
-  margin-bottom: 20rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 10rpx;
 }
 
 .loading-spinner {
-  width: 50rpx;
-  height: 50rpx;
-  margin: 10rpx auto;
-  border: 5rpx solid #f3f3f3;
-  border-top: 5rpx solid #1AAD19;
+  width: 60rpx;
+  height: 60rpx;
+  margin: 0 auto;
+  border: 5rpx solid #e0e0e0;
+  border-top: 5rpx solid #007aff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -49,33 +83,84 @@
   }
 }
 
-.image-preview {
+/* 卡片内容展示 */
+.cards-container {
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  overflow-x: scroll;
-}
-
-.image-item {
-  margin-right: 10rpx;
-}
-
-.parse-result {
-  width: 300rpx;
-  word-wrap: break-word;
-  text-align: center;
-  font-size: 24rpx;
-  margin-top: 5rpx;
-}
-
-.action-buttons {
-  text-align: center;
+  flex-direction: column;
+  gap: 20rpx;
   margin-top: 20rpx;
 }
 
-.action-buttons button {
-  background-color: #1AAD19;
-  color: #fff;
+.card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-image {
+  width: 260rpx; /* 图片更大 */
+  height: 260rpx;
+  border-radius: 10rpx;
+  object-fit: cover;
+  margin-right: 20rpx;
+}
+
+.card-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #666666;
+  word-wrap: break-word;
+}
+
+/* 操作按钮和开关区域 */
+.action-section {
+  margin-top: 30rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 滑动开关组 */
+.switch-group {
+  margin-top: 20rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.switch-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 10rpx 20rpx;
-  border-radius: 5rpx;
-  margin: 0 10rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.switch-label-container {
+  display: flex;
+  align-items: center;
+}
+
+.switch-label {
+  font-size: 30rpx;
+  color: #333333;
+}
+
+.help-icon {
+  width: 30rpx;
+  height: 30rpx;
+  margin-left: 10rpx;
+}
+
+/* 自定义开关 */
+.custom-switch {
+  zoom: 1.2;
 }

@@ -2,9 +2,11 @@ Page({
   data: {
     images: [], // 存储二维码解析结果的数组
     loading: false, // 是否正在加载
-    navBarHeight: 64, // 导航栏高度
+    navBarHeight: 164, // 导航栏高度
     userInfo: null, // 用户信息
     hasUnsharedData: false, // 是否有未分享的数据
+    isPinned: false, // 置顶状态
+    isAccelerated: false // 加速拼状态
   },
 
   async onLoad() {
@@ -14,12 +16,16 @@ Page({
 
   // 初始化导航栏高度
   initNavBarHeight() {
-    const titleNav = this.selectComponent('#titleNav');
-    if (titleNav) {
-      this.setData({
-        navBarHeight: titleNav.data.navBarHeight + 66,
-      });
-    }
+    const systemInfo = wx.getSystemInfoSync();
+    this.setData({
+      navBarHeight: systemInfo.statusBarHeight + 164 // 状态栏高度 + 默认导航栏高度
+    });
+    // const titleNav = this.selectComponent('#titleNav');
+    // if (titleNav) {
+    //   this.setData({
+    //     navBarHeight: titleNav.data.navBarHeight + 66,
+    //   });
+    // }
   },
 
   // 初始化用户信息
@@ -137,11 +143,13 @@ Page({
       if (res.result) {
         await this.checkAndFetchData(res.result);
       } else {
+        this.addImageResult('', '无效二维码');
         wx.showToast({ title: '二维码解析失败', icon: 'none' });
       }
     } catch (error) {
+      let error_info = '未识别二维码，可尝试裁剪图片后重试'
+      this.addImageResult('', error_info);
       console.error('二维码扫描失败:', error);
-      wx.showToast({ title: '二维码扫描失败', icon: 'none' });
     } finally {
       this.toggleLoading(false);
     }
@@ -165,8 +173,7 @@ Page({
       // 链接校验
       const groupOrderId = this.extractParameter(url, 'group_order_id');
       if (!groupOrderId && !url.startsWith('https://file-link.pinduoduo.com/')) {
-        this.addImageResult('', url);
-        wx.showToast({ title: '解析成功', icon: 'success' });
+        this.addImageResult('', '无效二维码，请确定拼团图片有效性');
         return;
       }
 
@@ -304,12 +311,17 @@ Page({
 
   // 分享结果
   shareResults() {
+    const { isPinned, isAccelerated } = this.data;
     // 实现分享功能，这里简单演示
     wx.showToast({
       title: '分享成功',
       icon: 'success',
     });
     console.log(this.data.images[0]);
+    console.log('分享参数:', {
+      isPinned,
+      isAccelerated
+    });
     // 共享完成后，设置 hasUnsharedData 为 false
     this.setData({
       hasUnsharedData: false,
@@ -342,6 +354,38 @@ Page({
     }
   },
 
+  showPinHelp() {
+    wx.showModal({
+      title: '置顶功能说明',
+      content: '置顶功能可以将当前分享置顶，便于快速查看。',
+      showCancel: false, // 仅显示确定按钮
+      confirmText: '知道了'
+    });
+  },
+  
+  showAccelerateHelp() {
+    wx.showModal({
+      title: '加速拼功能说明',
+      content: '加速拼功能可以提高拼团速度，快速达成拼团目标。',
+      showCancel: false,
+      confirmText: '知道了'
+    });
+  },
+
+  // 切换置顶状态
+  togglePin(e) {
+    this.setData({
+      isPinned: e.detail.value
+    });
+  },
+
+  // 切换加速拼状态
+  toggleAccelerate(e) {
+    this.setData({
+      isAccelerated: e.detail.value
+    });
+  },
+
   // 页面隐藏时触发
   onHide() {
     if (this.data.hasUnsharedData) {
@@ -351,7 +395,7 @@ Page({
         success: (res) => {
           if (res.confirm) {
             // 用户点击确定，允许页面隐藏
-            this.setData({ hasUnsharedData: false });
+            // this.setData({ hasUnsharedData: false });
           } else {
             // 用户点击取消，重新导航回当前页面
             wx.navigateTo({
