@@ -1,9 +1,16 @@
 {
   "dependencies": {
     "@antv/f2": "^5.7.3",
+    "@babel/generator": "^7.26.2",
+    "@babel/parser": "^7.26.2",
+    "@babel/traverse": "^7.25.9",
+    "@babel/types": "^7.26.0",
     "@lucky-canvas/mini": "^0.0.7",
     "@vant/weapp": "^1.11.6",
+    "babel": "^6.23.0",
     "jpeg-js": "^0.4.4",
+    "js-beautify": "^1.15.1",
+    "jsdom": "^25.0.1",
     "jsqr": "^1.4.0",
     "lucky-canvas": "^1.7.27",
     "mini-luck-draw": "^1.1.1",

@@ -7,7 +7,9 @@ Page({
       nickName: '',
       avatarUrl: '',
       openid: '',
-      points: 0
+      points: 0,
+      lastShareDate: '2024-12-02',
+      shareCount:0,
     },
     statusBarHeight: app.globalData.statusBarHeight || 20,
     navBarHeight: app.globalData.navBarHeight || 44,
@@ -153,7 +155,9 @@ Page({
       nickName: '用户_' + this.data.userInfo.openid.substring(0, 6),
       avatarUrl: '/images/default.png',
       openid: this.data.userInfo.openid,
-      points: 0
+      points: 0,
+      lastShareDate: '2024-12-02',
+      shareCount:0,
     };
     wx.setStorageSync('userInfo', defaultUserInfo);
     return defaultUserInfo;

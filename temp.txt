@@ -1,298 +1,430 @@
-那也帮我修改一下云函数，进行以下的修改：
-1.尝试检查origin_url里面是否有group_order_id，如果有的话，提取group_order_id的值。如果没有的话，直接进行请求然后提取group_order_id的值。
-2.将group_order_id的值，替换'https://mobile.yangkeduo.com/pincard_ask.html?__rp_name=brand_amazing_price_group&_pdd_tc=ffffff&_pdd_sbs=1&group_order_id=2787169240228161080&refer_share_channel=group_short_link'中的2787169240228161080这个值。然后进行请求，获取数据。
-3.整体来说就是改变了之前请求获取数据的方式，将3次请求变成了两次甚至一次请求
+我正在使用微信开发者工具开发一个小程序，下面是我的一个分享页面的代码，有下面几点需要调整:
+1.如果失败二维码并且获取到解析的数据之后，如果用户没有点击分享按钮就返回或者再次扫描二维码，那么应该弹窗提示用户刚刚的数据并未分享。
+给我相应的修改后的完整代码，不要进行省略:
+share.js代码如下:
+Page({
+  data: {
+    images: [], // 存储二维码解析结果的数组
+    loading: false, // 是否正在加载
+    navBarHeight: 64, // 导航栏高度
+    userInfo: null, // 用户信息
+  },
 
-// cloudfunctions/fetchData/index.js
-const cloud = require('wx-server-sdk');
-const axios = require('axios');
+  async onLoad() {
+    this.initNavBarHeight();
+    await this.initializeUserInfo();
+  },
 
-cloud.init();
-
-/**
- * 从数据库获取所有 headers
- * @param {object} db 数据库实例
- * @returns {Array} headers 列表
- */
-const getHeadersFromDatabase = async (db) => {
-  try {
-    const headerResult = await db.collection('headerTable').get();
-    return headerResult.data.map(item => JSON.parse(item.header));
-  } catch (error) {
-    console.error('获取 headers 失败:', error);
-    throw new Error('无法获取请求头。');
-  }
-};
-
-/**
- * 递归查找嵌套对象中的指定键
- * @param {object} obj 目标对象
- * @param {string} keyToFind 要查找的键
- * @returns {*} 找到的值或 null
- */
-const findKeyInObject = (obj, keyToFind) => {
-  if (typeof obj !== 'object' || obj === null) return null;
-  if (keyToFind in obj) return obj[keyToFind];
-
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const result = findKeyInObject(obj[key], keyToFind);
-      if (result) return result;
+  // 初始化导航栏高度
+  initNavBarHeight() {
+    const titleNav = this.selectComponent('#titleNav');
+    if (titleNav) {
+      this.setData({
+        navBarHeight: titleNav.data.navBarHeight + 66,
+      });
     }
-  }
-  return null;
-};
+  },
 
-/**
- * 验证对象中指定字段是否存在且有效
- * @param {object} obj 目标对象
- * @param {Array} fields 要验证的字段数组
- * @returns {boolean} 验证结果
- */
-const validateFields = (obj, fields) => {
-  for (let field of fields) {
-    if (obj[field] === undefined || obj[field] === null || obj[field] === '') {
-      console.error(`字段 ${field} 缺失或无效：${obj[field]}`);
-      return false;
+  // 初始化用户信息
+  async initializeUserInfo() {
+    try {
+      const openid = await this.getCachedOpenId();
+      const userInfo = await this.fetchUserInfo(openid);
+      this.setData({ userInfo });
+    } catch (error) {
+      console.error('初始化用户信息失败:', error);
+      this.setData({ userInfo: this.initDefaultUserInfo() });
     }
-  }
-  return true;
-};
+  },
 
-/**
- * 执行 HTTP 请求并处理重定向
- * @param {string} url 请求的基础 URL
- * @param {object} headers 请求头
- * @returns {object} 响应对象
- */
-const makeHttpRequest = async (url, headers) => {
-  try {
-    const response = await axios.get(url, {
-      headers: headers,
-      maxRedirects: 0, // 禁止自动跟随重定向
-      validateStatus: (status) => status >= 200 && status < 400, // 处理 3xx 状态码
-    });
-    return response;
-  } catch (error) {
-    console.error('HTTP 请求失败：', error);
-    throw new Error(`请求失败：${error.message}`);
-  }
-};
-
-/**
- * 处理重定向并获取最终的 rawData
- * @param {object} initialResponse 初始请求的响应
- * @param {object} headers 请求头
- * @returns {object} rawData 对象
- */
-const handleRedirects = async (initialResponse, headers) => {
-  if ([301, 302, 307, 308].includes(initialResponse.status)) {
-    const redirectedUrl = initialResponse.headers['location'];
-    console.error(`重定向到：${redirectedUrl}`);
-    if (!redirectedUrl) {
-      throw new Error('在响应头中未找到重定向的 URL。');
+  // 获取或缓存 OpenID
+  async getCachedOpenId() {
+    let openid = wx.getStorageSync('openid');
+    if (!openid) {
+      const res = await wx.cloud.callFunction({ name: 'getOpenId' });
+      openid = res.result.openid;
+      wx.setStorageSync('openid', openid);
     }
+    return openid;
+  },
 
-    const redirectedResponse = await makeHttpRequest(redirectedUrl, headers);
-    console.error(`重定向请求：状态码 ${redirectedResponse.status}`);
+  // 获取用户信息
+  async fetchUserInfo(openid) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'userDb',
+        data: { openid, order: 'query' },
+      });
 
-    if (redirectedResponse.status === 200) {
-      const finalMatch = redirectedResponse.data.match(/location\.replace\(['"]([^'"]+)['"]\)/);
-      if (finalMatch) {
-        let finalUrl = finalMatch[1];
-        if (!finalUrl.startsWith('http')) {
-          finalUrl = `https://mobile.yangkeduo.com/${finalUrl}`;
-        }
-        console.error(`找到最终的 URL：${finalUrl}`);
+      if (res.result && res.result.status === 'success') {
+        return res.result.data;
+      }
 
-        const finalResponse = await makeHttpRequest(finalUrl, headers);
-        console.error(`最终 URL 请求：状态码 ${finalResponse.status}`);
+      // 返回默认用户信息并插入数据库
+      const defaultUserInfo = this.initDefaultUserInfo(openid);
+      await this.upsertUserInfo(defaultUserInfo);
+      return defaultUserInfo;
+    } catch (error) {
+      console.error('获取用户信息失败:', error);
+      const defaultUserInfo = this.initDefaultUserInfo(openid);
+      await this.upsertUserInfo(defaultUserInfo);
+      return defaultUserInfo;
+    }
+  },
 
-        const rawDataMatch = finalResponse.data.match(/window\.rawData\s*=\s*(\{.*?\});/s);
-        if (rawDataMatch) {
-          const rawDataStr = rawDataMatch[1];
-          try {
-            const rawData = JSON.parse(rawDataStr);
-            console.error('成功解析 rawData。');
-            return rawData;
-          } catch (err) {
-            console.error('JSON 解析失败：', err);
-            throw new Error('JSON 解析失败。');
-          }
-        } else {
-          throw new Error('在最终响应中未找到 rawData。');
-        }
+  // 初始化默认用户信息
+  initDefaultUserInfo(openid = '') {
+    return {
+      openid,
+      nickName: '',
+      points: 50,
+      shareCount: 0,
+      lastShareDate: '',
+    };
+  },
+
+  // 更新或插入用户信息
+  async upsertUserInfo(userInfo) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'userDb',
+        data: {
+          openid: userInfo.openid,
+          order: 'upsert',
+          updateData: userInfo,
+        },
+      });
+
+      if (res.result && res.result.status === 'success') {
+        console.log('用户信息更新或新增成功:', res.result.message);
       } else {
-        throw new Error('在重定向响应中未找到最终的 URL。');
+        console.error('用户信息更新或新增失败:', res.result.message);
+      }
+    } catch (error) {
+      console.error('用户信息更新或新增失败:', error);
+    }
+  },
+
+  // 扫描二维码
+  async scanQRCode(imagePath) {
+    this.toggleLoading(true);
+
+    try {
+      const res = await wx.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode', 'barCode'],
+      });
+
+      if (res.result) {
+        await this.checkAndFetchData(res.result, imagePath);
+      } else {
+        wx.showToast({ title: '二维码解析失败', icon: 'none' });
+      }
+    } catch (error) {
+      console.error('二维码扫描失败:', error);
+      wx.showToast({ title: '二维码扫描失败', icon: 'none' });
+    } finally {
+      this.toggleLoading(false);
+    }
+  },
+
+// 处理付费调用逻辑
+async handlePaidCall(url, imagePath, userInfo) {
+  try {
+    // 弹窗提示用户是否使用积分
+    const modalRes = await this.showModalAsync({
+      title: '提示',
+      content: '您今日的免费调用次数已用完，是否使用10积分继续？',
+    });
+
+    if (modalRes.confirm) {
+      // 判断用户积分是否足够
+      if (userInfo.points >= 10) {
+        // 扣除积分并更新用户信息
+        await this.updateUserPoints(-10);
+        await this.fetchDataFromCloudFunction(url, imagePath);
+      } else {
+        // 积分不足提示
+        wx.showToast({ title: '积分不足，请充值', icon: 'none' });
+      }
+    }
+  } catch (error) {
+    console.error('处理付费调用失败:', error);
+    wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+  }
+},
+
+  // 检查链接并解析数据
+  async checkAndFetchData(url, imagePath) {
+    this.toggleLoading(true);
+
+    try {
+      const userInfo = await this.ensureUserInfo();
+      const today = this.getTodayDate();
+
+      // 重置分享次数
+      if (userInfo.lastShareDate !== today) {
+        userInfo.lastShareDate = today;
+        userInfo.shareCount = 0;
+        await this.upsertUserInfo(userInfo);
+      }
+
+      // 链接校验
+      const groupOrderId = this.extractParameter(url, 'group_order_id');
+      if (!groupOrderId && !url.startsWith('https://file-link.pinduoduo.com/')) {
+        this.addImageResult(imagePath, url);
+        wx.showToast({ title: '解析成功', icon: 'success' });
+        return;
+      }
+
+      // 判断免费调用次数
+      if (userInfo.shareCount < 3) {
+        await this.fetchDataFromCloudFunction(url, imagePath);
+      } else {
+        await this.handlePaidCall(url, imagePath, userInfo);
+      }
+    } catch (error) {
+      console.error('处理链接失败:', error);
+      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+    } finally {
+      this.toggleLoading(false);
+    }
+  },
+
+  // 添加图片解析结果
+  addImageResult(imagePath, result) {
+    this.setData({
+      images: [
+        {
+          path: imagePath,
+          result,
+          shortResult: this.truncateText(result, 30),
+        },
+      ], // 覆盖数组，仅保留最新结果
+    });
+  },
+
+  // 确保用户信息已加载
+  async ensureUserInfo() {
+    if (!this.data.userInfo) {
+      await this.initializeUserInfo();
+    }
+    return this.data.userInfo;
+  },
+
+  // 调用云函数获取数据
+  async fetchDataFromCloudFunction(url, imagePath) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'fetchData',
+        data: { origin_url: url, openid: this.data.userInfo.openid },
+      });
+
+      if (res.result.status === 'success') {
+        this.processFetchResult(res.result.data, imagePath);
+      }
+    } catch (error) {
+      console.error('调用云函数 fetchData 失败:', error);
+    }
+  },
+
+  // 处理 fetchData 云函数的结果
+  async processFetchResult(data, imagePath) {
+    const goodsName = data.goodsName || '商品名称未知';
+    const hdThumbUrl = data.hdThumbUrl || '';
+
+    if (hdThumbUrl) {
+      try {
+        const downloadRes = await this.downloadFileAsync(hdThumbUrl);
+        this.addImageResult(downloadRes.tempFilePath, goodsName);
+      } catch (error) {
+        console.error('图片下载失败:', error);
+        this.addImageResult(imagePath, goodsName);
       }
     } else {
-      throw new Error(`访问重定向 URL 时的意外状态码：${redirectedResponse.status}`);
+      this.addImageResult(imagePath, goodsName);
     }
-  } else {
-    throw new Error('初始请求未引发重定向。');
-  }
-};
 
-/**
- * 更新或插入数据库中的 goodsInfoTable
- * @param {object} db 数据库实例
- * @param {object} combinedData 合并后的数据对象
- * @returns {void}
- */
-const updateDatabase = async (db, combinedData) => {
-  try {
-    const res = await db.collection('goodsInfoTable').where({
-      goodsId: combinedData.goodsId,
-      groupOrderId: combinedData.groupOrderId,
-    }).update({
-      data: combinedData,
-    });
-    console.error(`更新 goodsInfo 记录，更新数量：${res.stats.updated}`);
+    // 更新用户分享次数
+    const userInfo = this.data.userInfo;
+    userInfo.shareCount += 1;
+    userInfo.lastShareDate = this.getTodayDate();
+    await this.upsertUserInfo(userInfo);
+  },
 
-    if (res.stats.updated === 0) {
-      const addRes = await db.collection('goodsInfoTable').add({
-        data: combinedData,
+  // 下载文件封装为 Promise
+  downloadFileAsync(url) {
+    return new Promise((resolve, reject) => {
+      wx.downloadFile({
+        url,
+        success: resolve,
+        fail: reject,
       });
-      console.error(`插入新的 goodsInfo 记录，记录 ID：${addRes._id}`);
-    }
-  } catch (dbError) {
-    console.error('数据库操作时发生错误：', dbError);
-    throw new Error('数据库操作时发生错误。');
+    });
+  },
+
+  // 更新用户积分
+  async updateUserPoints(pointsChange) {
+    const userInfo = this.data.userInfo;
+    userInfo.points += pointsChange;
+    await this.upsertUserInfo(userInfo);
+  },
+
+  // 获取当天日期
+  getTodayDate() {
+    const now = new Date();
+    return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
+  },
+
+  // 提取链接参数
+  extractParameter(url, parameterName) {
+    const regExp = new RegExp(`[?&]${parameterName}=([^&#]*)`, 'i');
+    const match = url.match(regExp);
+    return match ? decodeURIComponent(match[1]) : null;
+  },
+
+  // 截断文本
+  truncateText(text, maxLength) {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  },
+
+  // 切换加载状态
+  toggleLoading(loading) {
+    this.setData({ loading });
+  },
+
+  // 封装 wx.showModal 为 Promise
+  showModalAsync(options) {
+    return new Promise((resolve) => {
+      wx.showModal({
+        ...options,
+        success: resolve,
+        fail: (err) => resolve({ confirm: false, cancel: true, error: err }),
+      });
+    });
+  },
+});
+share.wxml代码如下:
+<view class="page-container">
+  <!-- 页面标题 -->
+  <title-nav id="titleNav" title="分享我的团"></title-nav>
+
+  <!-- 添加顶部填充以避免被导航栏遮挡 -->
+  <view class="content" style="margin-top: {{navBarHeight}}rpx;">
+    <!-- 教程按钮 -->
+    <button class="tutorial-button" bindtap="goToTutorial">查看教程</button>
+
+    <!-- 二维码扫描按钮 -->
+    <view class="upload-section">
+      <button class="upload-button" bindtap="scanQRCode">扫描二维码</button>
+    </view>
+
+    <!-- 加载动画 -->
+    <view wx:if="{{loading}}" class="loading-section">
+      <text>正在解析二维码...</text>
+      <view class="loading-spinner"></view>
+    </view>
+
+    <!-- 显示二维码解析结果 -->
+    <scroll-view scroll-x="true" class="image-preview">
+      <block wx:for="{{images}}" wx:key="index">
+        <view class="image-item">
+          <image wx:if="{{item.path}}" src="{{item.path}}" class="preview-image"></image>
+          <text class="parse-result">
+            {{item.shortResult}}
+          </text>
+        </view>
+      </block>
+    </scroll-view>
+
+    <!-- 分享按钮 -->
+    <view class="action-buttons" wx:if="{{images.length > 0}}">
+      <button bindtap="shareResults">分享</button>
+    </view>
+  </view>
+</view>
+share.wxss代码如下:
+.page-container {
+  padding: 20rpx;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.tutorial-button {
+  margin-bottom: 20rpx;
+}
+
+.upload-section {
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.upload-button {
+  background-color: #1AAD19;
+  color: #fff;
+  padding: 10rpx 20rpx;
+  border-radius: 5rpx;
+}
+
+.loading-section {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.loading-spinner {
+  width: 50rpx;
+  height: 50rpx;
+  margin: 10rpx auto;
+  border: 5rpx solid #f3f3f3;
+  border-top: 5rpx solid #1AAD19;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-};
-
-/**
- * 处理 rawData 并返回合并后的数据
- * @param {object} rawData 解析后的 rawData 对象
- * @param {string} origin_url origin_url 参数
- * @param {object} db 数据库实例
- * @returns {object} 合并后的数据
- */
-const processRawData = async (rawData, origin_url, db) => {
-  const goodsInfo = findKeyInObject(rawData, 'goodsInfo');
-  const groupInfo = findKeyInObject(rawData, 'groupInfo');
-
-  if (goodsInfo && groupInfo) {
-    console.error('找到 goodsInfo 和 groupInfo。');
-
-    // 验证 goodsInfo 的字段
-    const goodsInfoFields = ['goodsId', 'hdThumbUrl', 'goodsName', 'originActivityPrice', 'priceReduce'];
-    if (!validateFields(goodsInfo, goodsInfoFields)) {
-      console.error('goodsInfo 数据：', goodsInfo);
-      throw new Error('goodsInfo 数据缺失或无效。');
-    }
-
-    // 验证 groupInfo 的字段
-    const groupInfoFields = ['customerNum', 'groupOrderId', 'expireTime', 'groupStatus', 'groupUserList'];
-    if (!validateFields(groupInfo, groupInfoFields)) {
-      console.error('groupInfo 数据：', groupInfo);
-      throw new Error('groupInfo 数据缺失或无效。');
-    }
-
-    // 获取服务器时间作为更新时间
-    const updateTime = db.serverDate();
-
-    // 确保 goodsId 和 groupOrderId 为字符串类型
-    const goodsId = String(goodsInfo.goodsId);
-    const groupOrderId = String(groupInfo.groupOrderId);
-
-    // 计算 groupUserNum 和 groupRemainCount
-    const groupUserNum = Array.isArray(groupInfo.groupUserList) ? groupInfo.groupUserList.length : 0;
-    const groupRemainCount = groupInfo.customerNum - groupUserNum;
-
-    // 合并 goodsInfo 和 groupInfo 的数据
-    const combinedData = {
-      goodsId,
-      hdThumbUrl: goodsInfo.hdThumbUrl,
-      goodsName: goodsInfo.goodsName,
-      originActivityPrice: goodsInfo.originActivityPrice,
-      priceReduce: goodsInfo.priceReduce,
-      customerNum: groupInfo.customerNum,
-      groupOrderId,
-      expireTime: groupInfo.expireTime,
-      groupStatus: groupInfo.groupStatus,
-      groupUserNum,
-      groupRemainCount,
-      keyCode: origin_url,
-      sourceType:'user',
-      updateTime,
-    };
-
-    return combinedData;
-  } else {
-    throw new Error('在 rawData 中未找到 goodsInfo 或 groupInfo。');
+  100% {
+    transform: rotate(360deg);
   }
-};
+}
 
-/**
- * 执行主逻辑
- */
-exports.main = async (event, context) => {
-  const db = cloud.database();
-  const { origin_url } = event;
+.image-preview {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+}
 
-  console.error(`开始执行 fetchData，origin_url: ${origin_url}`);
+.image-item {
+  margin-right: 10rpx;
+}
 
-  // 获取云函数的 IP 地址
-  try {
-    const ipResponse = await axios.get('https://httpbin.org/ip');
-    console.log('Cloud Function IP Address:', ipResponse.data.origin);
-  } catch (error) {
-    console.error('获取 IP 地址失败：', error);
-    return { status: 'error', message: '无法获取 IP 地址。' };
-  }
+.parse-result {
+  width: 300rpx;
+  word-wrap: break-word;
+  text-align: center;
+  font-size: 24rpx;
+  margin-top: 5rpx;
+}
 
-  // 构建初始请求 URL
-  const baseUrl = origin_url;
+.action-buttons {
+  text-align: center;
+  margin-top: 20rpx;
+}
 
-  // 获取 headers 列表
-  let headersList;
-  try {
-    headersList = await getHeadersFromDatabase(db);
-    if (headersList.length === 0) {
-      console.error('headerTable 中没有可用的 headers。');
-      return { status: 'error', message: '没有可用的请求头。' };
-    }
-  } catch (error) {
-    return { status: 'error', message: error.message };
-  }
-
-  /**
-   * 尝试使用所有 headers 进行请求，直到成功
-   * @returns {object} 最终结果
-   */
-  const tryHeadersSequentially = async () => {
-    for (let i = 0; i < headersList.length; i++) {
-      const headers = headersList[i];
-      console.error(`尝试使用 headerTable 中索引 ${i} 的 headers。`);
-
-      try {
-        const initialResponse = await makeHttpRequest(baseUrl, headers);
-        console.error(`初始请求：状态码 ${initialResponse.status}`);
-
-        const rawData = await handleRedirects(initialResponse, headers);
-        const combinedData = await processRawData(rawData, origin_url, db);
-
-        await updateDatabase(db, combinedData);
-
-        console.error('请求成功。');
-        return { success: true, data: combinedData };
-      } catch (error) {
-        console.error(`使用索引 ${i} 的 headers 请求失败：${error.message}`);
-        // 继续尝试下一个 headers
-      }
-    }
-
-    return { success: false, message: '所有 headers 尝试均失败。' };
-  };
-
-  // 执行尝试
-  const finalResult = await tryHeadersSequentially();
-
-  // 返回最终结果
-  if (finalResult.success) {
-    return { status: 'success', data: finalResult.data };
-  } else {
-    return { status: 'error', message: finalResult.message };
-  }
-};
+.action-buttons button {
+  background-color: #1AAD19;
+  color: #fff;
+  padding: 10rpx 20rpx;
+  border-radius: 5rpx;
+  margin: 0 10rpx;
+}

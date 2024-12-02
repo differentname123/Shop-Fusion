@@ -10,7 +10,7 @@ exports.main = async (event, context) => {
 
   try {
     const _ = db.command;
-    let query = db.collection('goodsInfoTable');
+    let query = db.collection('groupGoodsInfo');
 
     // 动态构建查询条件
     const whereCondition = {};

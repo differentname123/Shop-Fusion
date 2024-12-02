@@ -2,10 +2,18 @@ Page({
   data: {
     images: [], // 存储二维码解析结果的数组
     loading: false, // 是否正在加载
-    navBarHeight: 64, // 默认导航栏高度
+    navBarHeight: 64, // 导航栏高度
+    userInfo: null, // 用户信息
+    hasUnsharedData: false, // 是否有未分享的数据
   },
 
-  onLoad() {
+  async onLoad() {
+    this.initNavBarHeight();
+    await this.initializeUserInfo();
+  },
+
+  // 初始化导航栏高度
+  initNavBarHeight() {
     const titleNav = this.selectComponent('#titleNav');
     if (titleNav) {
       this.setData({
@@ -14,160 +22,344 @@ Page({
     }
   },
 
-  // 扫描二维码并解析
-  scanQRCode() {
-    const that = this;
-
-    console.log('开始扫描二维码...');
-    that.setData({ loading: true });
-
-    wx.scanCode({
-      onlyFromCamera: false,
-      scanType: ['qrCode', 'barCode'],
-      success(res) {
-        console.log('二维码扫描成功：', res);
-        const resultText = res.result;
-        const imagePath = res.path || '';
-        console.log('解析出的文本内容：', resultText);
-
-        // 尝试从 resultText 中提取 group_order_id
-        const groupOrderId = that.extractParameter(resultText, 'group_order_id');
-        if (groupOrderId) {
-          console.log(`检测到 group_order_id: ${groupOrderId}`);
-          // 满足条件，传入完整 URL
-          that.fetchDataFromCloudFunction(resultText, imagePath);
-        } else if (resultText.startsWith('https://file-link.pinduoduo.com/')) {
-          console.log('检测到 file-link URL：', resultText);
-          that.fetchDataFromCloudFunction(resultText, imagePath);
-        } else {
-          console.log('二维码内容不符合解析条件，直接展示结果。');
-          that.setData({
-            images: that.data.images.concat({
-              path: imagePath,
-              result: resultText,
-              shortResult: that.truncateText(resultText, 20),
-            }),
-          });
-          wx.showToast({ title: '解析成功', icon: 'success' });
-          that.setData({ loading: false }); // 确保加载动画关闭
-        }
-      },
-      fail(err) {
-        console.error('二维码扫描失败：', err);
-        wx.showToast({ title: '解析失败，请重试', icon: 'none' });
-        that.setData({ loading: false }); // 确保加载动画关闭
-      },
-    });
+  // 初始化用户信息
+  async initializeUserInfo() {
+    try {
+      const openid = await this.getCachedOpenId();
+      const userInfo = await this.fetchUserInfo(openid);
+      this.setData({ userInfo });
+    } catch (error) {
+      console.error('初始化用户信息失败:', error);
+      this.setData({ userInfo: this.initDefaultUserInfo() });
+    }
   },
 
-  // 调用云函数 fetchData
-  fetchDataFromCloudFunction(url, imagePath) {
-    const that = this;
+  // 获取或缓存 OpenID
+  async getCachedOpenId() {
+    let openid = wx.getStorageSync('openid');
+    if (!openid) {
+      const res = await wx.cloud.callFunction({ name: 'getOpenId' });
+      openid = res.result.openid;
+      wx.setStorageSync('openid', openid);
+    }
+    return openid;
+  },
 
-    console.log('开始调用云函数，传入的 URL 为：', url);
+  // 获取用户信息
+  async fetchUserInfo(openid) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'userDb',
+        data: { openid, order: 'query' },
+      });
 
-    wx.cloud.callFunction({
-      name: 'fetchData',
-      data:  {
-        origin_url: url,
-      }, // 直接传入解析的 URL
-      success(res) {
-        console.log('云函数调用成功，响应内容：', res);
+      if (res.result && res.result.status === 'success') {
+        return res.result.data;
+      }
 
-        if (res.result.status === 'success') {
-          const currentGoods = res.result.data;
-          if (currentGoods) {
-            const goodsName = currentGoods.goodsName || '商品名称未知';
-            const hdThumbUrl = currentGoods.hdThumbUrl || '';
-            console.log(`商品名称：${goodsName}，高清图片地址：${hdThumbUrl}`);
+      // 返回默认用户信息并插入数据库
+      const defaultUserInfo = this.initDefaultUserInfo(openid);
+      await this.upsertUserInfo(defaultUserInfo);
+      return defaultUserInfo;
+    } catch (error) {
+      console.error('获取用户信息失败:', error);
+      const defaultUserInfo = this.initDefaultUserInfo(openid);
+      await this.upsertUserInfo(defaultUserInfo);
+      return defaultUserInfo;
+    }
+  },
 
-            if (hdThumbUrl) {
-              console.log('尝试下载商品图片...');
-              wx.downloadFile({
-                url: hdThumbUrl,
-                success: (downloadRes) => {
-                  if (downloadRes.statusCode === 200) {
-                    console.log('图片下载成功，临时路径：', downloadRes.tempFilePath);
-                    const downloadedImagePath = downloadRes.tempFilePath;
-                    that.setData({
-                      images: that.data.images.concat({
-                        path: downloadedImagePath,
-                        result: goodsName,
-                        shortResult: that.truncateText(goodsName, 20),
-                      }),
-                    });
-                  }
-                },
-                fail: (err) => {
-                  console.error('图片下载失败：', err);
-                  that.setData({
-                    images: that.data.images.concat({
-                      path: imagePath,
-                      result: goodsName,
-                      shortResult: that.truncateText(goodsName, 20),
-                    }),
-                  });
-                },
-              });
-            } else {
-              console.log('未提供高清图片地址，仅更新商品名称。');
-              that.setData({
-                images: that.data.images.concat({
-                  path: imagePath,
-                  result: goodsName,
-                  shortResult: that.truncateText(goodsName, 20),
-                }),
-              });
-            }
-          } else {
-            console.error('云函数返回结果为空。');
-            that.setData({
-              images: that.data.images.concat({
-                path: imagePath,
-                result: 'currentGoods 未找到',
-                shortResult: 'currentGoods 未找到',
-              }),
-            });
-          }
-        } else {
-          console.error('云函数返回错误：', res.result.message);
-          that.setData({
-            images: that.data.images.concat({
-              path: imagePath,
-              result: '解析失败',
-              shortResult: '解析失败',
-            }),
-          });
-        }
-      },
-      fail(err) {
-        console.error('云函数调用失败：', err);
-        that.setData({
-          images: that.data.images.concat({
-            path: imagePath,
-            result: '解析失败',
-            shortResult: '解析失败',
-          }),
+  // 初始化默认用户信息
+  initDefaultUserInfo(openid = '') {
+    return {
+      openid,
+      nickName: '',
+      points: 50,
+      shareCount: 0,
+      lastShareDate: '',
+    };
+  },
+
+  // 更新或插入用户信息
+  async upsertUserInfo(userInfo) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'userDb',
+        data: {
+          openid: userInfo.openid,
+          order: 'upsert',
+          updateData: userInfo,
+        },
+      });
+
+      if (res.result && res.result.status === 'success') {
+        console.log('用户信息更新或新增成功:', res.result.message);
+      } else {
+        console.error('用户信息更新或新增失败:', res.result.message);
+      }
+    } catch (error) {
+      console.error('用户信息更新或新增失败:', error);
+    }
+  },
+
+  // 扫描二维码
+  async scanQRCode() {
+    if (this.data.hasUnsharedData) {
+      const res = await this.showModalAsync({
+        title: '提示',
+        content: '您有未分享的数据，确定要继续扫描吗？未分享的数据将丢失。',
+      });
+      if (res.confirm) {
+        // 用户点击确定，继续扫描
+        this.setData({
+          hasUnsharedData: false, // 重置未分享数据标志
+          images: [], // 清空现有的结果
         });
-      },
-      complete() {
-        console.log('云函数处理完成，关闭加载动画。');
-        that.setData({ loading: false }); // 确保加载动画关闭
-      },
+        await this.startQRCodeScan();
+      } else {
+        // 用户点击取消，不做任何操作
+      }
+    } else {
+      await this.startQRCodeScan();
+    }
+  },
+
+  // 开始二维码扫描
+  async startQRCodeScan() {
+    this.toggleLoading(true);
+
+    try {
+      const res = await wx.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode', 'barCode'],
+      });
+
+      if (res.result) {
+        await this.checkAndFetchData(res.result);
+      } else {
+        wx.showToast({ title: '二维码解析失败', icon: 'none' });
+      }
+    } catch (error) {
+      console.error('二维码扫描失败:', error);
+      wx.showToast({ title: '二维码扫描失败', icon: 'none' });
+    } finally {
+      this.toggleLoading(false);
+    }
+  },
+
+  // 检查链接并解析数据
+  async checkAndFetchData(url) {
+    this.toggleLoading(true);
+
+    try {
+      const userInfo = await this.ensureUserInfo();
+      const today = this.getTodayDate();
+
+      // 重置分享次数
+      if (userInfo.lastShareDate !== today) {
+        userInfo.lastShareDate = today;
+        userInfo.shareCount = 0;
+        await this.upsertUserInfo(userInfo);
+      }
+
+      // 链接校验
+      const groupOrderId = this.extractParameter(url, 'group_order_id');
+      if (!groupOrderId && !url.startsWith('https://file-link.pinduoduo.com/')) {
+        this.addImageResult('', url);
+        wx.showToast({ title: '解析成功', icon: 'success' });
+        return;
+      }
+
+      // 判断免费调用次数
+      if (userInfo.shareCount < 3) {
+        await this.fetchDataFromCloudFunction(url);
+      } else {
+        await this.handlePaidCall(url, userInfo);
+      }
+    } catch (error) {
+      console.error('处理链接失败:', error);
+      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+    } finally {
+      this.toggleLoading(false);
+    }
+  },
+
+  // 添加图片解析结果
+  addImageResult(imagePath, result, sharedData, data) {
+    this.setData({
+      images: [
+        {
+          path: imagePath,
+          result,
+          data,
+          shortResult: this.truncateText(result, 30),
+        },
+      ], // 覆盖数组，仅保留最新结果
+      hasUnsharedData: sharedData, // 设置未分享数据标志
     });
   },
 
-  // 从链接中提取指定参数值
+  // 确保用户信息已加载
+  async ensureUserInfo() {
+    if (!this.data.userInfo) {
+      await this.initializeUserInfo();
+    }
+    return this.data.userInfo;
+  },
+
+  // 调用云函数获取数据
+  async fetchDataFromCloudFunction(url) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'fetchData',
+        data: { origin_url: url, openid: this.data.userInfo.openid },
+      });
+      if (res.result.status === 'success') {
+        await this.processFetchResult(res.result);
+      }
+    } catch (error) {
+      console.error('调用云函数 fetchData 失败:', error);
+    }
+  },
+
+  // 处理 fetchData 云函数的结果
+  async processFetchResult(result) {
+    let data =result.data; 
+    const goodsName = data.goodsName || '商品名称未知';
+    const hdThumbUrl = data.hdThumbUrl || '';
+
+    if (hdThumbUrl) {
+      try {
+        const downloadRes = await this.downloadFileAsync(hdThumbUrl);
+        this.addImageResult(downloadRes.tempFilePath, goodsName, true, result);
+      } catch (error) {
+        console.error('图片下载失败:', error);
+        this.addImageResult('', goodsName);
+      }
+    } else {
+      this.addImageResult('', goodsName);
+    }
+
+    // 更新用户分享次数
+    const userInfo = this.data.userInfo;
+    userInfo.shareCount += 1;
+    userInfo.lastShareDate = this.getTodayDate();
+    await this.upsertUserInfo(userInfo);
+  },
+
+  // 下载文件封装为 Promise
+  downloadFileAsync(url) {
+    return new Promise((resolve, reject) => {
+      wx.downloadFile({
+        url,
+        success: resolve,
+        fail: reject,
+      });
+    });
+  },
+
+  // 更新用户积分
+  async updateUserPoints(pointsChange) {
+    const userInfo = this.data.userInfo;
+    userInfo.points += pointsChange;
+    await this.upsertUserInfo(userInfo);
+  },
+
+  // 获取当天日期
+  getTodayDate() {
+    const now = new Date();
+    return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
+  },
+
+  // 提取链接参数
   extractParameter(url, parameterName) {
     const regExp = new RegExp(`[?&]${parameterName}=([^&#]*)`, 'i');
     const match = url.match(regExp);
-    const result = match ? decodeURIComponent(match[1]) : null;
-    console.log(`从 URL 中提取参数 [${parameterName}] 的值：${result}`);
-    return result;
+    return match ? decodeURIComponent(match[1]) : null;
   },
 
-  // 截取文字，展示一部分
+  // 截断文本
   truncateText(text, maxLength) {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  },
+
+  // 切换加载状态
+  toggleLoading(loading) {
+    this.setData({ loading });
+  },
+
+  // 封装 wx.showModal 为 Promise
+  showModalAsync(options) {
+    return new Promise((resolve) => {
+      wx.showModal({
+        ...options,
+        success: resolve,
+        fail: (err) => resolve({ confirm: false, cancel: true, error: err }),
+      });
+    });
+  },
+
+  // 分享结果
+  shareResults() {
+    // 实现分享功能，这里简单演示
+    wx.showToast({
+      title: '分享成功',
+      icon: 'success',
+    });
+    console.log(this.data.images[0]);
+    // 共享完成后，设置 hasUnsharedData 为 false
+    this.setData({
+      hasUnsharedData: false,
+    });
+  },
+
+  // 处理付费调用逻辑
+  async handlePaidCall(url, userInfo) {
+    try {
+      // 弹窗提示用户是否使用积分
+      const modalRes = await this.showModalAsync({
+        title: '提示',
+        content: '您今日的免费调用次数已用完，是否使用10积分继续？',
+      });
+
+      if (modalRes.confirm) {
+        // 判断用户积分是否足够
+        if (userInfo.points >= 10) {
+          // 扣除积分并更新用户信息
+          await this.updateUserPoints(-10);
+          await this.fetchDataFromCloudFunction(url);
+        } else {
+          // 积分不足提示
+          wx.showToast({ title: '积分不足，请充值', icon: 'none' });
+        }
+      }
+    } catch (error) {
+      console.error('处理付费调用失败:', error);
+      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+    }
+  },
+
+  // 页面隐藏时触发
+  onHide() {
+    if (this.data.hasUnsharedData) {
+      wx.showModal({
+        title: '提示',
+        content: '您有未分享的数据，确定要离开吗？',
+        success: (res) => {
+          if (res.confirm) {
+            // 用户点击确定，允许页面隐藏
+            this.setData({ hasUnsharedData: false });
+          } else {
+            // 用户点击取消，重新导航回当前页面
+            wx.navigateTo({
+              url: '/pages/share/share',
+            });
+          }
+        },
+      });
+    }
   },
 });

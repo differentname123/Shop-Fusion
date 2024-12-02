@@ -31,7 +31,7 @@
     </scroll-view>
 
     <!-- 分享按钮 -->
-    <view class="action-buttons" wx:if="{{images.length > 0}}">
+    <view class="action-buttons" wx:if="{{hasUnsharedData}}">
       <button bindtap="shareResults">分享</button>
     </view>
   </view>

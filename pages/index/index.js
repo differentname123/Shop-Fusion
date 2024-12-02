@@ -1,6 +1,12 @@
 // index.js
 Page({
   data: {
+    userInfo: {
+      nickName: '',
+      avatarUrl: '',
+      openid: '',
+      points: 0
+    },
     statusBarHeight: 0,
     navigationBarHeight: 0,
     totalNavHeight: 0,
@@ -127,6 +133,7 @@ Page({
       }
 
       const newProducts = res.result.data;
+      console.log(newProducts);
 
       // 如果返回的数据少于预期，设置 hasMore 为 false
       const pageSize = 6; // 与云函数中每页数量一致
@@ -153,6 +160,8 @@ Page({
           groupOrderId: item.groupOrderId,
           goodsId: item.goodsId,
           groupRemainCount: groupRemainCount,
+          wxPath: item.wxPath,
+          promotionUrl: item.promotionUrl,
           // 倒计时初始值
           countdown: '',
           // 标签筛选条件
@@ -291,13 +300,14 @@ Page({
   // 参与拼团事件
   onJoinGroup(event) {
     const item = event.currentTarget.dataset.item; // 获取传入的完整 item 对象
-  
+    console.log('item:', item);
     // 拼接 URL
-    const url = `https://mobile.yangkeduo.com/pincard_ask.html?__rp_name=brand_amazing_price_group&group_order_id=${item.groupOrderId}&goods_id=${item.goodsId}`;
+    const url = item.promotionUrl;
     
     console.log('Generated URL:', url);
   
-    const path = `pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D${item.groupOrderId}%26goods_id%3D${item.goodsId}`;
+    const path = item.wxPath;
+    console.log('wx path:', path);
     
     // 先复制 URL 到剪贴板，无论跳转成功与否
     wx.setClipboardData({

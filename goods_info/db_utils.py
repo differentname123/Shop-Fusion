@@ -217,7 +217,7 @@ if __name__ == "__main__":
         "goodsType": {"type": str, "required": True},
         "promotionRate": {"type": int, "required": False, "default": 0},
         "promotionUrl": {"type": str, "required": False},
-        "promotionPath": {"type": str, "required": False},
+        "wxPath": {"type": str, "required": False},
         "mallName": {"type": str, "required": True},
         "brand": {"type": str, "required": True},
         "category_name": {"type": str, "required": True},

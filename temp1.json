@@ -1,129 +1,364 @@
-{
-  "category_name": "食品",
-  "coupon_remain_quantity": 119648,
-  "promotion_rate": 31,
-  "subsidy_goods_type": 0,
-  "service_tags": [
-    36,
-    3,
-    1,
-    2,
-    13,
-    15
-  ],
-  "mall_id": 192422078,
-  "mall_name": "洽洽坚果官方旗舰店",
-  "mall_coupon_end_time": 0,
-  "lgst_txt": "高",
-  "goods_name": "洽洽罐装开心果425g*1罐坚果开心果零食批发休闲食品家庭装",
-  "has_material": False,
-  "goods_id": 625708158992,
-  "brand_name": "ChaCheer/洽洽",
-  "predict_promotion_rate": 45,
-  "goods_desc": "洽洽罐装开心果425g*1罐坚果开心果零食批发休闲食品家庭装",
-  "opt_name": "食品",
-  "share_rate": 0,
-  "opt_ids": [
-    1,
-    23555,
-    8584,
-    10696,
-    8585,
-    8586,
-    10700,
-    12,
-    22926,
-    22932,
-    22297,
-    10009,
-    219,
-    96,
-    21857,
-    10723,
-    11876,
-    228,
-    22953,
-    24885,
-    9975,
-    8569,
-    8570,
-    8571,
-    9979,
-    24892
-  ],
-  "goods_image_url": "https://img.pddpic.com/mms-material-img/2024-06-25/3efb13b5-b601-41dc-9eac-24c311edc2e3.jpeg",
-  "has_mall_coupon": False,
-  "unified_tags": [
-    "2元福利券",
-    "小编推荐",
-    "正品险",
-    None,
-    None,
-    "百亿补贴·开心果畅销榜第2名"
-  ],
-  "coupon_start_time": 1731859200,
-  "min_group_price": 3380,
-  "coupon_discount": 200,
-  "coupon_end_time": 1763395199,
-  "zs_duo_id": 0,
-  "mall_coupon_remain_quantity": 0,
-  "plan_type": 1,
-  "cat_ids": [
-    6398,
-    6399,
-    6403
-  ],
-  "coupon_min_order_amount": 200,
-  "category_id": 1,
-  "mall_coupon_discount_pct": 0,
-  "activity_type": 34,
-  "coupon_total_quantity": 127721,
-  "mall_coupon_min_order_amount": 0,
-  "merchant_type": 3,
-  "sales_tip": "5.33万",
-  "is_multi_group": False,
-  "only_scene_auth": True,
-  "desc_txt": "高",
-  "mall_coupon_id": 0,
-  "goods_thumbnail_url": "https://img.pddpic.com/gaudit-image/2024-06-25/e6232c1e844ff9ec7ba44d56de3570e0.jpeg",
-  "opt_id": 1,
-  "search_id": "3aa46240058f044f4bba366999fb39b1",
-  "activity_tags": [
-    11041,
-    13491,
-    14319,
-    14293,
-    12756,
-    31,
-    7,
-    13626,
-    11943,
-    12546,
-    14570,
-    13501,
-    14084,
-    14128,
-    14217,
-    12592,
-    13922,
-    14215,
-    14052,
-    12347,
-    14151,
-    12914,
-    14283,
-    14400,
-    14315,
-    12913,
-    12282,
-    12346
-  ],
-  "has_coupon": True,
-  "min_normal_price": 15900,
-  "mall_coupon_start_time": 0,
-  "serv_txt": "高",
-  "mall_coupon_total_quantity": 0,
-  "mall_coupon_max_discount_amount": 0,
-  "mall_cps": 1,
-  "goods_sign": "E932M8VSLoRgMvVRwfDeGT4d_Or5M1DWbQ_J5ggeXyuN"
-}
+帮我修改下面的代码，
+Page({
+  data: {
+    images: [], // 存储二维码解析结果的数组
+    loading: false, // 是否正在加载
+    navBarHeight: 64, // 导航栏高度
+    userInfo: null, // 用户信息
+    hasUnsharedData: false, // 是否有未分享的数据
+  },
+
+  async onLoad() {
+    this.initNavBarHeight();
+    await this.initializeUserInfo();
+  },
+
+  // 初始化导航栏高度
+  initNavBarHeight() {
+    const titleNav = this.selectComponent('#titleNav');
+    if (titleNav) {
+      this.setData({
+        navBarHeight: titleNav.data.navBarHeight + 66,
+      });
+    }
+  },
+
+  // 初始化用户信息
+  async initializeUserInfo() {
+    try {
+      const openid = await this.getCachedOpenId();
+      const userInfo = await this.fetchUserInfo(openid);
+      this.setData({ userInfo });
+    } catch (error) {
+      console.error('初始化用户信息失败:', error);
+      this.setData({ userInfo: this.initDefaultUserInfo() });
+    }
+  },
+
+  // 获取或缓存 OpenID
+  async getCachedOpenId() {
+    let openid = wx.getStorageSync('openid');
+    if (!openid) {
+      const res = await wx.cloud.callFunction({ name: 'getOpenId' });
+      openid = res.result.openid;
+      wx.setStorageSync('openid', openid);
+    }
+    return openid;
+  },
+
+  // 获取用户信息
+  async fetchUserInfo(openid) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'userDb',
+        data: { openid, order: 'query' },
+      });
+
+      if (res.result && res.result.status === 'success') {
+        return res.result.data;
+      }
+
+      // 返回默认用户信息并插入数据库
+      const defaultUserInfo = this.initDefaultUserInfo(openid);
+      await this.upsertUserInfo(defaultUserInfo);
+      return defaultUserInfo;
+    } catch (error) {
+      console.error('获取用户信息失败:', error);
+      const defaultUserInfo = this.initDefaultUserInfo(openid);
+      await this.upsertUserInfo(defaultUserInfo);
+      return defaultUserInfo;
+    }
+  },
+
+  // 初始化默认用户信息
+  initDefaultUserInfo(openid = '') {
+    return {
+      openid,
+      nickName: '',
+      points: 50,
+      shareCount: 0,
+      lastShareDate: '',
+    };
+  },
+
+  // 更新或插入用户信息
+  async upsertUserInfo(userInfo) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'userDb',
+        data: {
+          openid: userInfo.openid,
+          order: 'upsert',
+          updateData: userInfo,
+        },
+      });
+
+      if (res.result && res.result.status === 'success') {
+        console.log('用户信息更新或新增成功:', res.result.message);
+      } else {
+        console.error('用户信息更新或新增失败:', res.result.message);
+      }
+    } catch (error) {
+      console.error('用户信息更新或新增失败:', error);
+    }
+  },
+
+  // 扫描二维码
+  async scanQRCode() {
+    if (this.data.hasUnsharedData) {
+      const res = await this.showModalAsync({
+        title: '提示',
+        content: '您有未分享的数据，确定要继续扫描吗？未分享的数据将丢失。',
+      });
+      if (res.confirm) {
+        // 用户点击确定，继续扫描
+        this.setData({
+          hasUnsharedData: false, // 重置未分享数据标志
+          images: [], // 清空现有的结果
+        });
+        await this.startQRCodeScan();
+      } else {
+        // 用户点击取消，不做任何操作
+      }
+    } else {
+      await this.startQRCodeScan();
+    }
+  },
+
+  // 开始二维码扫描
+  async startQRCodeScan() {
+    this.toggleLoading(true);
+
+    try {
+      const res = await wx.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode', 'barCode'],
+      });
+
+      if (res.result) {
+        await this.checkAndFetchData(res.result);
+      } else {
+        wx.showToast({ title: '二维码解析失败', icon: 'none' });
+      }
+    } catch (error) {
+      console.error('二维码扫描失败:', error);
+      wx.showToast({ title: '二维码扫描失败', icon: 'none' });
+    } finally {
+      this.toggleLoading(false);
+    }
+  },
+
+  // 检查链接并解析数据
+  async checkAndFetchData(url) {
+    this.toggleLoading(true);
+
+    try {
+      const userInfo = await this.ensureUserInfo();
+      const today = this.getTodayDate();
+
+      // 重置分享次数
+      if (userInfo.lastShareDate !== today) {
+        userInfo.lastShareDate = today;
+        userInfo.shareCount = 0;
+        await this.upsertUserInfo(userInfo);
+      }
+
+      // 链接校验
+      const groupOrderId = this.extractParameter(url, 'group_order_id');
+      if (!groupOrderId && !url.startsWith('https://file-link.pinduoduo.com/')) {
+        this.addImageResult('', url);
+        wx.showToast({ title: '解析成功', icon: 'success' });
+        return;
+      }
+
+      // 判断免费调用次数
+      if (userInfo.shareCount < 3) {
+        await this.fetchDataFromCloudFunction(url);
+      } else {
+        await this.handlePaidCall(url, userInfo);
+      }
+    } catch (error) {
+      console.error('处理链接失败:', error);
+      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+    } finally {
+      this.toggleLoading(false);
+    }
+  },
+
+  // 添加图片解析结果
+  addImageResult(imagePath, result) {
+    this.setData({
+      images: [
+        {
+          path: imagePath,
+          result,
+          shortResult: this.truncateText(result, 30),
+        },
+      ], // 覆盖数组，仅保留最新结果
+      hasUnsharedData: true, // 设置未分享数据标志
+    });
+  },
+
+  // 确保用户信息已加载
+  async ensureUserInfo() {
+    if (!this.data.userInfo) {
+      await this.initializeUserInfo();
+    }
+    return this.data.userInfo;
+  },
+
+  // 调用云函数获取数据
+  async fetchDataFromCloudFunction(url) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'fetchData',
+        data: { origin_url: url, openid: this.data.userInfo.openid },
+      });
+
+      if (res.result.status === 'success') {
+        await this.processFetchResult(res.result.data);
+      }
+    } catch (error) {
+      console.error('调用云函数 fetchData 失败:', error);
+    }
+  },
+
+  // 处理 fetchData 云函数的结果
+  async processFetchResult(data) {
+    const goodsName = data.goodsName || '商品名称未知';
+    const hdThumbUrl = data.hdThumbUrl || '';
+
+    if (hdThumbUrl) {
+      try {
+        const downloadRes = await this.downloadFileAsync(hdThumbUrl);
+        this.addImageResult(downloadRes.tempFilePath, goodsName);
+      } catch (error) {
+        console.error('图片下载失败:', error);
+        this.addImageResult('', goodsName);
+      }
+    } else {
+      this.addImageResult('', goodsName);
+    }
+
+    // 更新用户分享次数
+    const userInfo = this.data.userInfo;
+    userInfo.shareCount += 1;
+    userInfo.lastShareDate = this.getTodayDate();
+    await this.upsertUserInfo(userInfo);
+  },
+
+  // 下载文件封装为 Promise
+  downloadFileAsync(url) {
+    return new Promise((resolve, reject) => {
+      wx.downloadFile({
+        url,
+        success: resolve,
+        fail: reject,
+      });
+    });
+  },
+
+  // 更新用户积分
+  async updateUserPoints(pointsChange) {
+    const userInfo = this.data.userInfo;
+    userInfo.points += pointsChange;
+    await this.upsertUserInfo(userInfo);
+  },
+
+  // 获取当天日期
+  getTodayDate() {
+    const now = new Date();
+    return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
+  },
+
+  // 提取链接参数
+  extractParameter(url, parameterName) {
+    const regExp = new RegExp(`[?&]${parameterName}=([^&#]*)`, 'i');
+    const match = url.match(regExp);
+    return match ? decodeURIComponent(match[1]) : null;
+  },
+
+  // 截断文本
+  truncateText(text, maxLength) {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  },
+
+  // 切换加载状态
+  toggleLoading(loading) {
+    this.setData({ loading });
+  },
+
+  // 封装 wx.showModal 为 Promise
+  showModalAsync(options) {
+    return new Promise((resolve) => {
+      wx.showModal({
+        ...options,
+        success: resolve,
+        fail: (err) => resolve({ confirm: false, cancel: true, error: err }),
+      });
+    });
+  },
+
+  // 分享结果
+  shareResults() {
+    // 实现分享功能，这里简单演示
+    wx.showToast({
+      title: '分享成功',
+      icon: 'success',
+    });
+    // 共享完成后，设置 hasUnsharedData 为 false
+    this.setData({
+      hasUnsharedData: false,
+    });
+  },
+
+  // 处理付费调用逻辑
+  async handlePaidCall(url, userInfo) {
+    try {
+      // 弹窗提示用户是否使用积分
+      const modalRes = await this.showModalAsync({
+        title: '提示',
+        content: '您今日的免费调用次数已用完，是否使用10积分继续？',
+      });
+
+      if (modalRes.confirm) {
+        // 判断用户积分是否足够
+        if (userInfo.points >= 10) {
+          // 扣除积分并更新用户信息
+          await this.updateUserPoints(-10);
+          await this.fetchDataFromCloudFunction(url);
+        } else {
+          // 积分不足提示
+          wx.showToast({ title: '积分不足，请充值', icon: 'none' });
+        }
+      }
+    } catch (error) {
+      console.error('处理付费调用失败:', error);
+      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+    }
+  },
+
+  // 页面隐藏时触发
+  onHide() {
+    if (this.data.hasUnsharedData) {
+      wx.showModal({
+        title: '提示',
+        content: '您有未分享的数据，确定要离开吗？',
+        success: (res) => {
+          if (res.confirm) {
+            // 用户点击确定，允许页面隐藏
+            this.setData({ hasUnsharedData: false });
+          } else {
+            // 用户点击取消，重新导航回当前页面
+            wx.navigateTo({
+              url: '/pages/share/share',
+            });
+          }
+        },
+      });
+    }
+  },
+});
