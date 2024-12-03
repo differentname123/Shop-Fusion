@@ -55,7 +55,7 @@ Page({
   async fetchUserInfo(openid) {
     try {
       const res = await wx.cloud.callFunction({
-        name: 'userDb',
+        name: 'userInfoDB',
         data: { openid, order: 'query' },
       });
 
@@ -90,7 +90,7 @@ Page({
   async upsertUserInfo(userInfo) {
     try {
       const res = await wx.cloud.callFunction({
-        name: 'userDb',
+        name: 'userInfoDB',
         data: {
           openid: userInfo.openid,
           order: 'upsert',
@@ -147,7 +147,7 @@ Page({
         wx.showToast({ title: '二维码解析失败', icon: 'none' });
       }
     } catch (error) {
-      let error_info = '未识别二维码，可尝试裁剪图片后重试'
+      let error_info = '未识别二维码，可能是二维码太小了，可尝试裁剪图片后重试'
       this.addImageResult('', error_info);
       console.error('二维码扫描失败:', error);
     } finally {
@@ -206,6 +206,89 @@ Page({
     });
   },
 
+  analyseResult(result) {
+    console.log('开始分析结果:', result); // 输出完整的 result 数据
+  
+    let message = result.message; // 获取分享的消息内容
+    let points = result.points || 0; // 获取基础积分
+    console.log(`提取的消息内容: ${message}, 基础积分: ${points}`); // 打印提取的信息
+  
+    if (points > 0) {
+      console.log('积分大于 0，弹窗提示用户是否参与已有的团'); // 积分条件满足时的日志
+      wx.showModal({
+        title: '提示',
+        content: ` ${message}，是否直接参与已有的团？`,
+        success: (res) => {
+          if (res.confirm) {
+            console.log('用户点击了“确认”，即将执行参与团逻辑'); // 用户确认的日志
+            this.joinGroupDirectly(result);
+          } else if (res.cancel) {
+            console.log('用户取消了参与团'); // 用户取消的日志
+          }
+        },
+        fail: (err) => {
+          console.error('弹窗调用失败:', err); // 弹窗调用失败的日志
+        },
+      });
+    } else {
+      console.warn('积分不足，无需提示参与团'); // 积分不足的警告日志
+    }
+  },
+  
+  // 直接参与团的逻辑
+  joinGroupDirectly(result) {
+    // 假设 result 中包含参与团所需的完整数据
+    const item = result; // 获取拼团信息对象
+    console.log('参与团的 item:', item);
+  
+    // 拼接 URL
+    const url = item.promotionUrl;
+    console.log('Generated URL:', url);
+  
+    const path = item.wxPath;
+    console.log('wx path:', path);
+  
+    // 先复制 URL 到剪贴板，无论跳转成功与否
+    wx.setClipboardData({
+      data: url,
+      success() {
+        console.log('链接已复制到剪贴板');
+      },
+    });
+  
+    // 跳转至指定页面
+    wx.navigateToMiniProgram({
+      appId: 'wx32540bd863b27570',
+      path: path,
+      extraData: {},
+      envVersion: 'release',
+      success(res) {
+        console.log('跳转成功');
+        // 共享完成后，设置 hasUnsharedData 为 false
+        this.setData({
+          hasUnsharedData: false,
+        });
+      },
+      fail(err) {
+        // 跳转失败，提示用户可以通过浏览器打开
+        console.error('跳转失败', err);
+  
+        // 提示用户跳转失败并可以通过浏览器打开
+        wx.showModal({
+          title: '提示',
+          content: '无法跳转到小程序，已复制链接。你可以粘贴到浏览器中打开。',
+          showCancel: false, // 不显示取消按钮
+          confirmText: '知道了',
+          success(res) {
+            if (res.confirm) {
+              console.log('用户知道了');
+            }
+          },
+        });
+      },
+    });
+  },
+
   // 确保用户信息已加载
   async ensureUserInfo() {
     if (!this.data.userInfo) {
@@ -223,6 +306,8 @@ Page({
       });
       if (res.result.status === 'success') {
         await this.processFetchResult(res.result);
+      } else {
+        this.addImageResult('', '解析失败可重试或联系客服');
       }
     } catch (error) {
       console.error('调用云函数 fetchData 失败:', error);
@@ -231,27 +316,49 @@ Page({
 
   // 处理 fetchData 云函数的结果
   async processFetchResult(result) {
-    let data =result.data; 
+    console.log('开始处理 fetch 结果:', result); // 输出完整的 result 数据
+    let data = result.data;
+    console.log('提取的数据:', data); // 输出提取的 data
+  
     const goodsName = data.goodsName || '商品名称未知';
     const hdThumbUrl = data.hdThumbUrl || '';
-
+    console.log(`提取商品名称: ${goodsName}, 商品缩略图 URL: ${hdThumbUrl}`);
+  
     if (hdThumbUrl) {
       try {
+        console.log('开始下载商品图片:', hdThumbUrl); // 下载前日志
         const downloadRes = await this.downloadFileAsync(hdThumbUrl);
+        console.log('图片下载成功:', downloadRes); // 下载成功后日志
+  
         this.addImageResult(downloadRes.tempFilePath, goodsName, true, result);
+        console.log('已添加图片结果，调用 analyseResult 进行分析'); // 调用分析方法前日志
+        this.analyseResult(result);
       } catch (error) {
-        console.error('图片下载失败:', error);
+        console.error('图片下载失败:', error); // 下载失败日志
         this.addImageResult('', goodsName);
+        console.log('图片下载失败后，已添加空图片结果'); // 添加空结果日志
       }
     } else {
+      console.warn('商品缩略图 URL 为空，无法下载图片'); // URL 为空的警告日志
       this.addImageResult('', goodsName);
+      console.log('已添加空图片结果'); // 添加空结果日志
     }
-
+  
     // 更新用户分享次数
-    const userInfo = this.data.userInfo;
-    userInfo.shareCount += 1;
-    userInfo.lastShareDate = this.getTodayDate();
-    await this.upsertUserInfo(userInfo);
+    try {
+      console.log('开始更新用户分享次数'); // 更新用户分享次数前日志
+      const userInfo = this.data.userInfo;
+      console.log('当前用户信息:', userInfo); // 输出当前用户信息
+  
+      userInfo.shareCount += 1;
+      userInfo.lastShareDate = this.getTodayDate();
+      console.log('更新后的用户信息:', userInfo); // 输出更新后的用户信息
+  
+      await this.upsertUserInfo(userInfo);
+      console.log('用户分享次数更新成功'); // 更新成功日志
+    } catch (error) {
+      console.error('更新用户分享次数失败:', error); // 更新失败日志
+    }
   },
 
   // 下载文件封装为 Promise
@@ -267,9 +374,14 @@ Page({
 
   // 更新用户积分
   async updateUserPoints(pointsChange) {
-    const userInfo = this.data.userInfo;
-    userInfo.points += pointsChange;
-    await this.upsertUserInfo(userInfo);
+    if (pointsChange != 0){
+      const userInfo = this.data.userInfo;
+      userInfo.points += pointsChange;
+      await this.upsertUserInfo(userInfo);
+    } else {
+      console.log('无积分修改');
+    }
+
   },
 
   // 获取当天日期
@@ -309,24 +421,143 @@ Page({
     });
   },
 
+// 更新组商品信息的云函数封装
+async updateGroupGoodsInfo({ goodsId, groupOrderId, isPinned, isAccelerated }) {
+  try {
+    const result = await wx.cloud.callFunction({
+      name: 'groupGoodsInfoDB', // 云函数名称
+      data: {
+        goodsId,
+        groupOrderId,
+        isPinned,
+        isAccelerated,
+      },
+    });
+
+    // 检查云函数返回结果
+    if (result.result.success) {
+      console.log('云函数调用成功:', result.result);
+      return { success: true, data: result.result.data };
+    } else {
+      console.error('云函数更新失败:', result.result.errorMessage);
+      return { success: false, errorMessage: result.result.errorMessage };
+    }
+  } catch (error) {
+    console.error('云函数调用出错:', error);
+    return { success: false, errorMessage: '云函数调用失败' };
+  }
+},
+
   // 分享结果
-  shareResults() {
+  async shareResults() {
     const { isPinned, isAccelerated } = this.data;
-    let points = 0;
-    // 实现分享功能，这里简单演示
+  
+    // 实现分享功能
     wx.showToast({
       title: '分享成功',
       icon: 'success',
     });
+  
+    let message = this.data.images[0].data.message; // 获取分享的消息内容
+    let points = this.data.images[0].data.points || 0; // 获取基础积分
+    let goodsId = this.data.images[0].data.data.goodsId;
+    let groupOrderId = this.data.images[0].data.data.groupOrderId;
+    let content = ""; // 用于显示弹窗内容
+    let total_points = points; // 总所需积分
     console.log(this.data.images[0]);
-    console.log('分享参数:', {
-      isPinned,
-      isAccelerated
-    });
-    // 共享完成后，设置 hasUnsharedData 为 false
-    this.setData({
-      hasUnsharedData: false,
-    });
+    console.log(goodsId);
+    console.log(groupOrderId);
+  
+    // 填充第一个内容：基础积分
+    if (points > 0) {
+      content += `${message} (${points}积分)\n`; // 添加换行
+    }
+  
+    // 填充第二个内容：置顶团功能
+    if (isPinned) {
+      content += `开启置顶团功能 (${20}积分)\n`; // 添加换行
+      total_points += 20;
+    }
+  
+    // 填充第三个内容：加速拼功能
+    if (isAccelerated) {
+      content += `开启加速拼功能 (${50}积分)\n`; // 添加换行
+      total_points += 50;
+    }
+  
+    // 如果总积分大于 0，则追加最后一句提示
+    if (total_points > 0) {
+      content += `是否确定花费 ${total_points} 积分进行分享？`;
+    }
+  
+    try {
+      let proceed = true; // 是否继续后续逻辑的标志
+      // 如果总积分大于 0，则显示弹窗
+      if (total_points > 0) {
+        const modalRes = await this.showModalAsync({
+          title: '提示',
+          content: content, // 弹窗内容
+        });
+        proceed = modalRes.confirm; // 用户点击确认才继续
+      }
+  
+      if (proceed) {
+        const userInfo = this.data.userInfo; // 假定用户信息在 this.data 中
+  
+        // 判断用户积分是否足够
+        if (userInfo.points >= total_points) {
+  
+        
+          // 调用云函数，更新数据
+          const updateResult = await this.updateGroupGoodsInfo({
+            goodsId: goodsId, // 替换为实际的 goodsId
+            groupOrderId: groupOrderId, // 替换为实际的 groupOrderId
+            isPinned: isPinned, // 替换为是否置顶的标志
+            isAccelerated: isAccelerated, // 替换为是否加速的标志
+          });
+        
+          if (updateResult.success) {
+            // 扣除积分并更新用户信息
+            await this.updateUserPoints(-total_points);
+            // 共享完成后，设置 hasUnsharedData 为 false
+            this.setData({
+              hasUnsharedData: false,
+            });
+            wx.showToast({
+              title: '更新成功',
+              icon: 'success',
+            });
+          } else {
+            wx.showToast({
+              title: updateResult.errorMessage || '更新失败',
+              icon: 'none',
+            });
+          }
+        
+
+        } else {
+          // 处理积分不足情况
+          const insufficientPointsContent = `当前积分不足！\n您当前有 ${userInfo.points} 积分。\n是否前往赚取更多积分？`;
+  
+          const pointsModalRes = await this.showModalAsync({
+            title: '积分不足',
+            content: insufficientPointsContent,
+            confirmText: '去赚积分',
+            cancelText: '取消',
+          });
+  
+          if (pointsModalRes.confirm) {
+            // 跳转到积分任务界面
+            wx.navigateTo({
+              url: '/pages/points-task/index', // 假定积分任务页面路径
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('处理付费调用失败:', error);
+      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+    }
   },
 
   // 处理付费调用逻辑

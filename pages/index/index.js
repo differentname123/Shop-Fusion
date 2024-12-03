@@ -133,7 +133,7 @@ Page({
       }
 
       const newProducts = res.result.data;
-      console.log(newProducts);
+      // console.log(newProducts);
 
       // 如果返回的数据少于预期，设置 hasMore 为 false
       const pageSize = 6; // 与云函数中每页数量一致
