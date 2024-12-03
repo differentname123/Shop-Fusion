@@ -1,66 +1,110 @@
-const updateDatabase = async (db, combinedData) => {
-  if (!combinedData.goodsId || !combinedData.groupOrderId) {
-    console.error('goodsId 或 groupOrderId 不能为空，数据未插入数据库。');
-    return {
-      status: 'error',
-      message: 'goodsId 或 groupOrderId 不能为空，数据未插入数据库。',
-      data: combinedData,
-    };
-  }
+# 确保安装依赖项
+# pip install git+https://github.com/LLaVA-VL/LLaVA-NeXT.git decord torch transformers numpy pillow
+import os
 
-  try {
-    console.log(
-      `开始查询是否存在 goodsId=${combinedData.goodsId} 和 groupOrderId=${combinedData.groupOrderId} 的记录`
-    );
+from llava.model.builder import load_pretrained_model
+from llava.mm_utils import tokenizer_image_token
+from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN
+from llava.conversation import conv_templates
+from decord import VideoReader, cpu
+from PIL import Image
+import numpy as np
+import torch
+import copy
 
-    // 查询是否存在相同 goodsId 和 groupOrderId 的记录
-    const existingRecords = await db
-      .collection('groupGoodsInfo')
-      .where({
-        goodsId: combinedData.goodsId,
-        groupOrderId: combinedData.groupOrderId,
-      })
-      .get();
+# 设置代理（如果需要）
+os.environ['HTTP_PROXY'] = 'http://127.0.0.1:7890'
+os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:7890'
 
-    console.log(`查询结果：找到 ${existingRecords.data.length} 条记录`);
+# 加载视频帧函数
+def load_video(video_path, max_frames_num=32, fps=1, resolution=(224, 224), force_sample=False):
+    vr = VideoReader(video_path, ctx=cpu(0), num_threads=1)
+    total_frame_num = len(vr)
+    video_time = total_frame_num / vr.get_avg_fps()
+    fps = round(vr.get_avg_fps() / fps)
+    frame_idx = [i for i in range(0, len(vr), fps)]
+    frame_time = [i / vr.get_avg_fps() for i in frame_idx]
+    if len(frame_idx) > max_frames_num or force_sample:
+        sample_fps = max_frames_num
+        uniform_sampled_frames = np.linspace(0, total_frame_num - 1, sample_fps, dtype=int)
+        frame_idx = uniform_sampled_frames.tolist()
+        frame_time = [i / vr.get_avg_fps() for i in frame_idx]
+    frame_time = ",".join([f"{i:.2f}s" for i in frame_time])
+    spare_frames = vr.get_batch(frame_idx).asnumpy()
 
-    if (existingRecords.data.length > 0) {
-      // 如果记录已存在，更新该记录
-      const existingRecord = existingRecords.data[0];
-      console.log(`找到记录，记录 ID: ${existingRecord._id}，准备更新`);
+    # 调整帧分辨率以减少显存占用
+    spare_frames = [Image.fromarray(frame).resize(resolution) for frame in spare_frames]
+    spare_frames = np.stack([np.array(frame) for frame in spare_frames], axis=0)
 
-      await db.collection('groupGoodsInfo').doc(existingRecord._id).update({
-        data: {
-          ...combinedData,
-          display: existingRecord.display, // 保留原来的 display 值
-        },
-      });
+    return spare_frames, frame_time, video_time
 
-      console.log(`记录更新成功，goodsId=${combinedData.goodsId}, groupOrderId=${combinedData.groupOrderId}`);
-      return {
-        status: 'success',
-        message: '记录已成功更新。',
-        data: combinedData,
-        points: 0,
-      };
-    } else {
-      // 如果记录不存在，插入新记录
-      console.log(`未找到匹配记录，准备插入新记录：goodsId=${combinedData.goodsId}, groupOrderId=${combinedData.groupOrderId}`);
 
-      const addRes = await db.collection('groupGoodsInfo').add({
-        data: combinedData,
-      });
+# 模型配置
+pretrained = "lmms-lab/LLaVA-Video-7B-Qwen2"
+model_name = "llava_qwen"
+device = "cuda" if torch.cuda.is_available() else "cpu"
+device_map = "auto"
 
-      console.log(`插入新记录成功，记录 ID：${addRes._id}`);
-      return {
-        status: 'success',
-        message: '新记录已成功插入。',
-        data: combinedData,
-        points: 0,
-      };
-    }
-  } catch (error) {
-    console.error('数据库操作时发生错误：', error);
-    throw new Error('数据库操作时发生错误。');
-  }
-};
+# 加载预训练模型，统一使用 bfloat16
+attn_implementation = "eager"  # 可改为 "sdpa"（如果 PyTorch >= 2.0 且支持 scaled_dot_product_attention）
+
+tokenizer, model, image_processor, max_length = load_pretrained_model(
+    pretrained, None, model_name, torch_dtype="bfloat16", device_map=device_map, attn_implementation=attn_implementation
+)
+model.eval()
+
+# 加载视频
+video_path = "test.mp4"
+max_frames_num = 32  # 最大采样帧数，减少以节省显存
+resolution = (224, 224)  # 降低分辨率以节省显存
+video, frame_time, video_time = load_video(video_path, max_frames_num, fps=1, resolution=resolution, force_sample=True)
+
+# 批量处理帧，避免一次性占用过多显存
+batch_size = 8
+video_batches = [
+    image_processor.preprocess(video[i:i + batch_size], return_tensors="pt")["pixel_values"].to(device).to(torch.bfloat16)
+    for i in range(0, len(video), batch_size)
+]
+
+# 构造对话模板
+conv_template = "qwen_1_5"
+time_instruction = (
+    f"视频总时长为 {video_time:.2f} 秒，从视频中均匀采样了 {len(video)} 帧。这些帧的时间点分别为：{frame_time}。"
+    "请根据这些帧回答下列问题。"
+)
+question = DEFAULT_IMAGE_TOKEN + f"\n{time_instruction}\n请用中文详细描述这个视频的内容。"
+conv = copy.deepcopy(conv_templates[conv_template])
+conv.append_message(conv.roles[0], question)
+conv.append_message(conv.roles[1], None)
+prompt_question = conv.get_prompt()
+
+# 生成摘要
+try:
+    # 注意：input_ids 必须是 torch.long 类型
+    input_ids = tokenizer_image_token(prompt_question, tokenizer, IMAGE_TOKEN_INDEX, return_tensors="pt").unsqueeze(0).to(device).to(torch.long)
+
+    # 创建对应的 attention_mask
+    attention_mask = torch.ones_like(input_ids, dtype=torch.long).to(device)
+
+    # 批量生成摘要，逐步传入帧数据
+    outputs = []
+    for video_batch in video_batches:
+        output = model.generate(
+            input_ids,
+            attention_mask=attention_mask,  # 添加 attention_mask
+            images=[video_batch],
+            modalities=["video"],
+            do_sample=False,  # 不进行采样
+            temperature=0,  # 确保生成确定性输出
+            max_new_tokens=4096,
+        )
+        outputs.append(tokenizer.batch_decode(output, skip_special_tokens=True)[0].strip())
+
+    # 合并结果
+    text_outputs = " ".join(outputs)
+
+    # 打印结果
+    print("视频摘要：")
+    print(text_outputs)
+except Exception as e:
+    print("生成摘要时出错：", str(e))
