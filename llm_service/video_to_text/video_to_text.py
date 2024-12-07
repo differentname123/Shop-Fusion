@@ -147,7 +147,7 @@ def main():
     model.eval()
 
     # 加载视频
-    video_path = "27134529061-1-16.mp4"  # 替换为实际的视频文件路径
+    video_path = "test.mp4"  # 替换为实际的视频文件路径
     resolution = (224, 224)  # 降低分辨率以节省显存
     fps = 1  # 每秒采样一帧
     video_frames, frame_time, video_time = load_video_frames(video_path, fps=fps, resolution=resolution)
