@@ -158,7 +158,7 @@ if __name__ == "__main__":
     pid = get_config('pid')
 
     # 搜索关键字
-    keyword = ""
+    keyword = "鸭货"
 
     # 调用函数获取搜索结果
     logger.info(f"开始搜索关键字: {keyword}")

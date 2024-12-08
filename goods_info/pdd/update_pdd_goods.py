@@ -45,7 +45,7 @@ def convert_to_goods_schema(batch, goods_schema, goods_Type="pdd"):
                 converted_item[key] = item.get("promotion_rate", rules.get("default", 0))
             elif key == "promotionUrl":
                 converted_item[key] = item.get("promotion_url")
-            elif key == "promotionPath":
+            elif key == "promotionWxPath":
                 converted_item[key] = item.get("wx_path")
             elif key == "mallName":
                 converted_item[key] = item.get("mall_name")
@@ -115,7 +115,7 @@ def process_batch(batch, batch_index, client_id, client_secret, pid, goods_schem
 
 if __name__ == "__main__":
     # 搜索关键字
-    keyword = ""
+    keyword = "鸭货"
 
     # 配置信息
     client_id = get_config('client_id')
@@ -137,7 +137,7 @@ if __name__ == "__main__":
         "goodsType": {"type": str, "required": True},
         "promotionRate": {"type": int, "required": False, "default": 0},
         "promotionUrl": {"type": str, "required": False},
-        "promotionPath": {"type": str, "required": False},
+        "promotionWxPath": {"type": str, "required": False},
         "mallName": {"type": str, "required": True},
         "brand": {"type": str, "required": True},
         "category_name": {"type": str, "required": True},

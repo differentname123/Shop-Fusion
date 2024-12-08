@@ -76,6 +76,22 @@ const processRawData = async (rawData, origin_url, openid, db) => {
     // 动态生成 wxPath
     const wxPath = `pages/web/web?src=pincard_ask.html%3F__rp_name%3Dbrand_amazing_price_group%26group_order_id%3D${groupOrderId}%26goods_id%3D${goodsId}`;
 
+    // 查询相关记录
+    const relatedRecords = await db.collection('goodsInfo').where({
+      goodsId: goodsId,
+    }).get();
+
+    console.log(`查询结果：找到 ${relatedRecords.data.length} 条记录`);
+    let promotionWxPath = "";
+    let promotionUrl = "";
+
+    // 如果查询结果存在数据，尝试获取 wxPath 和 promotionUrl
+    if (relatedRecords.data && relatedRecords.data.length > 0) {
+      const firstRecord = relatedRecords.data[0]; // 假设使用第一个记录的数据
+      promotionWxPath = firstRecord.promotionWxPath || ""; // 如果 wxPath 存在，赋值；否则为空字符串
+      promotionUrl = firstRecord.promotionUrl || ""; // 如果 promotionUrl 存在，赋值；否则为空字符串
+    }
+
     return {
       goodsId,
       hdThumbUrl: goodsInfo.hdThumbUrl,
@@ -89,7 +105,8 @@ const processRawData = async (rawData, origin_url, openid, db) => {
       groupUserNum,
       groupRemainCount,
       originUrl: origin_url,
-      promotionUrl: origin_url,
+      promotionUrl: promotionUrl,
+      promotionWxPath:promotionWxPath,
       sourceType: 'user',
       goodsType: 'pdd',
       display: 0, // 默认 display 为 0
@@ -106,92 +123,122 @@ const processRawData = async (rawData, origin_url, openid, db) => {
  * 更新或插入数据库中的 groupGoodsInfo
  */
 const updateDatabase = async (db, combinedData) => {
+  // 校验必填字段
   if (!combinedData.goodsId) {
     console.error('goodsId 不能为空，数据未插入数据库。');
-    return { status: 'error', message: 'goodsId 不能为空，数据未插入数据库。', data: combinedData };
+    return {
+      status: 'error',
+      message: 'goodsId 不能为空，数据未插入数据库。',
+      data: combinedData,
+    };
+  }
+
+  if (!combinedData.groupOrderId) {
+    console.error('groupOrderId 不能为空，数据未插入数据库。');
+    return {
+      status: 'error',
+      message: 'groupOrderId 不能为空，数据未插入数据库。',
+      data: combinedData,
+    };
   }
 
   try {
-    console.log(`开始查询是否存在 goodsId=${combinedData.goodsId}, groupStatus=0, display=1 的记录`);
+    console.log(`开始查询与 goodsId=${combinedData.goodsId} 相关的所有记录`);
 
-    // 查询是否存在符合条件的数据 (goodsId 相同，并且 groupStatus 为 0，display 为 1)
-    const existingRecords = await db.collection('groupGoodsInfo').where({
+    // 查询相关记录
+    const relatedRecords = await db.collection('groupGoodsInfo').where({
       goodsId: combinedData.goodsId,
-      groupStatus: 1,
-      display: 1,
     }).get();
 
-    console.log(`查询结果：找到 ${existingRecords.data.length} 条记录`);
+    console.log(`查询结果：找到 ${relatedRecords.data.length} 条记录`);
 
-    if (existingRecords.data.length > 0) {
-      const existingRecord = existingRecords.data.find(
-        (record) => record.groupOrderId === combinedData.groupOrderId
+    // 初始化变量，用于后续统一处理
+    let targetRecord = null; // 需要更新的记录
+    let message = ''; // 操作提示信息
+    let points = 0; // 消耗积分
+
+    // 条件 1：完全匹配的记录
+    const exactMatchRecord = relatedRecords.data.find(
+      (record) =>
+        record.groupOrderId === combinedData.groupOrderId &&
+        record.groupStatus === 1 &&
+        record.display === 1
+    );
+    if (exactMatchRecord) {
+      console.log(`存在完全匹配的记录 groupOrderId=${combinedData.groupOrderId}`);
+      targetRecord = exactMatchRecord;
+      message = '存在相同的拼团信息，不必再次分享。';
+    }
+
+    // 条件 2：相同 goodsId，未完成拼团记录
+    if (!targetRecord) {
+      const similarGoodsRecord = relatedRecords.data.find(
+        (record) => record.groupStatus === 1 && record.display === 1
       );
-
-      if (existingRecord) {
-        console.log(`找到相同的 groupOrderId=${combinedData.groupOrderId}，更新记录`);
-        // 如果 groupOrderId 相同，更新记录（保持原 display 不变）
-        await db.collection('groupGoodsInfo').doc(existingRecord._id).update({
-          data: {
-            ...combinedData,
-            display: existingRecord.display, // 保持原有 display
-          },
-        });
-        return {
-          status: 'success',
-          message: '存在相同的拼团信息，不必再次分享。',
-          data: combinedData,
-          points:0,
-        };
-      } else {
-        console.log(`找到相同的 goodsId=${combinedData.goodsId}，但 groupOrderId 不同，插入新记录`);
-        // 如果 groupOrderId 不同，插入新记录
-        const addRes = await db.collection('groupGoodsInfo').add({ data: combinedData });
-        console.log(`插入新记录成功，记录 ID：${addRes._id}`);
-        return {
-          status: 'success',
-          message: '存在相同的商品的拼团数据，建议参与已有的团，你也可以消耗积分进行强行分享。',
-          data: combinedData,
-          points:10,
-        };
+      if (similarGoodsRecord) {
+        console.log(`存在相同的商品，但 groupOrderId 不同`);
+        targetRecord = similarGoodsRecord;
+        message =
+          '存在相同的商品的拼团数据，建议参与已有的团，你也可以消耗积分进行强行分享。';
+        points = 10;
       }
     }
 
-    console.log(`未找到任何符合条件的记录，尝试更新或插入新记录`);
+    // 条件 3：仅匹配 goodsId 的记录
+    if (!targetRecord) {
+      const goodsOnlyRecord = relatedRecords.data.find(
+        (record) => record.goodsId === combinedData.goodsId
+      );
+      if (goodsOnlyRecord) {
+        console.log(`存在相同的商品记录`);
+        targetRecord = goodsOnlyRecord;
+        message = '建议使用平台链接重新开团，将大大增加成功概率。';
+      }
+    }
+    targetRecord = relatedRecords.data.find(
+      (record) =>
+        record.groupOrderId === combinedData.groupOrderId
+    );
+    // 最终统一处理更新或插入操作
+    if (targetRecord) {
 
-    // 如果不存在任何记录，先尝试更新
-    const res = await db.collection('groupGoodsInfo').where({
-      goodsId: combinedData.goodsId,
-      groupOrderId: combinedData.groupOrderId,
-    }).update({
-      data: combinedData,
-    });
+      // 更新记录
+      await db.collection('groupGoodsInfo').doc(targetRecord._id).update({
+        data: {
+          ...combinedData,
+          display: targetRecord.display, // 保持原 display
+          groupStatus: targetRecord.groupStatus, // 保持原 groupStatus
+        },
+      });
 
-    console.log(`更新操作完成，更新记录数：${res.stats.updated}`);
-
-    if (res.stats.updated === 0) {
-      console.log(`更新失败，插入新记录`);
+      return {
+        status: 'success',
+        message,
+        data: combinedData,
+        points,
+      };
+    } else {
+      console.log('没有任何相关记录，插入新记录');
       const addRes = await db.collection('groupGoodsInfo').add({
         data: combinedData,
       });
-      console.log(`插入新记录成功，记录 ID：${addRes._id}`);
+      console.log(`新的开团信息已插入，记录 ID：${addRes._id}`);
+      message = '新的开团信息，已插入。';
+
       return {
         status: 'success',
-        message: '已经成功分享',
+        message,
         data: combinedData,
-        points:0,
+        points,
       };
     }
-
-    console.log(`更新成功，无需插入新记录`);
-    return {
-      status: 'success',
-      message: '数据已成功更新。',
-      data: combinedData,
-    };
   } catch (error) {
     console.error('数据库操作时发生错误：', error);
-    throw new Error('数据库操作时发生错误。');
+    return {
+      status: 'error',
+      message: '数据库操作时发生错误。',
+      data: combinedData,
+    };
   }
 };
 
